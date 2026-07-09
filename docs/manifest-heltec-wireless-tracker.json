@@ -3,9 +3,9 @@
   "builds": [
     {
       "name": "heltec_wireless_tracker",
-      "chip_family": "esp32s3",
+      "chipFamily": "ESP32-S3",
       "variants": ["heltec_wireless_tracker"],
-      "raw": [
+      "parts": [
         { "offset": 0, "path": "firmware/bootloader.bin" },
         { "offset": 32768, "path": "firmware/partitions.bin" },
         { "offset": 57344, "path": "firmware/boot_app0.bin" },
