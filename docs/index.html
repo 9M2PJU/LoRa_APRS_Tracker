@@ -109,6 +109,28 @@
             </p>
         </div>
 
+        <div id="rebootMessage" class="warning" style="display: none;">
+            <h2>Installation complete &mdash; reboot your tracker</h2>
+            <p>
+                Firmware was flashed successfully. If your tracker doesn't restart on its own
+                (e.g. if you held the BOOT button during flashing), reboot it now:
+            </p>
+            <ul style="list-style: none; padding-left: 5px; margin-top: 10px;">
+                <li style="margin: 8px 0; padding-left: 20px; position: relative;">
+                    <span style="position: absolute; left: 0; color: #d4a017; font-weight: bold;">1.</span>
+                    <strong>Release the BOOT button</strong> if you are still holding it
+                </li>
+                <li style="margin: 8px 0; padding-left: 20px; position: relative;">
+                    <span style="position: absolute; left: 0; color: #d4a017; font-weight: bold;">2.</span>
+                    Press the <strong>RST</strong> button once (or unplug and replug USB)
+                </li>
+                <li style="margin: 8px 0; padding-left: 20px; position: relative;">
+                    <span style="position: absolute; left: 0; color: #d4a017; font-weight: bold;">3.</span>
+                    Your tracker will boot into the new firmware
+                </li>
+            </ul>
+        </div>
+
         <div id="browserWarning" class="warning">
             <h2>Browser not supported</h2>
             <p>
@@ -214,6 +236,24 @@
                 document.getElementById('installFallback').style.display = 'block';
             }
         }, 3000);
+
+        // Show reboot message after a successful install.
+        // The ewt-install-dialog element is created dynamically and appended
+        // to document.body. Its "closed" event bubbles up (bubbles:true,
+        // composed:true). When it fires, we check the dialog's _installState
+        // to determine whether the flash actually succeeded.
+        document.body.addEventListener('closed', function(e) {
+            var dialog = e.target;
+            if (dialog && dialog.tagName === 'EWT-INSTALL-DIALOG'
+                && dialog._installState
+                && dialog._installState.state === 'finished') {
+                var msg = document.getElementById('rebootMessage');
+                if (msg) {
+                    msg.style.display = 'block';
+                    msg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        });
     </script>
 </body>
 </html>
