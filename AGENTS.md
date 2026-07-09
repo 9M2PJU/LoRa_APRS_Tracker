@@ -58,11 +58,26 @@ Fork of CA2RXU LoRa APRS Tracker, modified by 9M2PJU for Malaysia.
 - Conflict resolutions: README.md (kept Clock + added Timeline), display.cpp (kept custom Heltec colors), keyboard_utils.cpp (whitespace)
 - How to sync: `git fetch upstream main && git merge upstream/main` — resolve conflicts preserving our mods (APRSMY, display colors, config, web flasher)
 
+## Display Layout (v2.0-stable)
+- All body text under header is **centered** horizontally on 160px screen
+- Header callsign is centered in 0-124px space (leaves gap for APRS symbol on main screen)
+- APRS symbol drawn at x=124-140 (16px wide, 14px tall) to avoid overlap with any callsign length
+- On screens without symbol, header centers in full 160px
+- Startup screen text centered (removed old manual padding spaces)
+- Font: bigSizeFont=2 (header), smallSizeFont=1 (body), lineSpacing=12, maxLineLength=26
+- Status accent bar: 2px left edge (green=GPS lock, yellow=GPS searching, blue=BT, grey=idle)
+
+## Git History
+- All commits authored by 9M2PJU only (Devin co-author lines removed via filter-branch)
+- Tags: v1.0-stable, v2.0-stable (both force-pushed after history rewrite)
+- Force push was used to rewrite 8 commits removing Devin co-author
+
 ## Our Modifications (must preserve during upstream sync)
 - **APRSMY check-in** — Malaysia APRS Sunday Net feature in `src/menu_utils.cpp` (case 14/140/1400) and `src/keyboard_utils.cpp` (lines 363-372, 622-625). Sends `CHECK #APRSMY <text>` to callsign `APRSMY`.
-- **Custom Heltec display colors** — `heltecHeaderColor()` and `heltecBodyColor()` functions in `src/display.cpp` (lines 331, 337), used in displayShow for HELTEC_WIRELESS_TRACKER
-- **Startup screen** — shows "9M2PJU Mod <versionDate>" instead of upstream's CA2RXU branding (`src/display.cpp` line 655)
-- **LoRa frequency labels** — `LoRa[MY]` for preset 0, "MALAYSIA" change message (`src/display.cpp` line 650, `src/lora_utils.cpp`)
+- **Custom Heltec display colors** — `heltecHeaderColor()` and `heltecBodyColor()` functions in `src/display.cpp`, used in displayShow for HELTEC_WIRELESS_TRACKER
+- **Centered display text** — body text centered via `(160 - textWidth) / 2`, header centered in symbol-aware space
+- **Startup screen** — shows "9M2PJU Mod <versionDate>" centered (src/display.cpp startupScreen function)
+- **LoRa frequency labels** — `LoRa[MY]` for preset 0, "MALAYSIA" change message (`src/display.cpp`, `src/lora_utils.cpp`)
 - **data/tracker_conf.json** — 9M2PJU-7 callsign, 433.400MHz, gpsEcoMode=false on all 3 profiles, Winlink email, display timeout 3s
-- **Web flasher** — entire `docs/` directory, manifest, install dialog, firmware binaries
+- **Web flasher** — entire `docs/` directory, manifest, install dialog, firmware binaries at lora.hamradio.my
 - **Custom workflows** — publish-firmware.yml, deploy.yml (not in upstream)
