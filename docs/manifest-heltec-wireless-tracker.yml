@@ -1,0 +1,15 @@
+name: 9M2PJU Mod LoRa APRS Tracker (Heltec Wireless Tracker)
+builds:
+  - name: heltec_wireless_tracker
+    chip_family: esp32s3
+    variants:
+      - heltec_wireless_tracker
+    raw:
+      - offset: 0x0
+        path: bootloader.bin
+      - offset: 0x8000
+        path: partitions.bin
+      - offset: 0xe000
+        path: boot_app0.bin
+      - offset: 0x10000
+        path: firmware.bin

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>9M2PJU Mod LoRa APRS Tracker Firmware Web Installer</title>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/esp-web-tools@10.0.2/dist/web/install-button.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #1a2f1a 0%, #0d1f0d 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin: 30px 0 10px 0;
+            color: #4a84;
+            text-shadow: 0 0 20px rgba(74, 136, 80, 0.5);
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            color: #a0c0a0;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: rgba(20, 40, 20, 0.8);
+            border: 1px solid #2a5a2a;
+            border-radius: 16px;
+            padding: 40px 30px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .device-section {
+            margin: 20px 0;
+        }
+
+        .device-label {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #6abf6a;
+        }
+
+        .install-btn-wrapper {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        esp-web-install-button {
+            --esp-tools-button-color: #4a84;
+            --esp-tools-button-text-color: #ffffff;
+            --esp-tools-button-color-hover: #5a995a;
+        }
+
+        .info {
+            text-align: left;
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(10, 30, 10, 0.6);
+            border-radius: 12px;
+            border-left: 4px solid #4a84;
+        }
+
+        .info h2 {
+            font-size: 1.2em;
+            color: #6abf6a;
+            margin-bottom: 12px;
+        }
+
+        .info ul {
+            list-style: none;
+            padding-left: 5px;
+        }
+
+        .info li {
+            margin: 8px 0;
+            line-height: 1.6;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .info li::before {
+            content: ">";
+            position: absolute;
+            left: 0;
+            color: #4a84;
+            font-weight: bold;
+        }
+
+        .warning {
+            background: rgba(80, 60, 10, 0.5);
+            border-left: 4px solid #d4a017;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .warning h2 {
+            color: #d4a017;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+
+        .warning p {
+            line-height: 1.5;
+            font-size: 0.95em;
+        }
+
+        .footer {
+            margin: 40px 0 20px 0;
+            font-size: 0.85em;
+            color: #607060;
+            line-height: 1.6;
+        }
+
+        .footer a {
+            color: #6abf6a;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .browser-warning {
+            display: none;
+            background: rgba(80, 30, 30, 0.7);
+            border: 1px solid #a04040;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #e0a0a0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>9M2PJU Mod LoRa APRS Tracker</h1>
+        <p class="subtitle">Firmware Web Installer &mdash; Heltec Wireless Tracker</p>
+
+        <div class="card">
+            <div class="device-section">
+                <div class="device-label">Heltec Wireless Tracker (ESP32-S3 + ST7735 TFT)</div>
+                <div class="install-btn-wrapper">
+                    <esp-web-install-button
+                        manifest="manifest-heltec-wireless-tracker.yml">
+                    </esp-web-install-button>
+                </div>
+                <p style="font-size: 0.9em; color: #80a080;">
+                    Click the button above, select your device's serial port,<br>
+                    and flash the firmware directly from your browser.
+                </p>
+            </div>
+        </div>
+
+        <div class="warning" id="browserWarning">
+            <h2>Browser not supported</h2>
+            <p>
+                This installer requires a Chromium-based browser with Web Serial support
+                (Google Chrome, Microsoft Edge, or Opera). Firefox and Safari do not support
+                Web Serial API. Please switch to Chrome or Edge.
+            </p>
+        </div>
+
+        <div class="info">
+            <h2>What this firmware includes</h2>
+            <ul>
+                <li>Callsign: <strong>9M2PJU-7</strong> (all 3 beacon profiles)</li>
+                <li>LoRa frequency: <strong>433.400 MHz</strong> (Malaysia)</li>
+                <li>LoRa region label: <strong>LoRa[MY]</strong></li>
+                <li>Display clock: <strong>Malaysia Time (UTC+8)</strong></li>
+                <li>Military green header bar on all screens</li>
+                <li>Color-coded body text (GPS, battery, altitude, messages)</li>
+                <li>Colored APRS symbol by category</li>
+                <li>Status accent bar (GPS lock / BT / idle)</li>
+                <li>Startup branding: "9M2PJU Mod"</li>
+                <li>GPS Eco Mode enabled (battery saving)</li>
+                <li>Profile 3 symbol: motorcycle</li>
+            </ul>
+        </div>
+
+        <div class="info">
+            <h2>How to install</h2>
+            <ul>
+                <li>Use <strong>Google Chrome</strong> or <strong>Microsoft Edge</strong> (not Firefox/Safari)</li>
+                <li>Connect your Heltec Wireless Tracker via USB cable</li>
+                <li>Click the "CONNECT" button above</li>
+                <li>Select the serial port (usually "USB JTAG/serial debug unit")</li>
+                <li>Click "Install" and wait for the flash to complete</li>
+                <li>Your tracker will reboot automatically with the new firmware</li>
+            </ul>
+        </div>
+
+        <div class="info">
+            <h2>After flashing</h2>
+            <ul>
+                <li>The config file is pre-configured for Malaysia (9M2PJU-7, 433.400 MHz)</li>
+                <li>To change settings: enable WiFi AP mode and visit 192.168.4.1</li>
+                <li>To reflash SPIFFS config separately, use PlatformIO: <code>pio run -e heltec_wireless_tracker -t uploadfs</code></li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            <p>
+                Based on <a href="https://github.com/richonguzman/LoRa_APRS_Tracker" target="_blank">CA2RXU LoRa APRS Tracker</a>
+                by Ricardo Guzman (CA2RXU).<br>
+                Modified by <strong>9M2PJU</strong> for Malaysia.<br>
+                Source code: <a href="https://github.com/9M2PJU/LoRa_APRS_Tracker" target="_blank">github.com/9M2PJU/LoRa_APRS_Tracker</a><br>
+                Powered by <a href="https://esphome.github.io/esp-web-tools/" target="_blank">ESP Web Tools</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Show browser warning if Web Serial is not supported
+        if (!('serial' in navigator)) {
+            document.getElementById('browserWarning').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
