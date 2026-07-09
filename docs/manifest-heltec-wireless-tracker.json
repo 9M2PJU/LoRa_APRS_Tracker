@@ -1,0 +1,15 @@
+{
+  "name": "9M2PJU Mod LoRa APRS Tracker (Heltec Wireless Tracker)",
+  "builds": [
+    {
+      "name": "heltec_wireless_tracker",
+      "chip_family": "esp32s3",
+      "raw": [
+        { "offset": 0, "path": "firmware/bootloader.bin" },
+        { "offset": 0x8000, "path": "firmware/partitions.bin" },
+        { "offset": 0xe000, "path": "firmware/boot_app0.bin" },
+        { "offset": 0x10000, "path": "firmware/firmware.bin" }
+      ]
+    }
+  ]
+}
