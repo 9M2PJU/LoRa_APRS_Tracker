@@ -147,6 +147,36 @@
             </ul>
         </div>
 
+        <div class="warning">
+            <h2>If INSTALL fails or device won't boot after flashing</h2>
+            <p>
+                If the installer can't connect, or your tracker stays in bootloader mode after flashing:
+            </p>
+            <ul style="list-style: none; padding-left: 5px; margin-top: 10px;">
+                <li style="margin: 8px 0; padding-left: 20px; position: relative;">
+                    <span style="position: absolute; left: 0; color: #d4a017; font-weight: bold;">1.</span>
+                    Hold the <strong>BOOT</strong> button on your Heltec tracker
+                </li>
+                <li style="margin: 8px 0; padding-left: 20px; position: relative;">
+                    <span style="position: absolute; left: 0; color: #d4a017; font-weight: bold;">2.</span>
+                    Click <strong>INSTALL</strong> and wait for flashing to reach 100%
+                </li>
+                <li style="margin: 8px 0; padding-left: 20px; position: relative;">
+                    <span style="position: absolute; left: 0; color: #d4a017; font-weight: bold;">3.</span>
+                    <strong>Release the BOOT button</strong> when you see "Wrapping up" or "All done!"
+                </li>
+                <li style="margin: 8px 0; padding-left: 20px; position: relative;">
+                    <span style="position: absolute; left: 0; color: #d4a017; font-weight: bold;">4.</span>
+                    The tracker will reboot into the new firmware automatically
+                </li>
+            </ul>
+            <p style="margin-top: 12px; font-size: 0.9em; color: #c0a060;">
+                The BOOT button forces the chip into download mode. If you keep holding it
+                after flashing, the chip re-enters download mode instead of booting the firmware.
+                Releasing BOOT lets the automatic reset boot your tracker normally.
+            </p>
+        </div>
+
         <div style="text-align: center; margin: 30px 0;">
             <img src="install-guide.jpg" alt="Heltec Wireless Tracker running 9M2PJU Mod LoRa APRS Tracker firmware" style="width: 100%; max-width: 500px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.5);">
             <p style="font-size: 0.85em; color: #80a080; margin-top: 10px;">Heltec Wireless Tracker running 9M2PJU Mod LoRa APRS Tracker firmware</p>
