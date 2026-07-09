@@ -6,10 +6,10 @@ builds:
       - heltec_wireless_tracker
     raw:
       - offset: 0x0
-        path: https://raw.githubusercontent.com/9M2PJU/LoRa_APRS_Tracker/main/firmware/heltec_wireless_tracker/bootloader.bin
+        path: firmware/bootloader.bin
       - offset: 0x8000
-        path: https://raw.githubusercontent.com/9M2PJU/LoRa_APRS_Tracker/main/firmware/heltec_wireless_tracker/partitions.bin
+        path: firmware/partitions.bin
       - offset: 0xe000
-        path: https://raw.githubusercontent.com/9M2PJU/LoRa_APRS_Tracker/main/firmware/heltec_wireless_tracker/boot_app0.bin
+        path: firmware/boot_app0.bin
       - offset: 0x10000
-        path: https://raw.githubusercontent.com/9M2PJU/LoRa_APRS_Tracker/main/firmware/heltec_wireless_tracker/firmware.bin
+        path: firmware/firmware.bin
