@@ -11,7 +11,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: linear-gradient(135deg, #1a2f1a 0%, #0d1f0d 100%);
+            background: linear-gradient(135deg, #0d1b2a 0%, #050f1a 100%);
             color: #e0e0e0;
             min-height: 100vh;
             display: flex;
@@ -23,21 +23,21 @@
         h1 {
             font-size: 2em;
             margin: 30px 0 10px 0;
-            color: #4a8434;
+            color: #4a9eff;
         }
-        .subtitle { font-size: 1.1em; color: #a0c0a0; margin-bottom: 30px; }
+        .subtitle { font-size: 1.1em; color: #8ab8f0; margin-bottom: 30px; }
         .card {
-            background: rgba(20, 40, 20, 0.8);
-            border: 1px solid #2a5a2a;
+            background: rgba(15, 30, 55, 0.85);
+            border: 1px solid #1a3a6a;
             border-radius: 16px;
             padding: 40px 30px;
             margin: 20px 0;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
         }
-        .device-label { font-size: 1.3em; font-weight: 600; margin-bottom: 15px; color: #6abf6a; }
+        .device-label { font-size: 1.3em; font-weight: 600; margin-bottom: 15px; color: #6ab0ff; }
         .install-btn-wrapper { display: flex; justify-content: center; margin: 20px 0; }
         .install-btn-wrapper button {
-            background: #4a8434;
+            background: #1565d8;
             color: #ffffff;
             border: none;
             border-radius: 8px;
@@ -45,12 +45,12 @@
             font-size: 1.3em;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 4px 16px rgba(74, 132, 52, 0.4);
+            box-shadow: 0 4px 16px rgba(21, 101, 216, 0.5);
             transition: all 0.2s;
         }
         .install-btn-wrapper button:hover {
-            background: #5a9944;
-            box-shadow: 0 6px 20px rgba(74, 132, 52, 0.6);
+            background: #1976e8;
+            box-shadow: 0 6px 20px rgba(21, 101, 216, 0.7);
             transform: translateY(-1px);
         }
         .install-btn-wrapper button:active {
@@ -58,20 +58,20 @@
         }
         .info {
             text-align: left; margin: 30px 0; padding: 20px;
-            background: rgba(10, 30, 10, 0.6); border-radius: 12px; border-left: 4px solid #4a8434;
+            background: rgba(10, 20, 40, 0.7); border-radius: 12px; border-left: 4px solid #1565d8;
         }
-        .info h2 { font-size: 1.2em; color: #6abf6a; margin-bottom: 12px; }
+        .info h2 { font-size: 1.2em; color: #6ab0ff; margin-bottom: 12px; }
         .info ul { list-style: none; padding-left: 5px; }
         .info li { margin: 8px 0; line-height: 1.6; padding-left: 20px; position: relative; }
-        .info li::before { content: ">"; position: absolute; left: 0; color: #4a8434; font-weight: bold; }
+        .info li::before { content: ">"; position: absolute; left: 0; color: #1565d8; font-weight: bold; }
         .warning {
             background: rgba(80, 60, 10, 0.5); border-left: 4px solid #d4a017;
             padding: 15px 20px; border-radius: 8px; margin: 20px 0; text-align: left;
         }
         .warning h2 { color: #d4a017; font-size: 1.1em; margin-bottom: 8px; }
         .warning p { line-height: 1.5; font-size: 0.95em; }
-        .footer { margin: 40px 0 20px 0; font-size: 0.85em; color: #607060; line-height: 1.6; }
-        .footer a { color: #6abf6a; text-decoration: none; }
+        .footer { margin: 40px 0 20px 0; font-size: 0.85em; color: #506080; line-height: 1.6; }
+        .footer a { color: #6ab0ff; text-decoration: none; }
         .footer a:hover { text-decoration: underline; }
         #browserWarning { display: none; background: rgba(80, 30, 30, 0.7); border: 1px solid #a04040; border-radius: 8px; padding: 15px; margin: 20px 0; color: #e0a0a0; }
         code { background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
@@ -103,7 +103,7 @@
                     <code>pio run -e heltec_wireless_tracker -t upload</code>
                 </p>
             </div>
-            <p style="font-size: 0.9em; color: #80a080;">
+            <p style="font-size: 0.9em; color: #6080a0;">
                 Click INSTALL, pick your device's USB port,<br>
                 and the firmware installs right from your browser.
             </p>
@@ -160,9 +160,11 @@
                 <li>Clock: <strong>Malaysia Time (UTC+8)</strong></li>
                 <li><strong>APRSMYSunday</strong> net check-in (Messages menu)</li>
                 <li>Centered text on all screens</li>
-                <li>Green header bar on every screen</li>
+                <li>Navy blue header bar with yellow text</li>
+                <li>Cyan menu items, yellow selection indicator</li>
+                <li>Orange button instructions</li>
                 <li>Color text for GPS, battery, altitude, messages</li>
-                <li>Color APRS symbols by type</li>
+                <li>White APRS symbol</li>
                 <li>Status bar: GPS lock / BT / idle</li>
                 <li>Startup text: "9M2PJU Mod" + version date</li>
                 <li>GPS Eco Mode off (GPS always active)</li>
@@ -209,7 +211,7 @@
 
         <div style="text-align: center; margin: 30px 0;">
             <img src="install-guide.jpg" alt="Heltec Wireless Tracker running 9M2PJU Mod LoRa APRS Tracker firmware" style="width: 100%; max-width: 500px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.5);">
-            <p style="font-size: 0.85em; color: #80a080; margin-top: 10px;">Heltec Wireless Tracker running 9M2PJU Mod LoRa APRS Tracker firmware</p>
+            <p style="font-size: 0.85em; color: #6080a0; margin-top: 10px;">Heltec Wireless Tracker running 9M2PJU Mod LoRa APRS Tracker firmware</p>
         </div>
 
         <div class="info">
@@ -241,7 +243,7 @@
         <div class="footer">
             <p>
                 Based on <a href="https://github.com/richonguzman/LoRa_APRS_Tracker" target="_blank">CA2RXU LoRa APRS Tracker</a><br>
-                Modified by <strong><a href="https://hamradio.my" target="_blank" style="color: #6abf6a;">9M2PJU</a></strong> for Malaysia<br>
+                Modified by <strong><a href="https://hamradio.my" target="_blank" style="color: #6ab0ff;">9M2PJU</a></strong> for Malaysia<br>
                 Powered by <a href="https://esphome.github.io/esp-web-tools/" target="_blank">ESP Web Tools</a>
             </p>
         </div>
