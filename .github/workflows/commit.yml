@@ -12,8 +12,8 @@ jobs:
             fail-fast: false
             matrix:
               target:
-                - name: ttgo-t-beam-v1_2
-                  chip: esp32
+                - name: heltec_wireless_tracker
+                  chip: esp32s3
         steps:
             - uses: actions/checkout@v3
 
