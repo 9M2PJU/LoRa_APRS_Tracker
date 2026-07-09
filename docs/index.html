@@ -213,6 +213,7 @@
         <div class="info">
             <h2>After flashing</h2>
             <ul>
+                <li>Press the <strong>RST</strong> button once to start the firmware (or unplug and plug back in)</li>
                 <li>Settings are ready for Malaysia (9M2PJU-7, 433.400 MHz)</li>
                 <li>To change settings, turn on WiFi AP mode on the tracker</li>
                 <li>Join WiFi: <strong>LoRaTracker-AP</strong> / password: <strong>1234567890</strong></li>
@@ -250,14 +251,12 @@
         // to determine whether the flash actually succeeded.
         document.body.addEventListener('closed', function(e) {
             var dialog = e.target;
-            if (dialog && dialog.tagName === 'EWT-INSTALL-DIALOG'
-                && dialog._installState
-                && dialog._installState.state === 'finished') {
-                var msg = document.getElementById('rebootMessage');
-                if (msg) {
-                    msg.style.display = 'block';
-                    msg.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
+            var state = dialog && dialog._installState;
+            var finished = state && state.state === 'finished';
+            var msg = document.getElementById('rebootMessage');
+            if (msg && finished) {
+                msg.style.display = 'block';
+                msg.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         });
     </script>
