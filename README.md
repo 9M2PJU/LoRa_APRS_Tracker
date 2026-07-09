@@ -14,7 +14,7 @@ Flash directly from your browser — no software needed:
 
 1. Use **Chrome** or **Edge** (Web Serial support required)
 2. Plug in your Heltec Wireless Tracker via USB
-3. Click **INSTALL NOW**, pick the serial port, click **Install**
+3. Click **INSTALL**, pick the serial port, click **INSTALL**
 4. Done — the tracker reboots with the new firmware
 
 **After flashing, to change settings via web UI:**
