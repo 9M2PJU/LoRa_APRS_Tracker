@@ -40,7 +40,7 @@
 	"display": {
 		"showSymbol": true,
 		"ecoMode": false,
-		"timeout": 4,
+		"timeout": 3,
 		"turn180" : false
     },
 	"battery": {

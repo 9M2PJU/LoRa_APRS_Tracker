@@ -13,3 +13,5 @@ builds:
         path: firmware/boot_app0.bin
       - offset: 65536
         path: firmware/firmware.bin
+      - offset: 3211264
+        path: firmware/spiffs.bin
