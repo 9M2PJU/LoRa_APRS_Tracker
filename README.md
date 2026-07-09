@@ -28,13 +28,13 @@ Flash directly from your browser — no software needed:
 
 ### Display
 
-|| Feature | Original | This fork |
-||---|---|---|
-|| Header bar | yellow / red | military green on every screen |
-|| Body text | all white, left-aligned | color-coded, centered |
-|| APRS symbol | white | colored by category |
-|| Status bar | none | left-edge accent (GPS/BT state) |
-|| Startup text | `CA2RXU <date>` | `9M2PJU Mod <versionDate>` |
+| Feature | Original | This fork |
+|---|---|---|
+| Header bar | yellow / red | military green on every screen |
+| Body text | all white, left-aligned | color-coded, centered |
+| APRS symbol | white | colored by category |
+| Status bar | none | left-edge accent (GPS/BT state) |
+| Startup text | `CA2RXU <date>` | `9M2PJU Mod <versionDate>` |
 
 **Body text colors:**
 - Red — GPS warnings (`WAITING FOR GPS`, `GPS SLEEPING`)
