@@ -93,66 +93,64 @@
             </div>
             <div id="installFallback" style="display:none; margin-top: 20px;">
                 <p style="color: #d4a017; margin-bottom: 15px;">
-                    If the INSTALL button doesn't work, your browser or network may be blocking the installer script.
+                    INSTALL button not working? Your browser may be blocking it.
                 </p>
                 <p style="margin-bottom: 10px;">
-                    Try opening this page in <strong>Incognito/Private mode</strong> in Chrome, or disable Cloudflare Rocket Loader / browser extensions.
+                    Try <strong>Chrome Incognito mode</strong>. Or turn off browser add-ons and try again.
                 </p>
                 <p>
-                    Alternatively, flash manually with PlatformIO:<br>
+                    Or flash from your computer with PlatformIO:<br>
                     <code>pio run -e heltec_wireless_tracker -t upload</code>
                 </p>
             </div>
             <p style="font-size: 0.9em; color: #80a080;">
-                Click INSTALL, select your device's serial port,<br>
-                and flash the firmware directly from your browser.
+                Click INSTALL, pick your device's USB port,<br>
+                and the firmware installs right from your browser.
             </p>
         </div>
 
         <div id="rebootMessage" class="warning" style="display: none;">
-            <h2>Installation complete &mdash; reboot your tracker</h2>
+            <h2>Done! Now restart your tracker</h2>
             <p>
-                Firmware was flashed successfully. If your tracker doesn't restart on its own
-                (e.g. if you held the BOOT button during flashing), reboot it now:
+                Firmware installed. If your tracker did not restart on its own, do this:
             </p>
             <ul style="list-style: none; padding-left: 5px; margin-top: 10px;">
                 <li style="margin: 8px 0; padding-left: 20px; position: relative;">
                     <span style="position: absolute; left: 0; color: #d4a017; font-weight: bold;">1.</span>
-                    <strong>Release the BOOT button</strong> if you are still holding it
+                    Let go of the <strong>BOOT</strong> button
                 </li>
                 <li style="margin: 8px 0; padding-left: 20px; position: relative;">
                     <span style="position: absolute; left: 0; color: #d4a017; font-weight: bold;">2.</span>
-                    Press the <strong>RST</strong> button once (or unplug and replug USB)
+                    Press the <strong>RST</strong> button once (or unplug and plug back in)
                 </li>
                 <li style="margin: 8px 0; padding-left: 20px; position: relative;">
                     <span style="position: absolute; left: 0; color: #d4a017; font-weight: bold;">3.</span>
-                    Your tracker will boot into the new firmware
+                    Your tracker starts up with the new firmware
                 </li>
             </ul>
         </div>
 
         <div id="browserWarning" class="warning">
-            <h2>Browser not supported</h2>
+            <h2>Wrong browser</h2>
             <p>
-                This installer requires a Chromium-based browser with Web Serial support
-                (Google Chrome, Microsoft Edge, or Opera). Firefox and Safari do not support
-                Web Serial API. Please switch to Chrome or Edge.
+                You need <strong>Google Chrome</strong> or <strong>Microsoft Edge</strong> to install.
+                Firefox and Safari do not work. Please switch to Chrome or Edge.
             </p>
         </div>
 
         <div class="info">
-            <h2>What this firmware includes</h2>
+            <h2>What you get</h2>
             <ul>
-                <li>Callsign: <strong>9M2PJU-7</strong> (all 3 beacon profiles)</li>
+                <li>Callsign: <strong>9M2PJU-7</strong> on all 3 profiles</li>
                 <li>LoRa frequency: <strong>433.400 MHz</strong> (Malaysia)</li>
-                <li>LoRa region label: <strong>LoRa[MY]</strong></li>
-                <li>Display clock: <strong>Malaysia Time (UTC+8)</strong></li>
-                <li>Military green header bar on all screens</li>
-                <li>Color-coded body text (GPS, battery, altitude, messages)</li>
-                <li>Colored APRS symbol by category</li>
-                <li>Status accent bar (GPS lock / BT / idle)</li>
-                <li>Startup branding: "9M2PJU Mod"</li>
-                <li>GPS Eco Mode enabled (battery saving)</li>
+                <li>LoRa label: <strong>LoRa[MY]</strong></li>
+                <li>Clock: <strong>Malaysia Time (UTC+8)</strong></li>
+                <li>Green header bar on every screen</li>
+                <li>Color text for GPS, battery, altitude, messages</li>
+                <li>Color APRS symbols by type</li>
+                <li>Status bar: GPS lock / BT / idle</li>
+                <li>Startup text: "9M2PJU Mod"</li>
+                <li>GPS Eco Mode on (saves battery)</li>
                 <li>Profile 3 symbol: motorcycle</li>
             </ul>
         </div>
@@ -160,42 +158,41 @@
         <div class="info">
             <h2>How to install</h2>
             <ul>
-                <li>Use <strong>Google Chrome</strong> or <strong>Microsoft Edge</strong> (not Firefox/Safari)</li>
-                <li>Connect your Heltec Wireless Tracker via USB cable</li>
-                <li>Click the "INSTALL" button above</li>
-                <li>Select the serial port (usually "USB JTAG/serial debug unit")</li>
-                <li>Click "INSTALL" and wait for the flash to complete</li>
-                <li>Your tracker will reboot automatically with the new firmware</li>
+                <li>Use <strong>Google Chrome</strong> or <strong>Microsoft Edge</strong></li>
+                <li>Plug in your Heltec Wireless Tracker with a USB cable</li>
+                <li>Click the <strong>INSTALL</strong> button above</li>
+                <li>Pick the USB port (usually "USB JTAG/serial debug unit")</li>
+                <li>Click <strong>INSTALL</strong> and wait until it finishes</li>
+                <li>Your tracker restarts on its own with the new firmware</li>
             </ul>
         </div>
 
         <div class="warning">
-            <h2>If INSTALL fails or device won't boot after flashing</h2>
+            <h2>If INSTALL fails or your tracker won't start</h2>
             <p>
-                If the installer can't connect, or your tracker stays in bootloader mode after flashing:
+                If the installer cannot connect, or your tracker does not start after flashing:
             </p>
             <ul style="list-style: none; padding-left: 5px; margin-top: 10px;">
                 <li style="margin: 8px 0; padding-left: 20px; position: relative;">
                     <span style="position: absolute; left: 0; color: #d4a017; font-weight: bold;">1.</span>
-                    Hold the <strong>BOOT</strong> button on your Heltec tracker
+                    Hold the <strong>BOOT</strong> button
                 </li>
                 <li style="margin: 8px 0; padding-left: 20px; position: relative;">
                     <span style="position: absolute; left: 0; color: #d4a017; font-weight: bold;">2.</span>
-                    Click <strong>INSTALL</strong> and wait for flashing to reach 100%
+                    Click <strong>INSTALL</strong> and wait until 100%
                 </li>
                 <li style="margin: 8px 0; padding-left: 20px; position: relative;">
                     <span style="position: absolute; left: 0; color: #d4a017; font-weight: bold;">3.</span>
-                    <strong>Release the BOOT button</strong> when you see "Wrapping up" or "All done!"
+                    Let go of <strong>BOOT</strong> when you see "Wrapping up" or "All done!"
                 </li>
                 <li style="margin: 8px 0; padding-left: 20px; position: relative;">
                     <span style="position: absolute; left: 0; color: #d4a017; font-weight: bold;">4.</span>
-                    The tracker will reboot into the new firmware automatically
+                    Your tracker starts up with the new firmware
                 </li>
             </ul>
             <p style="margin-top: 12px; font-size: 0.9em; color: #c0a060;">
-                The BOOT button forces the chip into download mode. If you keep holding it
-                after flashing, the chip re-enters download mode instead of booting the firmware.
-                Releasing BOOT lets the automatic reset boot your tracker normally.
+                Holding BOOT puts the chip in download mode. If you keep holding it after flashing,
+                the chip stays in download mode. Let go of BOOT so the chip can start the firmware.
             </p>
         </div>
 
@@ -207,11 +204,11 @@
         <div class="info">
             <h2>After flashing</h2>
             <ul>
-                <li>The config file is pre-configured for Malaysia (9M2PJU-7, 433.400 MHz)</li>
-                <li>To change settings: enable WiFi AP mode on the tracker</li>
-                <li>Connect to WiFi: <strong>LoRaTracker-AP</strong> / password: <strong>1234567890</strong></li>
-                <li>Open your browser to <strong>192.168.4.1</strong></li>
-                <li>To reflash SPIFFS config separately, use PlatformIO: <code>pio run -e heltec_wireless_tracker -t uploadfs</code></li>
+                <li>Settings are ready for Malaysia (9M2PJU-7, 433.400 MHz)</li>
+                <li>To change settings, turn on WiFi AP mode on the tracker</li>
+                <li>Join WiFi: <strong>LoRaTracker-AP</strong> / password: <strong>1234567890</strong></li>
+                <li>Open <strong>192.168.4.1</strong> in your browser</li>
+                <li>To update config only, run: <code>pio run -e heltec_wireless_tracker -t uploadfs</code></li>
             </ul>
         </div>
 
