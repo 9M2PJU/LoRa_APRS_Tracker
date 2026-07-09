@@ -47,6 +47,8 @@
         #define heltecPurple     0x780F
         #define heltecMagenta    0xF81F
         #define heltecMilitGreen 0x4A84   // military green (army green)
+        #define heltecDarkGreen  0x0320   // dark green (header background)
+        #define heltecNavyBlue   0x000F   // navy blue (header background)
     #endif
     #if defined(TTGO_T_DECK_GPS) || defined(TTGO_T_DECK_PLUS)
         #define color1  TFT_BLACK
@@ -93,6 +95,12 @@ extern Configuration    Config;
 extern Beacon           *currentBeacon;
 extern int              menuDisplay;
 extern bool             bluetoothConnected;
+
+#if defined(HAS_TFT) && defined(HELTEC_WIRELESS_TRACKER)
+    static bool forceCyanBody = false;
+    static bool forceOrangeLastLine = false;
+    static int  orangeLineIndex = -1;
+#endif
 #if defined(HAS_TFT) && defined(HELTEC_WIRELESS_TRACKER)
     extern TinyGPSPlus  gps;
     extern bool         gpsIsActive;
@@ -329,15 +337,28 @@ void displayToggle(bool toggle) {
 #if defined(HAS_TFT) && defined(HELTEC_WIRELESS_TRACKER)
     // Pick a header bar color based on the header text content.
     uint16_t heltecHeaderColor(const String& header) {
-        (void)header;   // all screens use military green
-        return heltecMilitGreen;
+        (void)header;   // all screens use navy blue
+        return heltecNavyBlue;
+    }
+
+    // Check if a line is a button instruction (bottom line hints)
+    bool heltecIsButtonInstruction(const String& text) {
+        String u = text;
+        u.toUpperCase();
+        return u.indexOf("<BACK") >= 0 || u.indexOf("1P=") >= 0 || u.indexOf("2P=") >= 0 ||
+               u.indexOf("LP=") >= 0 || u.indexOf("UP/DOWN") >= 0 || u.indexOf("SELECT>") >= 0 ||
+               u.indexOf("ENTER>") >= 0 || u.indexOf("ENTER=") >= 0 || u.indexOf("CONFIRM") >= 0 ||
+               u.indexOf("NEXT=DOWN") >= 0;
     }
 
     // Pick a body text color based on the line content.
     uint16_t heltecBodyColor(const String& text) {
         String t = text;
         t.trim();
-        if (t.length() == 0) return TFT_WHITE;
+        if (t.length() == 0) return TFT_CYAN;
+        // Button instructions at the bottom -> orange
+        if (heltecIsButtonInstruction(t))
+            return heltecOrange;
         String u = t;
         u.toUpperCase();
         if (u.indexOf("WAITING FOR GPS") >= 0 || u.indexOf("GPS  SLEEPING") >= 0 || u.indexOf("NO GPS") >= 0)
@@ -349,16 +370,22 @@ void displayToggle(bool toggle) {
         if (u.indexOf("LAST RX") >= 0)
             return greyColor;
         if (u.indexOf("WLNK MAIL") >= 0 || u.indexOf("MESSAGES") >= 0)
-            return TFT_CYAN;
-        // GPS coordinates / maidenhead: digits mixed with N/S/E/W or a locator like AB12cd34
-        if (u.indexOf(".") >= 0 && (u.indexOf("N") >= 0 || u.indexOf("S") >= 0 || u.indexOf("E") >= 0 || u.indexOf("W") >= 0))
-            return TFT_YELLOW;
+            return TFT_RED;
+        // GPS coordinates: must have decimal degrees like 3.12345 with N/S/E/W
+        if (u.indexOf(".") >= 0 && (u.indexOf("N") >= 0 || u.indexOf("S") >= 0 || u.indexOf("E") >= 0 || u.indexOf("W") >= 0)) {
+            // Only color as GPS if it looks like coordinates (digit on both sides of dot)
+            bool looksLikeCoord = false;
+            for (int c = 1; c < (int)u.length() - 1; c++) {
+                if (u[c] == '.' && isdigit(u[c-1]) && isdigit(u[c+1])) { looksLikeCoord = true; break; }
+            }
+            if (looksLikeCoord) return TFT_YELLOW;
+        }
         if (u.indexOf("LORA[") >= 0)
             return TFT_YELLOW;
         // Date/time lines contain ':' between digits
         if (u.indexOf(":") >= 0)
             return TFT_CYAN;
-        return TFT_WHITE;
+        return TFT_CYAN;
     }
 
     // Pick a symbol bitmap color based on the APRS symbol category.
@@ -433,7 +460,7 @@ void displayShow(const String& header, const String& line1, const String& line2,
             sprite.fillRect(0, 0, 160, 19, hdrColor);
             sprite.setTextFont(0);
             sprite.setTextSize(bigSizeFont);
-            sprite.setTextColor(TFT_WHITE, hdrColor);
+            sprite.setTextColor(TFT_YELLOW, hdrColor);
             int hx = (160 - sprite.textWidth(header)) / 2;
             sprite.drawString(header, hx, 3);
 
@@ -445,7 +472,14 @@ void displayShow(const String& header, const String& line1, const String& line2,
 
             for (int i = 0; i < 2; i++) {
                 String text = *lines[i];
-                sprite.setTextColor(heltecBodyColor(text), TFT_BLACK);
+                bool selected = text.startsWith(">");
+                if (selected) {
+                    sprite.setTextColor(TFT_YELLOW, TFT_BLACK);
+                } else if (forceCyanBody) {
+                    sprite.setTextColor(TFT_CYAN, TFT_BLACK);
+                } else {
+                    sprite.setTextColor(heltecBodyColor(text), TFT_BLACK);
+                }
                 if (text.length() > 0) {
                     while (text.length() > 0) {
                         String chunk = text.substring(0, maxLineLength);
@@ -495,7 +529,7 @@ void drawSymbol(int symbolIndex, bool bluetoothActive) {
     #ifdef HAS_TFT
         if (bluetoothActive) bitMap = bluetoothSymbol;
         #if defined(HELTEC_WIRELESS_TRACKER)
-            uint16_t symColor = bluetoothActive ? TFT_WHITE : heltecSymbolColor(symbolIndex);
+            uint16_t symColor = TFT_WHITE;
             sprite.drawBitmap(140 - SYMBOL_WIDTH, 3, bitMap, SYMBOL_WIDTH, SYMBOL_HEIGHT, symColor);
         #endif
         #if defined(TTGO_T_DECK_GPS) || defined(TTGO_T_DECK_PLUS)
@@ -541,7 +575,7 @@ void displayShow(const String& header, const String& line1, const String& line2,
             sprite.fillRect(0, 0, 160, 19, hdrColor);
             sprite.setTextFont(0);
             sprite.setTextSize(bigSizeFont);
-            sprite.setTextColor(TFT_WHITE, hdrColor);
+            sprite.setTextColor(TFT_YELLOW, hdrColor);
             bool showSym = (menuDisplay == 0 && Config.display.showSymbol);
             int hdrAvail = showSym ? 124 : 160;
             int hx = (hdrAvail - sprite.textWidth(header)) / 2;
@@ -555,7 +589,16 @@ void displayShow(const String& header, const String& line1, const String& line2,
 
             for (int i = 0; i < 5; i++) {
                 String text = *lines[i];
-                sprite.setTextColor(heltecBodyColor(text), TFT_BLACK);
+                bool selected = text.startsWith(">");
+                if (selected) {
+                    sprite.setTextColor(TFT_YELLOW, TFT_BLACK);
+                } else if (forceOrangeLastLine && i == orangeLineIndex) {
+                    sprite.setTextColor(heltecOrange, TFT_BLACK);
+                } else if (forceCyanBody) {
+                    sprite.setTextColor(TFT_CYAN, TFT_BLACK);
+                } else {
+                    sprite.setTextColor(heltecBodyColor(text), TFT_BLACK);
+                }
                 if (text.length() > 0) {
                     while (text.length() > 0) {
                         String chunk = text.substring(0, maxLineLength);
@@ -658,7 +701,17 @@ void startupScreen(uint8_t index, const String& version) {
         case 2: workingFreq += "UK]"; break;
         case 3: workingFreq += "US]"; break;
     }
+    #if defined(HAS_TFT) && defined(HELTEC_WIRELESS_TRACKER)
+        forceCyanBody = true;
+        forceOrangeLastLine = true;
+        orangeLineIndex = 4;
+    #endif
     displayShow("LoRa APRS", "(TRACKER)", workingFreq, "", "", "9M2PJU Mod " + version, 4000);
+    #if defined(HAS_TFT) && defined(HELTEC_WIRELESS_TRACKER)
+        forceCyanBody = false;
+        forceOrangeLastLine = false;
+        orangeLineIndex = -1;
+    #endif
     logger.log(logging::LoggerLevel::LOGGER_LEVEL_INFO, "Main", "RichonGuzman (CA2RXU) --> LoRa APRS Tracker/Station");
     logger.log(logging::LoggerLevel::LOGGER_LEVEL_INFO, "Main", "Version: %s", version);
 }

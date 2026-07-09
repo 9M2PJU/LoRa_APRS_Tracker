@@ -58,12 +58,16 @@ Fork of CA2RXU LoRa APRS Tracker, modified by 9M2PJU for Malaysia.
 - Conflict resolutions: README.md (kept Clock + added Timeline), display.cpp (kept custom Heltec colors), keyboard_utils.cpp (whitespace)
 - How to sync: `git fetch upstream main && git merge upstream/main` — resolve conflicts preserving our mods (APRSMY, display colors, config, web flasher)
 
-## Display Layout (v2.0-stable)
+## Display Layout (v3.0)
 - All body text under header is **centered** horizontally on 160px screen
-- Header callsign is centered in 0-124px space (leaves gap for APRS symbol on main screen)
-- APRS symbol drawn at x=124-140 (16px wide, 14px tall) to avoid overlap with any callsign length
-- On screens without symbol, header centers in full 160px
-- Startup screen text centered (removed old manual padding spaces)
+- Header: navy blue background, bright yellow text, centered (with gap for symbol on main screen)
+- APRS symbol: white, drawn at x=124-140 (16px wide, 14px tall)
+- Menu selection: `>` prefix, selected item text is yellow, no background bar
+- Menu items default color: cyan; button instructions (Back, 1P=, etc.): orange
+- "MESSAGES" items: red color
+- GPS warnings: red; GPS coordinates: yellow; altitude/speed: green; last RX: grey
+- Startup screen: header yellow on navy blue, body cyan, "9M2PJU Mod <version>" orange
+- Selection indicator on line 3 (2 items above, selected, 1 below) in menu_utils.cpp
 - Font: bigSizeFont=2 (header), smallSizeFont=1 (body), lineSpacing=12, maxLineLength=26
 - Status accent bar: 2px left edge (green=GPS lock, yellow=GPS searching, blue=BT, grey=idle)
 

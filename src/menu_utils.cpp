@@ -162,27 +162,27 @@ namespace MENU_Utils {
 
         switch (menuDisplay) { // Graphic Menu is in here!!!!
             case 1:     // 1. Messages
-                displayShow("<< MENU >>","  6.Extras", "> 1.Messages", "  2.Configuration", "  3.Reports", lastLine);
+                displayShow("<< MENU >>","  5.Winlink/Mail", "  6.Extras", "> 1.Messages", "  2.Configuration", lastLine);
                 break;
             case 2:     // 2. Configuration
-                displayShow("<< MENU >>", "  1.Messages", "> 2.Configuration", "  3.Reports", "  4.Stations", lastLine);
+                displayShow("<< MENU >>","  6.Extras", "  1.Messages", "> 2.Configuration", "  3.Reports", lastLine);
                 break;
             case 3:     //3. Reports
-                displayShow("<< MENU >>", "  2.Configuration", "> 3.Reports", "  4.Stations", "  5.Winlink/Mail", lastLine);
+                displayShow("<< MENU >>", "  1.Messages", "  2.Configuration", "> 3.Reports", "  4.Stations", lastLine);
                 break;
             case 4:     //4. Stations
-                displayShow("<< MENU >>", "  3.Reports", "> 4.Stations", "  5.Winlink/Mail", "  6.Extras", lastLine);
+                displayShow("<< MENU >>", "  2.Configuration", "  3.Reports", "> 4.Stations", "  5.Winlink/Mail", lastLine);
                 break;
             case 5:     //5. Winlink
-                displayShow("<< MENU >>", "  4.Stations", "> 5.Winlink/Mail", "  6.Extras", "  1.Messages", lastLine);
+                displayShow("<< MENU >>", "  3.Reports", "  4.Stations", "> 5.Winlink/Mail", "  6.Extras", lastLine);
                 break;
             case 6:     //6. Extras
-                displayShow("<< MENU >>", "  5.Winlink/Mail", "> 6.Extras", "  1.Messages", "  2.Configuration", lastLine);
+                displayShow("<< MENU >>", "  4.Stations", "  5.Winlink/Mail", "> 6.Extras", "  1.Messages", lastLine);
                 break;
 
 //////////
             case 10:    // 1.Messages ---> Messages Read
-                displayShow(" MESSAGES>", "> Read (" + String(MSG_Utils::getNumAPRSMessages()) + ")", "  Write", "  Delete", "  APRSThursday", lastLine);
+                displayShow(" MESSAGES>", "  APRSThursday", "  APRSMYSunday", "> Read (" + String(MSG_Utils::getNumAPRSMessages()) + ")", "  Write", lastLine);
                 break;
             case 100:   // 1.Messages ---> Messages Read ---> Display Received/Saved APRS Messages
                 {
@@ -201,7 +201,7 @@ namespace MENU_Utils {
                 }
                 break;
             case 11:    // 1.Messages ---> Messages Write
-                displayShow(" MESSAGES>", "  Read (" + String(MSG_Utils::getNumAPRSMessages()) + ")", "> Write", "  Delete", "  APRSThursday", lastLine);
+                displayShow(" MESSAGES>", "  APRSMYSunday", "  Read (" + String(MSG_Utils::getNumAPRSMessages()) + ")", "> Write", "  Delete", lastLine);
                 break;
             case 110:   // 1.Messages ---> Messages Write ---> Write
                 if (keyDetected || keyboardConnected) {
@@ -260,13 +260,13 @@ namespace MENU_Utils {
                 displayShow("DELETE MSG", "", "  DELETE APRS MSG?", "", "", " Confirm = LP or '>'");
                 break;
             case 13:    // 1.Messages ---> APRSThursday
-                displayShow(" MESSAGES>", "  Read (" + String(MSG_Utils::getNumAPRSMessages()) + ")", "  Write", "  Delete", "> APRSThursday", lastLine);
+                displayShow(" MESSAGES>", "  Write", "  Delete", "> APRSThursday", "  APRSMYSunday", lastLine);
                 break;
             case 14:    // 1.Messages ---> APRSMYSunday
-                displayShow(" MESSAGES>", "  Write", "  Delete", "  APRSThursday", "> APRSMYSunday", lastLine);
+                displayShow(" MESSAGES>", "  Delete", "  APRSThursday", "> APRSMYSunday", "  Read (" + String(MSG_Utils::getNumAPRSMessages()) + ")", lastLine);
                 break;
             case 140:   // 1.Messages ---> APRSMYSunday ---> Check In
-                displayShow(" APRSMYSunday", "> Check In", "", "", "", lastLine);
+                displayShow(" APRSMYSunday", "", "", "> Check In", "", lastLine);
                 break;
             case 1400:
                 if (messageText.length() <= 67) {
@@ -305,7 +305,7 @@ namespace MENU_Utils {
                 break;
 
             case 130:   // 1.Messages ---> APRSThursday ---> Delete: ALL
-                displayShow(" APRS Thu.", "> Check In", "  Join", "  Unsubscribe", "  KeepSubscribed+12h", lastLine);
+                displayShow(" APRS Thu.", "  Unsubscribe", "  KeepSubscribed+12h", "> Check In", "  Join", lastLine);
                 break;
             case 1300:
                 if (messageText.length() <= 67) {
@@ -343,7 +343,7 @@ namespace MENU_Utils {
                 }
                 break;
             case 131:   // 1.Messages ---> APRSThursday ---> Delete: ALL
-                displayShow(" APRS Thu.", "  Check In", "> Join", "  Unsubscribe", "  KeepSubscribed+12h", lastLine);
+                displayShow(" APRS Thu.", "  KeepSubscribed+12h", "  Check In", "> Join", "  Unsubscribe", lastLine);
                 break;
             case 1310:
                 if (messageText.length() <= 67) {
@@ -384,33 +384,33 @@ namespace MENU_Utils {
                 displayShow(" APRS Thu.", "  Check In", "  Join", "> Unsubscribe", "  KeepSubscribed+12h", lastLine);
                 break;
             case 133:   // 1.Messages ---> APRSThursday ---> Delete: ALL
-                displayShow(" APRS Thu.", "  Check In", "  Join", "  Unsubscribe", "> KeepSubscribed+12h", lastLine);
+                displayShow(" APRS Thu.", "  Join", "  Unsubscribe", "> KeepSubscribed+12h", "  Check In", lastLine);
                 break;
 
 //////////
             case 20:    // 2.Configuration ---> Callsign
-                displayShow(" CONFIG>", "  Power Off", "> Change Callsign ", "  Change Frequency", "  Display",lastLine);
+                displayShow(" CONFIG>", "  Reboot", "  Power Off", "> Change Callsign ", "  Change Frequency",lastLine);
                 break;
             case 21:    // 2.Configuration ---> Change Freq
-                displayShow(" CONFIG>", "  Change Callsign ", "> Change Frequency", "  Display", "  " + checkBTType() + " (" + checkProcessActive(bluetoothActive) + ")",lastLine);
+                displayShow(" CONFIG>", "  Power Off", "  Change Callsign ", "> Change Frequency", "  Display",lastLine);
                 break;
             case 22:    // 2.Configuration ---> Display
-                displayShow(" CONFIG>", "  Change Frequency", "> Display", "  " + checkBTType() + " (" + checkProcessActive(bluetoothActive) + ")", "  Status",lastLine);
+                displayShow(" CONFIG>", "  Change Callsign ", "  Change Frequency", "> Display", "  " + checkBTType() + " (" + checkProcessActive(bluetoothActive) + ")",lastLine);
                 break;
             case 23:    // 2.Configuration ---> Bluetooth
-                displayShow(" CONFIG>", "  Display",  "> " + checkBTType() + " (" + checkProcessActive(bluetoothActive) + ")", "  Status", "  Notifications", lastLine);
+                displayShow(" CONFIG>", "  Change Frequency", "  Display", "> " + checkBTType() + " (" + checkProcessActive(bluetoothActive) + ")", "  Status", lastLine);
                 break;
             case 24:    // 2.Configuration ---> Status
-                displayShow(" CONFIG>", "  " + checkBTType() + " (" + checkProcessActive(bluetoothActive) + ")", "> Status","  Notifications", "  Reboot",lastLine);
+                displayShow(" CONFIG>", "  Display", "  " + checkBTType() + " (" + checkProcessActive(bluetoothActive) + ")", "> Status", "  Notifications",lastLine);
                 break;
             case 25:    // 2.Configuration ---> Notifications
-                displayShow(" CONFIG>", "  Status", "> Notifications", "  Reboot", "  Power Off",lastLine);
+                displayShow(" CONFIG>", "  " + checkBTType() + " (" + checkProcessActive(bluetoothActive) + ")", "  Status", "> Notifications", "  Reboot",lastLine);
                 break;
             case 26:    // 2.Configuration ---> Reboot
-                displayShow(" CONFIG>", "  Notifications", "> Reboot", "  Power Off", "  Change Callsign",lastLine);
+                displayShow(" CONFIG>", "  Status", "  Notifications", "> Reboot", "  Power Off",lastLine);
                 break;
             case 27:    // 2.Configuration ---> Power Off
-                displayShow(" CONFIG>", "  Reboot", "> Power Off", "  Change Callsign", "  Change Frequency",lastLine);
+                displayShow(" CONFIG>", "  Notifications", "  Reboot", "> Power Off", "  Change Callsign",lastLine);
                 break;
 
 
@@ -429,20 +429,20 @@ namespace MENU_Utils {
                 break;
 
             case 220:   // 2.Configuration ---> Display ---> ECO Mode
-                displayShow(" DISPLAY>", "", "> ECO Mode    (" + checkProcessActive(displayEcoMode) + ")", "  Brightness  (" + screenBrightnessAsString(screenBrightness) + ")","",lastLine);
+                displayShow(" DISPLAY>", "", "", "> ECO Mode    (" + checkProcessActive(displayEcoMode) + ")", "  Brightness  (" + screenBrightnessAsString(screenBrightness) + ")",lastLine);
                 break;
 
             case 221:   // 2.Configuration ---> Display ---> Brightness
-                displayShow(" DISPLAY>", "", "  ECO Mode    (" + checkProcessActive(displayEcoMode) + ")", "> Brightness  (" + screenBrightnessAsString(screenBrightness) + ")","",lastLine);
+                displayShow(" DISPLAY>", "", "  ECO Mode    (" + checkProcessActive(displayEcoMode) + ")", "> Brightness  (" + screenBrightnessAsString(screenBrightness) + ")", "",lastLine);
                 break;
             case 2210:   // 2.Configuration ---> Display ---> Brightness: MIN
-                displayShow("BRIGHTNESS", "", "> Low", "  Mid","  Max",lastLine);
+                displayShow("BRIGHTNESS", "  Mid", "  Max", "> Low", "",lastLine);
                 break;
             case 2211:   // 2.Configuration ---> Display ---> Brightness: MID
-                displayShow("BRIGHTNESS", "", "  Low", "> Mid","  Max",lastLine);
+                displayShow("BRIGHTNESS", "  Max", "  Low", "> Mid", "",lastLine);
                 break;
             case 2212:   // 2.Configuration ---> Display ---> Brightness: MAX
-                displayShow("BRIGHTNESS", "", "  Low", "  Mid","> Max",lastLine);
+                displayShow("BRIGHTNESS", "  Low", "  Mid", "> Max", "",lastLine);
                 break;
 
             case 230:
@@ -457,14 +457,14 @@ namespace MENU_Utils {
                 break;
 
             case 240:    // 2.Configuration ---> Status
-                displayShow(" STATUS>", "", "> Write","  Select","",lastLine);
+                displayShow(" STATUS>", "", "", "> Write", "  Select",lastLine);
                 break;
             case 241:    // 2.Configuration ---> Status
-                displayShow(" STATUS>", "", "  Write","> Select","",lastLine);
+                displayShow(" STATUS>", "", "  Write", "> Select", "",lastLine);
                 break;
 
             case 250:    // 2.Configuration ---> Notifications
-                displayShow(" NOTIFIC>", "> Turn Off Sound/Led","","","",lastLine);
+                displayShow(" NOTIFIC>", "", "", "> Turn Off Sound/Led", "",lastLine);
                 break;
 
             case 260:   // 2.Configuration ---> Reboot
@@ -480,16 +480,16 @@ namespace MENU_Utils {
 
 //////////
             case 30:     // 3. Reports : Wx Report
-                displayShow(" REPORTS >","> 1.Wx Report", "  2.Hospital QTH", "  3.Police QTH", "  4.Fire Station QTH", lastLine);
+                displayShow(" REPORTS >", "  3.Police QTH", "  4.Fire Station QTH", "> 1.Wx Report", "  2.Hospital QTH", lastLine);
                 break;
             case 31:     // 3. Reports : Nearest Hospital
-                displayShow(" REPORTS >","  1.Wx Report", "> 2.Hospital QTH", "  3.Police QTH", "  4.Fire Station QTH", lastLine);
+                displayShow(" REPORTS >", "  4.Fire Station QTH", "  1.Wx Report", "> 2.Hospital QTH", "  3.Police QTH", lastLine);
                 break;
             case 32:     // 3. Reports : Nearest Police Station
-                displayShow(" REPORTS >","  1.Wx Report", "  2.Hospital QTH", "> 3.Police QTH", "  4.Fire Station QTH", lastLine);
+                displayShow(" REPORTS >", "  1.Wx Report", "  2.Hospital QTH", "> 3.Police QTH", "  4.Fire Station QTH", lastLine);
                 break;
             case 33:     // 3. Reports : Nearest Fire Station
-                displayShow(" REPORTS >","  1.Wx Report", "  2.Hospital QTH", "  3.Police QTH", "> 4.Fire Station QTH", lastLine);
+                displayShow(" REPORTS >", "  2.Hospital QTH", "  3.Police QTH", "> 4.Fire Station QTH", "  1.Wx Report", lastLine);
                 break;
 
             case 300:
@@ -498,7 +498,7 @@ namespace MENU_Utils {
 
 //////////
             case 40:    //4.Stations ---> Packet Decoder
-                displayShow(" STATIONS>", "", "> Packet Decoder", "  Near By Stations", "", "<Back");
+                displayShow(" STATIONS>", "", "", "> Packet Decoder", "  Near By Stations", "<Back");
                 break;
             case 41:    //4.Stations ---> Near By Stations
                 displayShow(" STATIONS>", "", "  Packet Decoder", "> Near By Stations", "", "<Back");
@@ -545,17 +545,17 @@ namespace MENU_Utils {
                 if (winlinkStatus == 5) {
                     menuDisplay = 5000;
                 } else {
-                    displayShow(" WINLINK>", "> Login" , "  Read SavedMails(" + String(MSG_Utils::getNumWLNKMails()) + ")", "  Delete SavedMails", "  Wnlk Comment (" + checkProcessActive(winlinkCommentState) + ")" , lastLine);
+                    displayShow(" WINLINK>", "  Delete SavedMails", "  Wnlk Comment (" + checkProcessActive(winlinkCommentState) + ")", "> Login" , "  Read SavedMails(" + String(MSG_Utils::getNumWLNKMails()) + ")", lastLine);
                 }
                 break;
             case 51:    // 5.Winlink
-                displayShow(" WINLINK>", "  Login" , "> Read SavedMails(" + String(MSG_Utils::getNumWLNKMails()) + ")", "  Delete SavedMails", "  Wnlk Comment (" + checkProcessActive(winlinkCommentState) + ")" , lastLine);
+                displayShow(" WINLINK>", "  Wnlk Comment (" + checkProcessActive(winlinkCommentState) + ")", "  Login", "> Read SavedMails(" + String(MSG_Utils::getNumWLNKMails()) + ")", "  Delete SavedMails", lastLine);
                 break;
             case 52:    // 5.Winlink
-                displayShow(" WINLINK>", "  Login" , "  Read SavedMails(" + String(MSG_Utils::getNumWLNKMails()) + ")", "> Delete SavedMails", "  Wnlk Comment (" + checkProcessActive(winlinkCommentState) + ")" , lastLine);
+                displayShow(" WINLINK>", "  Login", "  Read SavedMails(" + String(MSG_Utils::getNumWLNKMails()) + ")", "> Delete SavedMails", "  Wnlk Comment (" + checkProcessActive(winlinkCommentState) + ")", lastLine);
                 break;
             case 53:    // 5.Winlink
-                displayShow(" WINLINK>", "  Login" , "  Read SavedMails(" + String(MSG_Utils::getNumWLNKMails()) + ")", "  Delete SavedMails", "> Wnlk Comment (" + checkProcessActive(winlinkCommentState) + ")" , lastLine);
+                displayShow(" WINLINK>", "  Read SavedMails(" + String(MSG_Utils::getNumWLNKMails()) + ")", "  Delete SavedMails", "> Wnlk Comment (" + checkProcessActive(winlinkCommentState) + ")", "  Login", lastLine);
                 break;
 
             case 500:    // 5.Winlink ---> Login
@@ -569,14 +569,14 @@ namespace MENU_Utils {
                 break;
 
             case 5000:   // WINLINK: List Pend. Mail //
-                displayShow("WLNK MENU>", "  Write Mail" , "> List Pend. Mails", "  Downloaded Mails", "  Read Mail    (R#)", lastLine);
+                displayShow("WLNK MENU>", "  Log Out", "  Write Mail", "> List Pend. Mails", "  Downloaded Mails", lastLine);
                 break;
 
             case 5010:    // WINLINK: Downloaded Mails //
-                displayShow("WLNK MENU>", "  List Pend. Mails", "> Downloaded Mails", "  Read Mail    (R#)", "  Reply Mail   (Y#)", lastLine);
+                displayShow("WLNK MENU>", "  Write Mail", "  List Pend. Mails", "> Downloaded Mails", "  Read Mail    (R#)", lastLine);
                 break;
             case 50100:    // WINLINK: Downloaded Mails //
-                displayShow(" WINLINK>", "" , "> Read SavedMails(" + String(MSG_Utils::getNumWLNKMails()) + ")", "  Delete SavedMails", "" , lastLine);
+                displayShow(" WINLINK>", "", "", "> Read SavedMails(" + String(MSG_Utils::getNumWLNKMails()) + ")", "  Delete SavedMails", lastLine);
                 break;
             case 50101:    // WINLINK: Downloaded Mails //
                 {
@@ -595,28 +595,28 @@ namespace MENU_Utils {
                 }
                 break;
             case 50110:    // WINLINK: Downloaded Mails //
-                displayShow(" WINLINK>", "" , "  Read SavedMails(" + String(MSG_Utils::getNumWLNKMails()) + ")", "> Delete SavedMails", "" , lastLine);
+                displayShow(" WINLINK>", "", "  Read SavedMails(" + String(MSG_Utils::getNumWLNKMails()) + ")", "> Delete SavedMails", "", lastLine);
                 break;
             case 50111:    // WINLINK: Downloaded Mails //
                 displayShow("WLNK DEL>", "", "  DELETE ALL MAILS?", "", "", " Confirm = LP or '>'");
                 break;
 
             case 5020:    // WINLINK: Read Mail //
-                displayShow("WLNK MENU>", "  Downloaded Mails", "> Read Mail    (R#)", "  Reply Mail   (Y#)", "  Forward Mail (F#)", lastLine);
+                displayShow("WLNK MENU>", "  List Pend. Mails", "  Downloaded Mails", "> Read Mail    (R#)", "  Reply Mail   (Y#)", lastLine);
                 break;
             case 5021:
                 displayShow("WLNK READ>", "", "    READ MAIL N." + winlinkMailNumber, "", "", "<Back          Enter>");
                 break;
 
             case 5030:    // WINLINK: Reply Mail //
-                displayShow("WLNK MENU>", "  Read Mail    (R#)", "> Reply Mail   (Y#)", "  Forward Mail (F#)", "  Delete Mail  (K#)", lastLine);
+                displayShow("WLNK MENU>", "  Downloaded Mails", "  Read Mail    (R#)", "> Reply Mail   (Y#)", "  Forward Mail (F#)", lastLine);
                 break;
             case 5031:
                 displayShow("WLNK REPLY", "", "   REPLY MAIL N." + winlinkMailNumber , "", "", "<Back          Enter>");
                 break;
 
             case 5040:    // WINLINK: Foward Mail //
-                displayShow("WLNK MENU>", "  Reply Mail   (Y#)", "> Forward Mail (F#)", "  Delete Mail  (K#)", "  Alias Menu", lastLine);
+                displayShow("WLNK MENU>", "  Read Mail    (R#)", "  Reply Mail   (Y#)", "> Forward Mail (F#)", "  Delete Mail  (K#)", lastLine);
                 break;
             case 5041:    // WINLINK: Forward Mail //
                 displayShow("WLNK FORW>", "", "  FORWARD MAIL N." + winlinkMailNumber , "", "", "<Back          Enter>");
@@ -626,17 +626,17 @@ namespace MENU_Utils {
                 break;
 
             case 5050:    // WINLINK: Delete Mail //
-                displayShow("WLNK MENU>", "  Forward Mail (F#)", "> Delete Mail  (K#)", "  Alias Menu", "  Log Out", lastLine);
+                displayShow("WLNK MENU>", "  Reply Mail   (Y#)", "  Forward Mail (F#)", "> Delete Mail  (K#)", "  Alias Menu", lastLine);
                 break;
             case 5051:    // WINLINK: Delete Mail //
                 displayShow("WLNK DEL>", "", "   DELETE MAIL N."  + winlinkMailNumber, "", "", "<Back          Enter>");
                 break;
 
             case 5060:    // WINLINK: Alias Menu //
-                displayShow("WLNK MENU>", "  Delete Mail  (K#)", "> Alias Menu", "  Log Out", "  Write Mail", lastLine);
+                displayShow("WLNK MENU>", "  Forward Mail (F#)", "  Delete Mail  (K#)", "> Alias Menu", "  Log Out", lastLine);
                 break;
             case 5061:    // WINLINK: Alias Menu : Create Alias //
-                displayShow("WLNK ALIAS", "> Create Alias" , "  Delete Alias ", "  List All Alias", "", lastLine);
+                displayShow("WLNK ALIAS", "  Delete Alias ", "  List All Alias", "> Create Alias" , "", lastLine);
                 break;
             case 50610:   // WINLINK: Alias Menu : Create Alias //
                 displayShow("WLNK ALIAS", "", "Write Alias to Create", "     -> " + winlinkAlias, "", "<Back          Enter>");
@@ -645,7 +645,7 @@ namespace MENU_Utils {
                 displayShow("WLNK ALIAS", "", "      " + winlinkAlias + " =", winlinkAliasComplete, "", "<Back          Enter>");
                 break;
             case 5062:    // WINLINK: Alias Menu : Delete Alias //
-                displayShow("WLNK ALIAS", "  Create Alias" , "> Delete Alias ", "  List All Alias", "", lastLine);
+                displayShow("WLNK ALIAS", "  List All Alias", "  Create Alias", "> Delete Alias " , "", lastLine);
                 break;
             case 50620:   // WINLINK: Alias Menu : Delete Alias //
                 displayShow("WLNK ALIAS", "Write Alias to Delete", "", "     -> " + winlinkAlias, "", "<Back          Enter>");
@@ -655,11 +655,11 @@ namespace MENU_Utils {
                 break;
 
             case 5070:    // WINLINK: Log Out MAIL //
-                displayShow("WLNK MENU>", "  Alias Menu", "> Log Out", "  Write Mail", "  List Pend. Mails", lastLine);
+                displayShow("WLNK MENU>", "  Delete Mail  (K#)", "  Alias Menu", "> Log Out", "  Write Mail", lastLine);
                 break;
 
             case 5080:    // WINLINK: WRITE MAIL //
-                displayShow("WLNK MENU>", "  Log Out", "> Write Mail", "  List Pend. Mails", "  Downloaded Mails", lastLine);
+                displayShow("WLNK MENU>", "  Alias Menu", "  Log Out", "> Write Mail", "  List Pend. Mails", lastLine);
                 break;
             case 5081:    // WINLINK: WRITE MAIL: Addressee //
                 #ifdef HAS_TFT
@@ -707,7 +707,7 @@ namespace MENU_Utils {
                 }
                 break;
             case 5084:    // WINLINK: WRITE MAIL: End Mail? //
-                displayShow("WLNK MAIL>", "", "> End Mail", "  1 More Line", "", "      Up/Down Select>");
+                displayShow("WLNK MAIL>", "", "", "> End Mail", "  1 More Line", "      Up/Down Select>");
                 break;
             case 5085:    // WINLINK: WRITE MAIL: One More Line(Body) //
                 displayShow("WLNK MAIL>", "", "  End Mail", "> 1 More Line", "", "      Up/Down Select>");
@@ -718,19 +718,19 @@ namespace MENU_Utils {
 
 //////////
             case 60:    // 6. Extras ---> Send Email with GPS info
-                displayShow(" EXTRAS>", "  Flashlight    (" + checkProcessActive(flashlight) + ")", "> Send Email(GPS)", "  Digipeater    (" + checkProcessActive(digipeaterActive) + ")", "  S.O.S.        (" + checkProcessActive(sosActive) + ")", lastLine);
+                displayShow(" EXTRAS>", "  Beacon(GPS)+Comment", "  Flashlight    (" + checkProcessActive(flashlight) + ")", "> Send Email(GPS)", "  Digipeater    (" + checkProcessActive(digipeaterActive) + ")", lastLine);
                 break;
             case 61:    // 6. Extras ---> Digipeater
-                displayShow(" EXTRAS>", "  Send Email(GPS)", "> Digipeater    (" + checkProcessActive(digipeaterActive) + ")", "  S.O.S.        (" + checkProcessActive(sosActive) + ")", "  Beacon(GPS)+Comment", lastLine);
+                displayShow(" EXTRAS>", "  Flashlight    (" + checkProcessActive(flashlight) + ")", "  Send Email(GPS)", "> Digipeater    (" + checkProcessActive(digipeaterActive) + ")", "  S.O.S.        (" + checkProcessActive(sosActive) + ")", lastLine);
                 break;
             case 62:    // 6. Extras ---> S.O.S.
-                displayShow(" EXTRAS>", "  Digipeater    (" + checkProcessActive(digipeaterActive) + ")", "> S.O.S.        (" + checkProcessActive(sosActive) + ")", "  Beacon(GPS)+Comment", "  Flashlight    (" + checkProcessActive(flashlight) + ")", lastLine);
+                displayShow(" EXTRAS>", "  Send Email(GPS)", "  Digipeater    (" + checkProcessActive(digipeaterActive) + ")", "> S.O.S.        (" + checkProcessActive(sosActive) + ")", "  Beacon(GPS)+Comment", lastLine);
                 break;
             case 63:    // 6. Extras ---> Beacon(GPS) + Comment
-                displayShow(" EXTRAS>", "  S.O.S.        (" + checkProcessActive(sosActive) + ")", "> Beacon(GPS)+Comment", "  Flashlight    (" + checkProcessActive(flashlight) + ")", "  Send Email(GPS)", lastLine);
+                displayShow(" EXTRAS>", "  Digipeater    (" + checkProcessActive(digipeaterActive) + ")", "  S.O.S.        (" + checkProcessActive(sosActive) + ")", "> Beacon(GPS)+Comment", "  Flashlight    (" + checkProcessActive(flashlight) + ")", lastLine);
                 break;
             case 64:    // 6. Extras ---> Flashlight
-                displayShow(" EXTRAS>", "  Beacon(GPS)+Comment", "> Flashlight    (" + checkProcessActive(flashlight) + ")", "  Send Email(GPS)", "  Digipeater    (" + checkProcessActive(digipeaterActive) + ")", lastLine);
+                displayShow(" EXTRAS>", "  S.O.S.        (" + checkProcessActive(sosActive) + ")", "  Beacon(GPS)+Comment", "> Flashlight    (" + checkProcessActive(flashlight) + ")", "  Send Email(GPS)", lastLine);
                 break;
 
             case 630:
@@ -748,10 +748,10 @@ namespace MENU_Utils {
 
 //////////
             case 9000:  //  9. multiPress Menu ---> Turn ON WiFi AP
-                displayShow(" CONFIG>", "> Turn Tracker Off","  Config. WiFi AP",  "","",lastLine);
+                displayShow(" CONFIG>", "", "", "> Turn Tracker Off", "  Config. WiFi AP", lastLine);
                 break;
             case 9001:  //  9. multiPress Menu
-                displayShow(" CONFIG>", "  Turn Tracker Off","> Config. WiFi AP",  "","",lastLine);
+                displayShow(" CONFIG>", "", "  Turn Tracker Off", "> Config. WiFi AP", "", lastLine);
                 break;
 
 
