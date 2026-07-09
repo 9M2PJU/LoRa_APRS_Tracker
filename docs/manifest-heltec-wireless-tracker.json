@@ -1,5 +1,6 @@
 {
   "name": "9M2PJU Mod LoRa APRS Tracker (Heltec Wireless Tracker)",
+  "new_install_improv_wait_time": 0,
   "builds": [
     {
       "name": "heltec_wireless_tracker",
