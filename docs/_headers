@@ -10,3 +10,8 @@
   Content-Type: application/octet-stream
   Access-Control-Allow-Origin: *
   Cache-Control: no-cache
+
+/*.js
+  Content-Type: application/javascript
+  Access-Control-Allow-Origin: *
+  Cache-Control: no-cache
