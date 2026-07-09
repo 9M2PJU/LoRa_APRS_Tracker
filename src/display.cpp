@@ -434,7 +434,8 @@ void displayShow(const String& header, const String& line1, const String& line2,
             sprite.setTextFont(0);
             sprite.setTextSize(bigSizeFont);
             sprite.setTextColor(TFT_WHITE, hdrColor);
-            sprite.drawString(header, 3, 3);
+            int hx = (160 - sprite.textWidth(header)) / 2;
+            sprite.drawString(header, hx, 3);
 
             const String* const lines[] = {&line1, &line2};
 
@@ -448,7 +449,8 @@ void displayShow(const String& header, const String& line1, const String& line2,
                 if (text.length() > 0) {
                     while (text.length() > 0) {
                         String chunk = text.substring(0, maxLineLength);
-                        sprite.drawString(chunk, 3, yLineOffset);
+                        int cx = (160 - sprite.textWidth(chunk)) / 2;
+                        sprite.drawString(chunk, cx, yLineOffset);
                         text = text.substring(maxLineLength);
                         yLineOffset += lineSpacing;
                     }
@@ -494,7 +496,7 @@ void drawSymbol(int symbolIndex, bool bluetoothActive) {
         if (bluetoothActive) bitMap = bluetoothSymbol;
         #if defined(HELTEC_WIRELESS_TRACKER)
             uint16_t symColor = bluetoothActive ? TFT_WHITE : heltecSymbolColor(symbolIndex);
-            sprite.drawBitmap(128 - SYMBOL_WIDTH, 3, bitMap, SYMBOL_WIDTH, SYMBOL_HEIGHT, symColor);
+            sprite.drawBitmap(140 - SYMBOL_WIDTH, 3, bitMap, SYMBOL_WIDTH, SYMBOL_HEIGHT, symColor);
         #endif
         #if defined(TTGO_T_DECK_GPS) || defined(TTGO_T_DECK_PLUS)
             sprite.drawBitmap(280, 70, bitMap, SYMBOL_WIDTH, SYMBOL_HEIGHT, TFT_WHITE);
@@ -540,7 +542,10 @@ void displayShow(const String& header, const String& line1, const String& line2,
             sprite.setTextFont(0);
             sprite.setTextSize(bigSizeFont);
             sprite.setTextColor(TFT_WHITE, hdrColor);
-            sprite.drawString(header, 3, 3);
+            bool showSym = (menuDisplay == 0 && Config.display.showSymbol);
+            int hdrAvail = showSym ? 124 : 160;
+            int hx = (hdrAvail - sprite.textWidth(header)) / 2;
+            sprite.drawString(header, hx, 3);
 
             const String* const lines[] = {&line1, &line2, &line3, &line4, &line5};
 
@@ -554,7 +559,8 @@ void displayShow(const String& header, const String& line1, const String& line2,
                 if (text.length() > 0) {
                     while (text.length() > 0) {
                         String chunk = text.substring(0, maxLineLength);
-                        sprite.drawString(chunk, 3, yLineOffset);
+                        int cx = (160 - sprite.textWidth(chunk)) / 2;
+                        sprite.drawString(chunk, cx, yLineOffset);
                         text = text.substring(maxLineLength);
                         yLineOffset += lineSpacing;
                     }
@@ -645,14 +651,14 @@ void displayShow(const String& header, const String& line1, const String& line2,
 }
 
 void startupScreen(uint8_t index, const String& version) {
-    String workingFreq = "    LoRa Freq [";
+    String workingFreq = "LoRa Freq [";
     switch (index) {
         case 0: workingFreq += "MY]"; break;
         case 1: workingFreq += "PL]"; break;
         case 2: workingFreq += "UK]"; break;
         case 3: workingFreq += "US]"; break;
     }
-    displayShow(" LoRa APRS", "      (TRACKER)", workingFreq, "", "", "  9M2PJU Mod " + version, 4000);
+    displayShow("LoRa APRS", "(TRACKER)", workingFreq, "", "", "9M2PJU Mod " + version, 4000);
     logger.log(logging::LoggerLevel::LOGGER_LEVEL_INFO, "Main", "RichonGuzman (CA2RXU) --> LoRa APRS Tracker/Station");
     logger.log(logging::LoggerLevel::LOGGER_LEVEL_INFO, "Main", "Version: %s", version);
 }
