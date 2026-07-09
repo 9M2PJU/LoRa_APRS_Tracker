@@ -1,0 +1,60 @@
+name: Publish Heltec Firmware
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'include/**'
+      - 'data/**'
+      - 'variants/heltec_wireless_tracker/**'
+      - 'platformio.ini'
+      - 'common_settings.ini'
+      - 'tools/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Install PlatformIO Core
+        run: pip install --upgrade platformio
+
+      - name: Build firmware
+        run: pio run -e heltec_wireless_tracker
+
+      - name: Build filesystem image
+        run: pio run --target buildfs -e heltec_wireless_tracker
+
+      - name: Copy binaries to docs/firmware
+        run: |
+          mkdir -p docs/firmware
+          cp .pio/build/heltec_wireless_tracker/firmware.bin     docs/firmware/firmware.bin
+          cp .pio/build/heltec_wireless_tracker/bootloader.bin   docs/firmware/bootloader.bin
+          cp .pio/build/heltec_wireless_tracker/partitions.bin   docs/firmware/partitions.bin
+          cp .pio/build/heltec_wireless_tracker/spiffs.bin       docs/firmware/spiffs.bin
+          cp ~/.platformio/packages/framework-arduinoespressif32/tools/partitions/boot_app0.bin docs/firmware/boot_app0.bin
+
+      - name: Commit updated binaries
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/firmware/*.bin
+          if git diff --cached --quiet; then
+            echo "No binary changes to commit"
+          else
+            git commit -m "Auto-update Heltec Wireless Tracker firmware binaries
+
+            Built from source changes on main. Deploy workflow will
+            publish these to GitHub Pages."
+            git push
+          fi
