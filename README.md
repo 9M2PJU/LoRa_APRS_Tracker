@@ -10,12 +10,17 @@ ESP32-S3 + LoRa + GPS + 80x160 color TFT, running APRS on **433.400 MHz**.
 
 Flash directly from your browser — no software needed:
 
-### https://9m2pju.github.io/LoRa_APRS_Tracker/
+### https://lora.hamradio.my
 
 1. Use **Chrome** or **Edge** (Web Serial support required)
 2. Plug in your Heltec Wireless Tracker via USB
-3. Click **CONNECT**, pick the serial port, click **Install**
+3. Click **INSTALL NOW**, pick the serial port, click **Install**
 4. Done — the tracker reboots with the new firmware
+
+**After flashing, to change settings via web UI:**
+1. Enable WiFi AP mode on the tracker (via menu)
+2. Connect to WiFi: **LoRaTracker-AP** / password: **1234567890**
+3. Open browser to **192.168.4.1**
 
 ---
 
