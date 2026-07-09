@@ -42,7 +42,27 @@ Fork of CA2RXU LoRa APRS Tracker, modified by 9M2PJU for Malaysia.
 ## Key Files
 - `src/smartbeacon_utils.cpp` — smart beacon presets (runner/bike/car)
 - `src/configuration.cpp` — config load/save, defaults (hardcoded fallbacks)
-- `src/keyboard_utils.cpp` — menu logic, email posmsg (line 536), winlink commands
-- `src/winlink_utils.cpp` — Winlink challenge-response auth
+- `src/keyboard_utils.cpp` — menu logic, email posmsg (line 536), winlink commands, APRSMY check-in (lines 363-372, 622-625)
+- `src/menu_utils.cpp` — menu display, APRSMY entries (case 14/140/1400)
+- `src/winlink_utils.cpp` — Winlink challenge-response auth (Fisher-Yates shuffle as of upstream sync)
+- `src/display.cpp` — display rendering, custom Heltec colors (heltecHeaderColor line 331, heltecBodyColor line 337), startup screen (line 647, shows "9M2PJU Mod <versionDate>")
+- `src/LoRa_APRS_Tracker.cpp` — version strings (versionDate, versionNumber line 72-73)
 - `variants/heltec_wireless_tracker/platformio.ini` — board build flags
 - `docs/install-dialog-28H-HNrD.js` — patched ESP Web Tools dialog (custom error message for download mode)
+
+## Upstream Sync
+- Upstream repo: `richonguzman/LoRa_APRS_Tracker` (added as git remote `upstream`)
+- Last sync: 2026-07-09, merged upstream/main up to commit `bfd531a` (2026-04-23)
+- Merge-base was `aa32b58` (2026-01-20 displayEcoModeFix)
+- 22 upstream commits merged: Winlink fix, GPS waiting display, BT KISS fix, ArduinoJson 6->7 migration, library bumps (RadioLib 7.6.0, ESP32 platform 6.12.0, ArduinoJson 7.4.2), new board variants (ttgo-t-beam-1W, ttgo_lora32_t3s3_v1_2_GPS)
+- Conflict resolutions: README.md (kept Clock + added Timeline), display.cpp (kept custom Heltec colors), keyboard_utils.cpp (whitespace)
+- How to sync: `git fetch upstream main && git merge upstream/main` — resolve conflicts preserving our mods (APRSMY, display colors, config, web flasher)
+
+## Our Modifications (must preserve during upstream sync)
+- **APRSMY check-in** — Malaysia APRS Sunday Net feature in `src/menu_utils.cpp` (case 14/140/1400) and `src/keyboard_utils.cpp` (lines 363-372, 622-625). Sends `CHECK #APRSMY <text>` to callsign `APRSMY`.
+- **Custom Heltec display colors** — `heltecHeaderColor()` and `heltecBodyColor()` functions in `src/display.cpp` (lines 331, 337), used in displayShow for HELTEC_WIRELESS_TRACKER
+- **Startup screen** — shows "9M2PJU Mod <versionDate>" instead of upstream's CA2RXU branding (`src/display.cpp` line 655)
+- **LoRa frequency labels** — `LoRa[MY]` for preset 0, "MALAYSIA" change message (`src/display.cpp` line 650, `src/lora_utils.cpp`)
+- **data/tracker_conf.json** — 9M2PJU-7 callsign, 433.400MHz, gpsEcoMode=false on all 3 profiles, Winlink email, display timeout 3s
+- **Web flasher** — entire `docs/` directory, manifest, install dialog, firmware binaries
+- **Custom workflows** — publish-firmware.yml, deploy.yml (not in upstream)
