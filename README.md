@@ -34,7 +34,7 @@ Flash directly from your browser — no software needed:
 | Body text | all white | color-coded by content |
 | APRS symbol | white | colored by category |
 | Status bar | none | left-edge accent (GPS/BT state) |
-| Startup text | `CA2RXU <date>` | `9M2PJU Mod` |
+| Startup text | `CA2RXU <date>` | `9M2PJU Mod <versionDate>` |
 
 **Body text colors:**
 - Red — GPS warnings (`WAITING FOR GPS`, `GPS SLEEPING`)
