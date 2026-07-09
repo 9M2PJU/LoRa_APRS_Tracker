@@ -784,7 +784,7 @@ namespace MENU_Utils {
                         thirdRowMainMenu = String(Utils::getMaidenheadLocator(gps.location.lat(), gps.location.lng(), 8));
                         thirdRowMainMenu += " LoRa[";
                         switch (loraIndex) {
-                            case 0: thirdRowMainMenu += "Eu]"; break;
+                            case 0: thirdRowMainMenu += "MY]"; break;
                             case 1: thirdRowMainMenu += "PL]"; break;
                             case 2: thirdRowMainMenu += "UK]"; break;
                             case 3: thirdRowMainMenu += "US]"; break;

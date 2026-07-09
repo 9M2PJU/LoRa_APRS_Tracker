@@ -25,6 +25,9 @@
 #include "board_pinout.h"
 #include "display.h"
 #include "TimeLib.h"
+#if defined(HAS_TFT) && defined(HELTEC_WIRELESS_TRACKER)
+    #include <TinyGPS++.h>
+#endif
 
 
 #ifdef HAS_TFT
@@ -38,6 +41,12 @@
         #define smallSizeFont   1
         #define lineSpacing     12
         #define maxLineLength   26
+
+        // Extra accent colors for the Heltec Wireless Tracker UI
+        #define heltecOrange     0xFD20
+        #define heltecPurple     0x780F
+        #define heltecMagenta    0xF81F
+        #define heltecMilitGreen 0x4A84   // military green (army green)
     #endif
     #if defined(TTGO_T_DECK_GPS) || defined(TTGO_T_DECK_PLUS)
         #define color1  TFT_BLACK
@@ -84,6 +93,10 @@ extern Configuration    Config;
 extern Beacon           *currentBeacon;
 extern int              menuDisplay;
 extern bool             bluetoothConnected;
+#if defined(HAS_TFT) && defined(HELTEC_WIRELESS_TRACKER)
+    extern TinyGPSPlus  gps;
+    extern bool         gpsIsActive;
+#endif
 
 const char* symbolArray[]     = { "[", ">", "j", "b", "<", "s", "u", "R", "v", "(", ";", "-", "k",
                                 "C", "a", "Y", "O", "'", "=", "y", "U", "p", "_", ")"};
@@ -313,6 +326,81 @@ void displayToggle(bool toggle) {
     }
 }
 
+#if defined(HAS_TFT) && defined(HELTEC_WIRELESS_TRACKER)
+    // Pick a header bar color based on the header text content.
+    uint16_t heltecHeaderColor(const String& header) {
+        (void)header;   // all screens use military green
+        return heltecMilitGreen;
+    }
+
+    // Pick a body text color based on the line content.
+    uint16_t heltecBodyColor(const String& text) {
+        String t = text;
+        t.trim();
+        if (t.length() == 0) return TFT_WHITE;
+        String u = t;
+        u.toUpperCase();
+        if (u.indexOf("WAITING FOR GPS") >= 0 || u.indexOf("GPS  SLEEPING") >= 0 || u.indexOf("NO GPS") >= 0)
+            return TFT_RED;
+        if (u.indexOf("BATTERY") >= 0)
+            return heltecOrange;
+        if (u.startsWith("A=") || u.indexOf("KM/H") >= 0)
+            return greenColor;
+        if (u.indexOf("LAST RX") >= 0)
+            return greyColor;
+        if (u.indexOf("WLNK MAIL") >= 0 || u.indexOf("MESSAGES") >= 0)
+            return TFT_CYAN;
+        // GPS coordinates / maidenhead: digits mixed with N/S/E/W or a locator like AB12cd34
+        if (u.indexOf(".") >= 0 && (u.indexOf("N") >= 0 || u.indexOf("S") >= 0 || u.indexOf("E") >= 0 || u.indexOf("W") >= 0))
+            return TFT_YELLOW;
+        if (u.indexOf("LORA[") >= 0)
+            return TFT_YELLOW;
+        // Date/time lines contain ':' between digits
+        if (u.indexOf(":") >= 0)
+            return TFT_CYAN;
+        return TFT_WHITE;
+    }
+
+    // Pick a symbol bitmap color based on the APRS symbol category.
+    // symbolArray order: [ > j b < s u R v ( ; - k C a Y O ' = y U p _ )
+    uint16_t heltecSymbolColor(int symbolIndex) {
+        switch (symbolIndex) {
+            case 0:  return TFT_CYAN;       // runner (human on foot)
+            case 5:  return TFT_BLUE;       // ship
+            case 13: return TFT_BLUE;       // canoe
+            case 15: return TFT_BLUE;       // yacht
+            case 22: return TFT_CYAN;       // weather station
+            case 10: return greenColor;     // tent
+            case 11: return greenColor;     // house
+            case 19: return greenColor;     // yagi
+            case 16: return heltecMagenta;  // balloon
+            case 17: return heltecMagenta;  // aircraft
+            case 18: return heltecOrange;   // train
+            case 21: return TFT_YELLOW;     // dog
+            case 23: return TFT_CYAN;       // wheelchair
+            // vehicles -> red
+            case 1: case 2: case 3: case 4: case 6: case 7:
+            case 8: case 9: case 12: case 14: case 20:
+                return TFT_RED;
+            default: return TFT_WHITE;
+        }
+    }
+
+    // Draw a 2px wide status accent bar on the left edge showing GPS/BT state.
+    //   green  = GPS locked
+    //   yellow = GPS active but no fix
+    //   blue   = Bluetooth connected
+    //   grey   = idle
+    void heltecStatusAccentBar() {
+        uint16_t color;
+        if (gpsIsActive && gps.location.isValid())      color = greenColor;
+        else if (gpsIsActive)                           color = TFT_YELLOW;
+        else if (bluetoothConnected)                    color = TFT_BLUE;
+        else                                            color = greyColor;
+        sprite.fillRect(0, 0, 2, 80, color);
+    }
+#endif
+
 void displayShow(const String& header, const String& line1, const String& line2, int wait) {
     #ifdef HAS_TFT
         #if defined(TTGO_T_DECK_GPS) || defined(TTGO_T_DECK_PLUS)
@@ -341,22 +429,23 @@ void displayShow(const String& header, const String& line1, const String& line2,
         #endif
         #if defined(HELTEC_WIRELESS_TRACKER)
             sprite.fillSprite(TFT_BLACK);
-            sprite.fillRect(0, 0, 160, 19, TFT_YELLOW);
+            uint16_t hdrColor = heltecHeaderColor(header);
+            sprite.fillRect(0, 0, 160, 19, hdrColor);
             sprite.setTextFont(0);
             sprite.setTextSize(bigSizeFont);
-            sprite.setTextColor(TFT_BLACK, TFT_YELLOW);
+            sprite.setTextColor(TFT_WHITE, hdrColor);
             sprite.drawString(header, 3, 3);
 
             const String* const lines[] = {&line1, &line2};
 
             sprite.setTextSize(smallSizeFont);
-            sprite.setTextColor(TFT_WHITE, TFT_BLACK);
 
             int yLineOffset = (lineSpacing * 2) - 2;
 
             for (int i = 0; i < 2; i++) {
                 String text = *lines[i];
-                if (text.length() > 0) {                    
+                sprite.setTextColor(heltecBodyColor(text), TFT_BLACK);
+                if (text.length() > 0) {
                     while (text.length() > 0) {
                         String chunk = text.substring(0, maxLineLength);
                         sprite.drawString(chunk, 3, yLineOffset);
@@ -368,6 +457,7 @@ void displayShow(const String& header, const String& line1, const String& line2,
                     yLineOffset += lineSpacing;
                 }
             }
+            heltecStatusAccentBar();
         #endif
         sprite.pushSprite(0,0);
     #else
@@ -403,7 +493,8 @@ void drawSymbol(int symbolIndex, bool bluetoothActive) {
     #ifdef HAS_TFT
         if (bluetoothActive) bitMap = bluetoothSymbol;
         #if defined(HELTEC_WIRELESS_TRACKER)
-            sprite.drawBitmap(128 - SYMBOL_WIDTH, 3, bitMap, SYMBOL_WIDTH, SYMBOL_HEIGHT, TFT_WHITE);
+            uint16_t symColor = bluetoothActive ? TFT_WHITE : heltecSymbolColor(symbolIndex);
+            sprite.drawBitmap(128 - SYMBOL_WIDTH, 3, bitMap, SYMBOL_WIDTH, SYMBOL_HEIGHT, symColor);
         #endif
         #if defined(TTGO_T_DECK_GPS) || defined(TTGO_T_DECK_PLUS)
             sprite.drawBitmap(280, 70, bitMap, SYMBOL_WIDTH, SYMBOL_HEIGHT, TFT_WHITE);
@@ -443,22 +534,23 @@ void displayShow(const String& header, const String& line1, const String& line2,
             drawButton(220, 210, 80, 28, "Exit", 2);
         #endif
         #if defined(HELTEC_WIRELESS_TRACKER)
-            sprite.fillSprite(TFT_BLACK); 
-            sprite.fillRect(0, 0, 160, 19, redColor);
+            sprite.fillSprite(TFT_BLACK);
+            uint16_t hdrColor = heltecHeaderColor(header);
+            sprite.fillRect(0, 0, 160, 19, hdrColor);
             sprite.setTextFont(0);
             sprite.setTextSize(bigSizeFont);
-            sprite.setTextColor(TFT_WHITE, redColor);
+            sprite.setTextColor(TFT_WHITE, hdrColor);
             sprite.drawString(header, 3, 3);
 
             const String* const lines[] = {&line1, &line2, &line3, &line4, &line5};
 
             sprite.setTextSize(smallSizeFont);
-            sprite.setTextColor(TFT_WHITE, TFT_BLACK);
 
             int yLineOffset = (lineSpacing * 2) - 2;
 
             for (int i = 0; i < 5; i++) {
                 String text = *lines[i];
+                sprite.setTextColor(heltecBodyColor(text), TFT_BLACK);
                 if (text.length() > 0) {
                     while (text.length() > 0) {
                         String chunk = text.substring(0, maxLineLength);
@@ -471,6 +563,7 @@ void displayShow(const String& header, const String& line1, const String& line2,
                     yLineOffset += lineSpacing;
                 }
             }
+            heltecStatusAccentBar();
         #endif
             if (menuDisplay == 0 && Config.display.showSymbol) {
                 int symbol = 100;
@@ -554,12 +647,12 @@ void displayShow(const String& header, const String& line1, const String& line2,
 void startupScreen(uint8_t index, const String& version) {
     String workingFreq = "    LoRa Freq [";
     switch (index) {
-        case 0: workingFreq += "EU]"; break;
+        case 0: workingFreq += "MY]"; break;
         case 1: workingFreq += "PL]"; break;
         case 2: workingFreq += "UK]"; break;
         case 3: workingFreq += "US]"; break;
     }
-    displayShow(" LoRa APRS", "      (TRACKER)", workingFreq, "", "", "  CA2RXU  " + version, 4000);
+    displayShow(" LoRa APRS", "      (TRACKER)", workingFreq, "", "", "  9M2PJU Mod", 4000);
     logger.log(logging::LoggerLevel::LOGGER_LEVEL_INFO, "Main", "RichonGuzman (CA2RXU) --> LoRa APRS Tracker/Station");
     logger.log(logging::LoggerLevel::LOGGER_LEVEL_INFO, "Main", "Version: %s", version);
 }

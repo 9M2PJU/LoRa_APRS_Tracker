@@ -92,6 +92,7 @@ namespace Utils {
     }
 
     String createDateString(time_t t) {
+        t += 8 * 3600;  // UTC+8 for Malaysia Time (MYT) display
         String dateString = padding(year(t), 4);
         dateString += "-";
         dateString += padding(month(t), 2);
@@ -101,6 +102,7 @@ namespace Utils {
     }
 
     String createTimeString(time_t t) {
+        t += 8 * 3600;  // UTC+8 for Malaysia Time (MYT) display
         String timeString = padding(hour(t), 2);
         timeString += ":";
         timeString += padding(minute(t), 2);

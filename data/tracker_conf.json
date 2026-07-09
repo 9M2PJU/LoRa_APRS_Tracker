@@ -1,8 +1,8 @@
 {
 	"beacons": [
 		{
-			"callsign": "NOCALL-7",
-			"gpsEcoMode": false,
+			"callsign": "9M2PJU-7",
+			"gpsEcoMode": true,
 			"symbol": "[",
 			"overlay": "/",
 			"micE": "",
@@ -13,8 +13,8 @@
 			"profileLabel": ""
 		},
 		{
-			"callsign": "NOCALL-7",
-			"gpsEcoMode": false,
+			"callsign": "9M2PJU-7",
+			"gpsEcoMode": true,
 			"symbol": ">",
 			"overlay": "/",
 			"micE": "",
@@ -25,9 +25,9 @@
 			"profileLabel": ""
 		},
 		{
-			"callsign": "NOCALL-7",
-			"gpsEcoMode": false,
-			"symbol": "b",
+			"callsign": "9M2PJU-7",
+			"gpsEcoMode": true,
+			"symbol": "<",
 			"overlay": "/",
 			"micE": "",
 			"comment": "",
@@ -88,7 +88,7 @@
 	},
 	"lora": [
 		{
-			"frequency": 433775000,
+			"frequency": 433400000,
 			"spreadingFactor": 12,
 			"signalBandwidth": 125000,
 			"codingRate4": 5,

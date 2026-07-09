@@ -84,7 +84,7 @@ namespace LoRa_Utils {
 
         String loraCountryFreq;
         switch (loraIndex) {
-            case 0: loraCountryFreq = "EU/WORLD"; break;
+            case 0: loraCountryFreq = "MALAYSIA"; break;
             case 1: loraCountryFreq = "POLAND"; break;
             case 2: loraCountryFreq = "UK"; break;
             case 3: loraCountryFreq = "US"; break;
