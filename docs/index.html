@@ -158,12 +158,13 @@
                 <li>LoRa frequency: <strong>433.400 MHz</strong> (Malaysia)</li>
                 <li>LoRa label: <strong>LoRa[MY]</strong></li>
                 <li>Clock: <strong>Malaysia Time (UTC+8)</strong></li>
+                <li><strong>APRSMYSunday</strong> net check-in (Messages menu)</li>
                 <li>Green header bar on every screen</li>
                 <li>Color text for GPS, battery, altitude, messages</li>
                 <li>Color APRS symbols by type</li>
                 <li>Status bar: GPS lock / BT / idle</li>
-                <li>Startup text: "9M2PJU Mod"</li>
-                <li>GPS Eco Mode on (saves battery)</li>
+                <li>Startup text: "9M2PJU Mod" + version date</li>
+                <li>GPS Eco Mode off (GPS always active)</li>
                 <li>Profile 3 symbol: motorcycle</li>
             </ul>
         </div>
@@ -219,6 +220,20 @@
                 <li>Join WiFi: <strong>LoRaTracker-AP</strong> / password: <strong>1234567890</strong></li>
                 <li>Open <strong>192.168.4.1</strong> in your browser</li>
                 <li>To update config only, run: <code>pio run -e heltec_wireless_tracker -t uploadfs</code></li>
+            </ul>
+        </div>
+
+        <div class="info">
+            <h2>APRSMYSunday Net Check-In</h2>
+            <p style="margin-bottom: 10px; line-height: 1.6;">
+                This fork includes Malaysia's APRS Sunday Net check-in feature.
+                Check in to the net right from your tracker — no phone or computer needed.
+            </p>
+            <ul>
+                <li>Go to <strong>Messages → APRSMYSunday → Check In</strong></li>
+                <li>Quick Check In: sends <code>CHECK #APRSMYSunday Net from LoRa Tracker 73!</code></li>
+                <li>Custom message: type your own text, sent as <code>CHECK #APRSMY &lt;your text&gt;</code></li>
+                <li>Messages are sent to callsign <strong>APRSMY</strong> via LoRa APRS</li>
             </ul>
         </div>
 

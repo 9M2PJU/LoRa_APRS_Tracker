@@ -71,6 +71,17 @@ Flash directly from your browser — no software needed:
 - Display shows **Malaysia Time (UTC+8)**
 - APRS packets still use UTC (standards-compliant)
 
+### APRSMYSunday Net Check-In
+
+Malaysia's APRS Sunday Net check-in feature, added by 9M2PJU. The original project only has APRSThursday — this fork adds a Malaysia-specific counterpart.
+
+**How to use:**
+1. Menu → Messages → APRSMYSunday → Check In
+2. Quick Check In: sends the canned message `CHECK #APRSMYSunday Net from LoRa Tracker 73!` to callsign `APRSMY`
+3. Custom message: type your own text, which gets sent to `APRSMY` with prefix `CHECK #APRSMY `
+
+**Menu path:** Messages → APRSMYSunday → Check In (menu 14 → 140)
+
 ### Timeline (Versions)
 
 - 2026-04-22 BT Classic packet fix.
@@ -179,7 +190,7 @@ Flash directly from your browser — no software needed:
 | Profile 1 symbol | runner `[` |
 | Profile 2 symbol | car `>` |
 | Profile 3 symbol | motorcycle `<` |
-| GPS Eco Mode | on (battery saving) |
+| GPS Eco Mode | off (GPS always active) |
 | APRS path | `WIDE1-1` |
 
 ---
@@ -190,7 +201,8 @@ Flash directly from your browser — no software needed:
 |---|---|
 | `src/display.cpp` | Color helpers, military green headers, color-coded body text, colored symbols, status accent bar, startup branding |
 | `src/utils.cpp` | UTC+8 offset for display clock |
-| `src/menu_utils.cpp` | `LoRa[MY]` label |
+| `src/menu_utils.cpp` | `LoRa[MY]` label, APRSMYSunday menu entries (case 14/140/1400) |
+| `src/keyboard_utils.cpp` | APRSMY check-in send logic (lines 363-372, 622-625) |
 | `src/lora_utils.cpp` | `MALAYSIA` frequency label |
 | `data/tracker_conf.json` | Callsign, frequency, symbols, GPS Eco Mode |
 | `docs/index.html` | Web installer page |
@@ -215,6 +227,7 @@ pio run -e heltec_wireless_tracker -t uploadfs  # flash config (overwrites live 
 
 - Full menu system with keyboard or phone control
 - Read, write, delete APRS messages
+- APRSThursday net check-in
 - Weather reports via BME280/BMP280/BME680
 - Smart Beaconing with turn slope and speed scaling
 - Bluetooth TNC (Android/APRSDroid, iPhone/APRS.fi)
@@ -223,6 +236,16 @@ pio run -e heltec_wireless_tracker -t uploadfs  # flash config (overwrites live 
 - LED and buzzer notifications
 - 3 beacon profiles with independent settings
 - GPS Eco Mode for battery saving
+
+## 9M2PJU additions
+
+- APRSMYSunday net check-in (Malaysia's APRS Sunday Net)
+- Malaysia Time (UTC+8) display clock
+- 433.400 MHz LoRa preset with `LoRa[MY]` label
+- Custom Heltec display colors (military green headers, color-coded body text)
+- Colored APRS symbols by category
+- Status accent bar (GPS/BT state)
+- Web flasher at lora.hamradio.my
 
 ---
 
