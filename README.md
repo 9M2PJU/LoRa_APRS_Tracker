@@ -159,6 +159,24 @@ The tracker uses two independent triggers to decide when to beacon:
 
 When Smart Beaconing is off, the tracker falls back to a fixed interval (`nonSmartBeaconRate`, default 15 minutes).
 
+### Web Admin UI (Redesigned)
+
+The web admin UI (accessible via WiFi AP at `192.168.4.1`) has been redesigned for better desktop and mobile usability while **saving 23 KB of flash** vs the original:
+
+- **Dark mode by default** — easier on the eyes, especially for field use at night
+- **Malaysia flag accent colors** — blue canton (#4a9eff), red stripes (#ff5252), yellow star (#FFD700) on dark background
+- **Card-style sections** — each config group (Beacons, LoRa, Display, etc.) is wrapped in a bordered card with a red left border for visual separation
+- **Mobile-responsive** — form fields stack full-width on small screens, larger touch targets, Save button always visible in navbar (not hidden in hamburger menu)
+- **Desktop-optimized** — content constrained to 900px max-width for readability on large screens
+- **Sponsor links as text** — removed 49 KB of base64-encoded sponsor button images, replaced with simple text hyperlinks (GitHub Sponsors, PayPal CA2RXU, PayPal 9M2PJU)
+
+| Metric | Original (upstream) | 9M2PJU Mod | Savings |
+|---|---|---|---|
+| index.html (raw) | 128,645 bytes | 81,024 bytes | -47,621 bytes |
+| index.html.gz (in flash) | 38,758 bytes | 6,869 bytes | -31,889 bytes (-82%) |
+| Total web UI (gzipped) | 42,819 bytes | 11,990 bytes | -30,829 bytes (-72%) |
+| Firmware flash usage | 1,432,801 bytes (45.5%) | 1,409,489 bytes (44.8%) | -23,312 bytes |
+
 ### Config (shipped defaults)
 
 | Setting | Value |
@@ -184,6 +202,9 @@ When Smart Beaconing is off, the tracker falls back to a fixed interval (`nonSma
 | `src/lora_utils.cpp` | `MALAYSIA` frequency label |
 | `src/smartbeacon_utils.cpp` | Malaysia-tuned smart beacon presets (runner/motorcycle/car), 20-33% fewer TX for battery preservation |
 | `data/tracker_conf.json` | Callsign, frequency, symbols, GPS Eco Mode off |
+| `data_embed/index.html` | Web admin UI: dark mode, Malaysia flag accent, card sections, mobile-responsive, text sponsor links |
+| `data_embed/style.css` | Malaysia flag accent colors (blue/red/yellow), responsive layout, card sections, touch targets |
+| `data_embed/script.js` | Smart Beacon Setting labels (Runner/Motorcycle/Car), CSS classes replacing inline styles |
 | `docs/index.html` | Web installer page |
 | `docs/manifest-heltec-wireless-tracker.json` | ESP Web Tools flash manifest |
 | `docs/firmware/` | Pre-built binaries |

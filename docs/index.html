@@ -87,7 +87,7 @@
             <div class="device-label">Heltec Wireless Tracker (ESP32-S3 + ST7735 TFT)</div>
             <div class="install-btn-wrapper">
                 <esp-web-install-button
-                    manifest="manifest-heltec-wireless-tracker.json?v=15">
+                    manifest="manifest-heltec-wireless-tracker.json?v=16">
                     <button slot="activate">INSTALL</button>
                 </esp-web-install-button>
             </div>
@@ -274,6 +274,22 @@
             <p style="margin-top: 10px; font-size: 0.9em; color: #8ab8f0;">
                 See the README for full parameter comparison tables (original vs tuned values).
             </p>
+        </div>
+
+        <div class="info">
+            <h2>Web Admin UI &mdash; Redesigned</h2>
+            <p style="margin-bottom: 10px; line-height: 1.6;">
+                The configuration web interface (WiFi AP at <code>192.168.4.1</code>) has been redesigned
+                for desktop and mobile, with <strong>Malaysia flag accent colors</strong> on dark mode &mdash;
+                and uses <strong>23 KB less flash</strong> than the original.
+            </p>
+            <ul>
+                <li><strong>Dark mode by default</strong> with blue canton, red stripes, yellow star accents</li>
+                <li><strong>Card-style sections</strong> with red left borders for clear visual grouping</li>
+                <li><strong>Mobile-responsive</strong>: full-width fields, larger touch targets, always-visible Save button</li>
+                <li><strong>Desktop-optimized</strong>: 900px max-width content area for readability</li>
+                <li><strong>Text sponsor links</strong> instead of 49 KB base64 images (GitHub Sponsors, PayPal CA2RXU, PayPal 9M2PJU)</li>
+            </ul>
         </div>
 
         <div class="footer">
