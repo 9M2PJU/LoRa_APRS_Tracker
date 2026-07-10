@@ -102,32 +102,32 @@ function loadSettings(settings) {
                     value="${beacons.micE}">
                 <label for="beacons.${index}.micE">Mic-E</label>
             </div>
-            <div class="form-floating col-12 col-md-9 px-1 mb-2" style="margin-left: 50px;">
-                <input 
-                    type="text" 
-                    class="form-control form-control-sm" 
-                    name="beacons.${index}.comment" 
-                    id="beacons.${index}.comment" 
+            <div class="form-floating col-12 col-md-9 px-1 mb-2 beacon-indent">
+                <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    name="beacons.${index}.comment"
+                    id="beacons.${index}.comment"
                     value="${beacons.comment}">
                 <label for="beacons.${index}.comment">Comment</label>
             </div>
-            <div class="form-check form-switch col-6 col-md-5 px-1 mb-2" style="margin-left: 90px;">
-                <input 
-                    class="form-check-input" 
-                    type="checkbox" 
-                    name="beacons.${index}.smartBeaconActive" 
-                    id="beacons.${index}.smartBeaconActive" 
-                    value="1" 
+            <div class="form-check form-switch col-6 col-md-5 px-1 mb-2 beacon-indent2">
+                <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="beacons.${index}.smartBeaconActive"
+                    id="beacons.${index}.smartBeaconActive"
+                    value="1"
                     ${beacons.smartBeaconActive ? 'checked' : ''}>
                 <label class="form-check-label" for="beacons.${index}.smartBeaconActive">
                     Smart Beacon Active
                 </label>
             </div>
             <div class="form-check form-switch col-6 col-md-3 px-1 mb-2">
-                <input 
-                    class="form-check-input" 
-                    type="checkbox" 
-                    name="beacons.${index}.gpsEcoMode" 
+                <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="beacons.${index}.gpsEcoMode"
                     id="beacons.${index}.gpsEcoMode"
                     value="1"
                     ${beacons.gpsEcoMode ? 'checked' : ''}>
@@ -135,7 +135,7 @@ function loadSettings(settings) {
                     GPS Eco Mode
                 </label>
             </div>
-            <div class="form-check form-switch col-6 col-md-5 px-1 mb-2" style="margin-left: 50px;">
+            <div class="form-check form-switch col-6 col-md-5 px-1 mb-2 beacon-indent">
                 <label for="beacons.${index}.smartBeaconSetting" class="form-label"><small>Smart Beacon Setting</small></label>
                 <select name="beacons.${index}.smartBeaconSetting" id="beacons.${index}.smartBeaconSetting" class="form-control">
                     <option value="0" ${beacons.smartBeaconSetting == 0 ? 'selected' : ''}>Runner/Hiking (Slow)</option>
@@ -143,21 +143,21 @@ function loadSettings(settings) {
                     <option value="2" ${beacons.smartBeaconSetting == 2 ? 'selected' : ''}>Car (Fast)</option>
                 </select>
             </div>
-            <div class="form-floating col-12 col-md-9 px-1 mb-2" style="margin-left: 50px;">
-                 <input 
-                     type="text" 
-                     class="form-control form-control-sm" 
-                     name="beacons.${index}.status" 
-                     id="beacons.${index}.status" 
+            <div class="form-floating col-12 col-md-9 px-1 mb-2 beacon-indent">
+                 <input
+                     type="text"
+                     class="form-control form-control-sm"
+                     name="beacons.${index}.status"
+                     id="beacons.${index}.status"
                      value="${beacons.status}">
                  <label for="beacons.${index}.status">Status</label>
              </div>
-            <div class="form-floating col-12 col-md-9 px-1 mb-2" style="margin-left: 50px;">
-                 <input 
-                     type="text" 
-                     class="form-control form-control-sm" 
-                     name="beacons.${index}.profileLabel" 
-                     id="beacons.${index}.profileLabel" 
+            <div class="form-floating col-12 col-md-9 px-1 mb-2 beacon-indent">
+                 <input
+                     type="text"
+                     class="form-control form-control-sm"
+                     name="beacons.${index}.profileLabel"
+                     id="beacons.${index}.profileLabel"
                      value="${beacons.profileLabel}">
                  <label for="beacons.${index}.profileLabel">Profile Label</label>
              </div>
