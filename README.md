@@ -84,7 +84,7 @@ Malaysia's APRS Sunday Net check-in feature, added by 9M2PJU. The original proje
 
 ### SOTA & POTA Reports
 
-Added by 9M2PJU. Query SOTA (Summits On The Air) and POTA (Parks On The Air) spots and alerts from the 9M2PJU-4 gateway, right from the Reports menu.
+Added by 9M2PJU. Query SOTA (Summits On The Air) and POTA (Parks On The Air) spots and alerts from the **9M2PJU-4 APRS Bot** gateway, right from the Reports menu.
 
 **How to use:**
 1. Menu → Reports → SOTA → Spots — sends `SOTA spots` to `9M2PJU-4`
@@ -95,6 +95,8 @@ Added by 9M2PJU. Query SOTA (Summits On The Air) and POTA (Parks On The Air) spo
 Replies come back as APRS messages — read them via Messages → Read.
 
 **Menu path:** Reports → SOTA (menu 34 → 340/341) or Reports → POTA (menu 35 → 350/351)
+
+> **Full user guide for 9M2PJU-4 APRS Bot:** https://hamradio.my/9m2pju-aprs-bot/
 
 ### Config (shipped defaults)
 
