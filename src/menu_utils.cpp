@@ -480,20 +480,40 @@ namespace MENU_Utils {
 
 //////////
             case 30:     // 3. Reports : Wx Report
-                displayShow(" REPORTS >", "  3.Police QTH", "  4.Fire Station QTH", "> 1.Wx Report", "  2.Hospital QTH", lastLine);
+                displayShow(" REPORTS >", "  5.SOTA", "  6.POTA", "> 1.Wx Report", "  2.Hospital QTH", lastLine);
                 break;
             case 31:     // 3. Reports : Nearest Hospital
-                displayShow(" REPORTS >", "  4.Fire Station QTH", "  1.Wx Report", "> 2.Hospital QTH", "  3.Police QTH", lastLine);
+                displayShow(" REPORTS >", "  6.POTA", "  1.Wx Report", "> 2.Hospital QTH", "  3.Police QTH", lastLine);
                 break;
             case 32:     // 3. Reports : Nearest Police Station
                 displayShow(" REPORTS >", "  1.Wx Report", "  2.Hospital QTH", "> 3.Police QTH", "  4.Fire Station QTH", lastLine);
                 break;
             case 33:     // 3. Reports : Nearest Fire Station
-                displayShow(" REPORTS >", "  2.Hospital QTH", "  3.Police QTH", "> 4.Fire Station QTH", "  1.Wx Report", lastLine);
+                displayShow(" REPORTS >", "  2.Hospital QTH", "  3.Police QTH", "> 4.Fire Station QTH", "  5.SOTA", lastLine);
+                break;
+            case 34:     // 3. Reports : SOTA
+                displayShow(" REPORTS >", "  3.Police QTH", "  4.Fire Station QTH", "> 5.SOTA", "  6.POTA", lastLine);
+                break;
+            case 35:     // 3. Reports : POTA
+                displayShow(" REPORTS >", "  4.Fire Station QTH", "  5.SOTA", "> 6.POTA", "  1.Wx Report", lastLine);
                 break;
 
             case 300:
                 // waiting for Report
+                break;
+
+            case 340:    // 3.Reports ---> SOTA ---> Spots
+                displayShow(" SOTA>", "", "", "> Spots", "  Alerts", lastLine);
+                break;
+            case 341:    // 3.Reports ---> SOTA ---> Alerts
+                displayShow(" SOTA>", "", "  Spots", "> Alerts", "", lastLine);
+                break;
+
+            case 350:    // 3.Reports ---> POTA ---> Spots
+                displayShow(" POTA>", "", "", "> Spots", "  Alerts", lastLine);
+                break;
+            case 351:    // 3.Reports ---> POTA ---> Alerts
+                displayShow(" POTA>", "", "  Spots", "> Alerts", "", lastLine);
                 break;
 
 //////////

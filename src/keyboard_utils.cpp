@@ -112,9 +112,17 @@ namespace KEYBOARD_Utils {
             if (menuDisplay < 240) menuDisplay = 241;
         }
 
-        else if (menuDisplay >= 30 && menuDisplay <= 33) {
+        else if (menuDisplay >= 30 && menuDisplay <= 35) {
             menuDisplay--;
-            if (menuDisplay < 30) menuDisplay = 33;
+            if (menuDisplay < 30) menuDisplay = 35;
+        }
+        else if (menuDisplay >= 340 && menuDisplay <= 341) {
+            menuDisplay--;
+            if (menuDisplay < 340) menuDisplay = 341;
+        }
+        else if (menuDisplay >= 350 && menuDisplay <= 351) {
+            menuDisplay--;
+            if (menuDisplay < 350) menuDisplay = 351;
         }
 
         else if (menuDisplay >= 40 && menuDisplay <= 41) {
@@ -199,9 +207,17 @@ namespace KEYBOARD_Utils {
             if (menuDisplay > 241) menuDisplay = 240;
         }
 
-        else if (menuDisplay >= 30 && menuDisplay <= 33) {
+        else if (menuDisplay >= 30 && menuDisplay <= 35) {
             menuDisplay++;
-            if (menuDisplay > 33) menuDisplay = 30;
+            if (menuDisplay > 35) menuDisplay = 30;
+        }
+        else if (menuDisplay >= 340 && menuDisplay <= 341) {
+            menuDisplay++;
+            if (menuDisplay > 341) menuDisplay = 340;
+        }
+        else if (menuDisplay >= 350 && menuDisplay <= 351) {
+            menuDisplay++;
+            if (menuDisplay > 351) menuDisplay = 350;
         }
 
         else if (menuDisplay >= 40 && menuDisplay <= 41) {
@@ -264,7 +280,7 @@ namespace KEYBOARD_Utils {
         } else if (menuDisplay == 1300 ||  menuDisplay == 1310 || menuDisplay == 1400) {
             messageText = "";
             menuDisplay = menuDisplay/10;
-        } else if ((menuDisplay>=10 && menuDisplay<=14) || (menuDisplay>=20 && menuDisplay<=29) || (menuDisplay == 120) || (menuDisplay>=130 && menuDisplay<=133) || (menuDisplay == 140) || (menuDisplay>=50 && menuDisplay<=53) || (menuDisplay>=200 && menuDisplay<=290) || (menuDisplay>=2210 && menuDisplay<=2212) || (menuDisplay>=60 && menuDisplay<=64) || (menuDisplay>=30 && menuDisplay<=33) || (menuDisplay>=40 && menuDisplay<=41) || (menuDisplay>=400 && menuDisplay<=410)) {
+        } else if ((menuDisplay>=10 && menuDisplay<=14) || (menuDisplay>=20 && menuDisplay<=29) || (menuDisplay == 120) || (menuDisplay>=130 && menuDisplay<=133) || (menuDisplay == 140) || (menuDisplay>=50 && menuDisplay<=53) || (menuDisplay>=200 && menuDisplay<=290) || (menuDisplay>=2210 && menuDisplay<=2212) || (menuDisplay>=60 && menuDisplay<=64) || (menuDisplay>=30 && menuDisplay<=35) || (menuDisplay>=340 && menuDisplay<=341) || (menuDisplay>=350 && menuDisplay<=351) || (menuDisplay>=40 && menuDisplay<=41) || (menuDisplay>=400 && menuDisplay<=410)) {
             menuDisplay = int(menuDisplay/10);
         }
  else if (menuDisplay == 5000 || menuDisplay == 5010 || menuDisplay == 5020 || menuDisplay == 5030 || menuDisplay == 5040 || menuDisplay == 5050 || menuDisplay == 5060 || menuDisplay == 5070 || menuDisplay == 5080) {
@@ -455,6 +471,38 @@ namespace KEYBOARD_Utils {
             MSG_Utils::addToOutputBuffer(0, "9M2PJU-4", "fire_station");
             #ifdef HAS_JOYSTICK
                 menuDisplay = 3;
+            #endif
+        }
+
+        else if (menuDisplay == 34) {
+            menuDisplay = 340;
+        } else if (menuDisplay == 340) {
+            logger.log(logging::LoggerLevel::LOGGER_LEVEL_INFO, "Loop", "%s", "9M2PJU-4: SOTA spots");
+            MSG_Utils::addToOutputBuffer(0, "9M2PJU-4", "SOTA spots");
+            #ifdef HAS_JOYSTICK
+                menuDisplay = 34;
+            #endif
+        } else if (menuDisplay == 341) {
+            logger.log(logging::LoggerLevel::LOGGER_LEVEL_INFO, "Loop", "%s", "9M2PJU-4: SOTA alerts");
+            MSG_Utils::addToOutputBuffer(0, "9M2PJU-4", "SOTA alerts");
+            #ifdef HAS_JOYSTICK
+                menuDisplay = 34;
+            #endif
+        }
+
+        else if (menuDisplay == 35) {
+            menuDisplay = 350;
+        } else if (menuDisplay == 350) {
+            logger.log(logging::LoggerLevel::LOGGER_LEVEL_INFO, "Loop", "%s", "9M2PJU-4: POTA spots");
+            MSG_Utils::addToOutputBuffer(0, "9M2PJU-4", "POTA spots");
+            #ifdef HAS_JOYSTICK
+                menuDisplay = 35;
+            #endif
+        } else if (menuDisplay == 351) {
+            logger.log(logging::LoggerLevel::LOGGER_LEVEL_INFO, "Loop", "%s", "9M2PJU-4: POTA alerts");
+            MSG_Utils::addToOutputBuffer(0, "9M2PJU-4", "POTA alerts");
+            #ifdef HAS_JOYSTICK
+                menuDisplay = 35;
             #endif
         }
 
