@@ -34,7 +34,7 @@ Fork of CA2RXU LoRa APRS Tracker, modified by 9M2PJU for Malaysia.
 
 ## Config (data/tracker_conf.json)
 - Display timeout: 3 seconds
-- Winlink email: 9m2pju@gmail.com (used for posmsg command to 9M2PJU-4 gateway, menu option 60)
+- Winlink email: 9m2pju@gmail.com (used for posmsg command to 9M2PJU-4 APRS Bot, menu option 60)
 - Winlink password: ABCDEF (placeholder — should be real Winlink account password)
 - 3 beacon profiles: Profile 1=Runner(setting 0), Profile 2=Car(setting 2), Profile 3=Bike(setting 1)
 - Smart beacon presets are in src/smartbeacon_utils.cpp lines 38-42 (all original values, not modified)
@@ -42,8 +42,8 @@ Fork of CA2RXU LoRa APRS Tracker, modified by 9M2PJU for Malaysia.
 ## Key Files
 - `src/smartbeacon_utils.cpp` — smart beacon presets (runner/bike/car)
 - `src/configuration.cpp` — config load/save, defaults (hardcoded fallbacks)
-- `src/keyboard_utils.cpp` — menu logic, email posmsg (line 536), winlink commands, APRSMY check-in (lines 363-372, 622-625)
-- `src/menu_utils.cpp` — menu display, APRSMY entries (case 14/140/1400)
+- `src/keyboard_utils.cpp` — menu logic, email posmsg (line 536), winlink commands, APRSMY check-in (lines 363-372, 622-625), SOTA/POTA report send logic (menu 34/35/340/341/350/351)
+- `src/menu_utils.cpp` — menu display, APRSMY entries (case 14/140/1400), SOTA/POTA report menus (case 34/35/340/341/350/351)
 - `src/winlink_utils.cpp` — Winlink challenge-response auth (Fisher-Yates shuffle as of upstream sync)
 - `src/display.cpp` — display rendering, custom Heltec colors (heltecHeaderColor line 331, heltecBodyColor line 337), startup screen (line 647, shows "9M2PJU Mod <versionDate>")
 - `src/LoRa_APRS_Tracker.cpp` — version strings (versionDate, versionNumber line 72-73)
@@ -78,6 +78,7 @@ Fork of CA2RXU LoRa APRS Tracker, modified by 9M2PJU for Malaysia.
 
 ## Our Modifications (must preserve during upstream sync)
 - **APRSMY check-in** — Malaysia APRS Sunday Net feature in `src/menu_utils.cpp` (case 14/140/1400) and `src/keyboard_utils.cpp` (lines 363-372, 622-625). Sends `CHECK #APRSMY <text>` to callsign `APRSMY`.
+- **SOTA & POTA reports** — New Reports submenu items (case 34/35/340/341/350/351) in `src/menu_utils.cpp` and `src/keyboard_utils.cpp`. Sends `SOTA spots`, `SOTA alerts`, `POTA spots`, `POTA alerts` to `9M2PJU-4` (9M2PJU-4 APRS Bot). No waiting screen — behaves like existing QTH reports (send and stay on menu). Replies come as APRS messages read via Messages → Read. User guide: https://hamradio.my/9m2pju-aprs-bot/
 - **Custom Heltec display colors** — `heltecHeaderColor()` and `heltecBodyColor()` functions in `src/display.cpp`, used in displayShow for HELTEC_WIRELESS_TRACKER
 - **Centered display text** — body text centered via `(160 - textWidth) / 2`, header centered in symbol-aware space
 - **Startup screen** — shows "9M2PJU Mod <versionDate>" centered (src/display.cpp startupScreen function)
