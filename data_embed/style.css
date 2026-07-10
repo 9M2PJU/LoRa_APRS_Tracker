@@ -7,61 +7,75 @@
     border-radius:0px
 }
 
+/* Malaysia flag accent colors (dark-mode tuned) */
 :root {
-    --accent: #1565d8;
-    --accent-light: #4a9eff;
-    --accent-bg: rgba(21, 101, 216, 0.08);
-    --accent-border: rgba(21, 101, 216, 0.25);
+    --my-blue: #1565d8;
+    --my-blue-light: #4a9eff;
+    --my-red: #e02424;
+    --my-red-light: #ff5252;
+    --my-yellow: #FFCC00;
+    --my-yellow-light: #FFD700;
+    --my-blue-bg: rgba(21, 101, 216, 0.08);
+    --my-blue-border: rgba(21, 101, 216, 0.25);
+    --my-red-border: rgba(224, 36, 36, 0.3);
 }
 [data-bs-theme="dark"] {
-    --accent: #4a9eff;
-    --accent-light: #6ab0ff;
-    --accent-bg: rgba(74, 158, 255, 0.1);
-    --accent-border: rgba(74, 158, 255, 0.3);
+    --my-blue: #4a9eff;
+    --my-blue-light: #6ab0ff;
+    --my-red: #ff5252;
+    --my-red-light: #ff7373;
+    --my-yellow: #FFD700;
+    --my-yellow-light: #FFE44D;
+    --my-blue-bg: rgba(74, 158, 255, 0.1);
+    --my-blue-border: rgba(74, 158, 255, 0.3);
+    --my-red-border: rgba(255, 82, 82, 0.35);
 }
 
-/* Navbar */
-.navbar { border-bottom: 2px solid var(--accent) !important; }
-.navbar-brand { color: var(--accent) !important; font-weight: 600; }
-.navbar-brand:hover { color: var(--accent-light) !important; }
+/* Navbar: blue canton accent + red stripe (flag vibe) */
+.navbar {
+    border-bottom: 2px solid var(--my-blue) !important;
+    box-shadow: 0 2px 0 0 var(--my-red) !important;
+}
+.navbar-brand { color: var(--my-blue) !important; font-weight: 600; }
+.navbar-brand:hover { color: var(--my-yellow) !important; }
 
-/* Section cards */
+/* Section cards: red left border (red stripes), blue heading (blue canton) */
 .config-section {
     background: var(--bs-body-bg);
-    border: 1px solid var(--accent-border);
-    border-left: 3px solid var(--accent);
+    border: 1px solid var(--my-blue-border);
+    border-left: 3px solid var(--my-red);
     border-radius: .5rem;
     padding: 1rem 1.25rem;
     margin-bottom: 1.5rem;
 }
-.config-section h5 { margin-bottom: .25rem; color: var(--accent); }
+.config-section h5 { margin-bottom: .25rem; color: var(--my-blue); }
 .config-section > .row { margin-bottom: 0; }
 
-/* Form focus states */
+/* Form focus states: blue ring */
 .form-control:focus, .form-select:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 .2rem var(--accent-bg);
+    border-color: var(--my-blue);
+    box-shadow: 0 0 0 .2rem var(--my-blue-bg);
 }
 .form-check-input:checked {
-    background-color: var(--accent);
-    border-color: var(--accent);
+    background-color: var(--my-blue);
+    border-color: var(--my-blue);
 }
 .form-check-input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 .2rem var(--accent-bg);
+    border-color: var(--my-blue);
+    box-shadow: 0 0 0 .2rem var(--my-blue-bg);
 }
 
-/* Save button */
-.btn-save { background: var(--accent); border-color: var(--accent); }
-.btn-save:hover { background: var(--accent-light); border-color: var(--accent-light); }
+/* Save button: blue with yellow hover (blue canton + yellow star) */
+.btn-save { background: var(--my-blue); border-color: var(--my-blue); color: #fff; }
+.btn-save:hover { background: var(--my-blue-light); border-color: var(--my-blue-light); color: var(--my-yellow); }
 
 /* Beacon entries */
 .beacons .beacon-indent { padding-left: .5rem; }
 .beacons .beacon-indent2 { padding-left: 2.5rem; }
 
-/* Links */
-a { color: var(--accent); }
-a:hover { color: var(--accent-light); }
+/* Links: blue, yellow on hover */
+a { color: var(--my-blue); }
+a:hover { color: var(--my-yellow); }
 
 /* Mobile: stack form fields full width */
 @media (max-width: 575.98px) {
