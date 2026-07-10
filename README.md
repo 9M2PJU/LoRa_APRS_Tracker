@@ -98,6 +98,67 @@ Replies come back as APRS messages — read them via Messages → Read.
 
 > **Full user guide for 9M2PJU-4 APRS Bot:** https://hamradio.my/9m2pju-aprs-bot/
 
+### Smart Beaconing (Malaysia-tuned)
+
+All 3 beacon profiles have been retuned for Malaysian use cases, with battery preservation as a priority. The original CA2RXU values were designed for European cycling/driving — this fork adjusts speed bands, beacon intervals, and turn thresholds to match Malaysian conditions while reducing TX frequency 20-33% across all profiles.
+
+**Runner (Profile 1) — Hiking / SOTA**
+
+Tuned for long battery sessions (6-12h SOTA activations). 33% fewer transmissions vs original.
+
+| Parameter | Original (CA2RXU) | 9M2PJU | Notes |
+|---|---|---|---|
+| Slow beacon rate | 120 s | 180 s | At rest/summit, beacon every 3 min |
+| Slow speed threshold | 3 km/h | 3 km/h | Unchanged |
+| Fast beacon rate | 60 s | 90 s | When moving fast |
+| Fast speed threshold | 15 km/h | 15 km/h | Unchanged |
+| Min TX distance | 50 m | 70 m | Fewer beacons on switchback trails |
+| Min turn interval | 20 s | 25 s | Fewer turn-triggered beacons |
+| Turn min angle | 12 deg | 14 deg | Less sensitive to minor direction changes |
+| Turn slope | 60 | 60 | Unchanged (preserves speed-scaling curve) |
+
+**Bike (Profile 3) — Motorcycle (NOT bicycle)**
+
+The original "Bike" profile was tuned for a bicycle (fastSpeed=40 km/h). Retuned for motorcycle use on Malaysian roads and highways. 20% fewer transmissions vs original.
+
+| Parameter | Original (CA2RXU) | 9M2PJU | Notes |
+|---|---|---|---|
+| Slow beacon rate | 120 s | 150 s | At traffic lights, 2.5 min |
+| Slow speed threshold | 5 km/h | 15 km/h | Motorcycle crawling speed, not bicycle |
+| Fast beacon rate | 60 s | 75 s | Highway cruising |
+| Fast speed threshold | 40 km/h | 80 km/h | Malaysian highway cruising speed |
+| Min TX distance | 100 m | 150 m | Filters city stop-go TX |
+| Min turn interval | 12 s | 15 s | Fewer turn beacons at intersections |
+| Turn min angle | 12 deg | 12 deg | Unchanged |
+| Turn slope | 60 | 70 | Between bicycle (60) and car (80) |
+
+APRS symbol: motorcycle `<`
+
+**Car (Profile 2) — Driving**
+
+Tuned for Malaysian city traffic and highway speeds (PLUS North-South Expressway, limit 110 km/h). 20-30% fewer transmissions vs original.
+
+| Parameter | Original (CA2RXU) | 9M2PJU | Notes |
+|---|---|---|---|
+| Slow beacon rate | 120 s | 150 s | In traffic jam, 2.5 min |
+| Slow speed threshold | 10 km/h | 10 km/h | Unchanged (KL traffic) |
+| Fast beacon rate | 60 s | 75 s | Highway cruising |
+| Fast speed threshold | 70 km/h | 80 km/h | Extends proportional band for MY highway speeds |
+| Min TX distance | 100 m | 150 m | Filters city stop-go TX |
+| Min turn interval | 12 s | 15 s | Fewer turn beacons |
+| Turn min angle | 10 deg | 12 deg | Less sensitive to minor curves |
+| Turn slope | 80 | 80 | Unchanged |
+
+**How Smart Beaconing works:**
+
+The tracker uses two independent triggers to decide when to beacon:
+
+1. **Speed-based interval** — If speed is below `slowSpeed`, beacon every `slowRate` seconds. If above `fastSpeed`, beacon every `fastRate` seconds. In between, the interval scales proportionally (faster = more frequent beacons, but never more than `fastRate`).
+
+2. **Turn/cornering beacon** — If you change heading by more than a threshold angle (which scales with speed via `turnSlope`), and you've moved at least `minTxDist` meters, and `minDeltaBeacon` seconds have passed since the last beacon, it sends immediately. This captures turns at intersections and highway exits without waiting for the time interval.
+
+When Smart Beaconing is off, the tracker falls back to a fixed interval (`nonSmartBeaconRate`, default 15 minutes).
+
 ### Config (shipped defaults)
 
 | Setting | Value |
@@ -121,6 +182,7 @@ Replies come back as APRS messages — read them via Messages → Read.
 | `src/menu_utils.cpp` | `LoRa[MY]` label, APRSMYSunday menu entries (case 14/140/1400), SOTA/POTA report menus (case 34/35/340/341/350/351) |
 | `src/keyboard_utils.cpp` | APRSMY check-in send logic (lines 363-372, 622-625), SOTA/POTA report send logic |
 | `src/lora_utils.cpp` | `MALAYSIA` frequency label |
+| `src/smartbeacon_utils.cpp` | Malaysia-tuned smart beacon presets (runner/motorcycle/car), 20-33% fewer TX for battery preservation |
 | `data/tracker_conf.json` | Callsign, frequency, symbols, GPS Eco Mode off |
 | `docs/index.html` | Web installer page |
 | `docs/manifest-heltec-wireless-tracker.json` | ESP Web Tools flash manifest |

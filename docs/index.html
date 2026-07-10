@@ -87,7 +87,7 @@
             <div class="device-label">Heltec Wireless Tracker (ESP32-S3 + ST7735 TFT)</div>
             <div class="install-btn-wrapper">
                 <esp-web-install-button
-                    manifest="manifest-heltec-wireless-tracker.json?v=14">
+                    manifest="manifest-heltec-wireless-tracker.json?v=15">
                     <button slot="activate">INSTALL</button>
                 </esp-web-install-button>
             </div>
@@ -170,6 +170,7 @@
                 <li>Startup text: "9M2PJU Mod" + version date</li>
                 <li>GPS Eco Mode off (GPS always active)</li>
                 <li>Profile 3 symbol: motorcycle</li>
+                <li>Smart Beaconing tuned for Malaysia (20-33% fewer TX, battery-saving)</li>
             </ul>
         </div>
 
@@ -256,6 +257,22 @@
             </ul>
             <p style="margin-top: 12px; font-size: 0.9em;">
                 Full user guide for 9M2PJU-4 APRS Bot: <a href="https://hamradio.my/9m2pju-aprs-bot/" target="_blank" style="color: #6ab0ff;">https://hamradio.my/9m2pju-aprs-bot/</a>
+            </p>
+        </div>
+
+        <div class="info">
+            <h2>Smart Beaconing &mdash; Malaysia-tuned</h2>
+            <p style="margin-bottom: 10px; line-height: 1.6;">
+                All 3 beacon profiles are retuned for Malaysian use cases with battery preservation
+                in mind. 20-33% fewer transmissions vs the original CA2RXU values.
+            </p>
+            <ul>
+                <li><strong>Runner (Profile 1)</strong> &mdash; Hiking / SOTA: 3-min beacons at rest, tuned for long battery sessions</li>
+                <li><strong>Bike (Profile 3)</strong> &mdash; Motorcycle (not bicycle): speed band 15-80 km/h for Malaysian roads &amp; highways</li>
+                <li><strong>Car (Profile 2)</strong> &mdash; Driving: fastSpeed raised to 80 km/h for PLUS highway speeds, 2.5-min beacons in traffic</li>
+            </ul>
+            <p style="margin-top: 10px; font-size: 0.9em; color: #8ab8f0;">
+                See the README for full parameter comparison tables (original vs tuned values).
             </p>
         </div>
 

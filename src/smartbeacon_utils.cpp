@@ -36,9 +36,9 @@ uint32_t            wxRequestTime               = 0;
 
 
 SmartBeaconValues   smartBeaconSettings[3] = {
-    {120,  3, 60, 15,  50, 20, 12, 60},     // Runner settings  = SLOW
-    {120,  5, 60, 40, 100, 12, 12, 60},     // Bike settings    = MEDIUM
-    {120, 10, 60, 70, 100, 12, 10, 80}      // Car settings     = FAST
+    {180,  3, 90, 15,  70, 25, 14, 60},     // Runner settings  = SLOW  (9M2PJU: tuned for hiking/SOTA, 33% less TX)
+    {150, 15, 75, 80, 150, 15, 12, 70},     // Bike settings    = MEDIUM (9M2PJU: tuned for motorcycle, not bicycle)
+    {150, 10, 75, 80, 150, 15, 12, 80}      // Car settings     = FAST  (9M2PJU: tuned for MY highway speeds)
 };
 
 
