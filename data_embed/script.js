@@ -138,9 +138,9 @@ function loadSettings(settings) {
             <div class="form-check form-switch col-6 col-md-5 px-1 mb-2" style="margin-left: 50px;">
                 <label for="beacons.${index}.smartBeaconSetting" class="form-label"><small>Smart Beacon Setting</small></label>
                 <select name="beacons.${index}.smartBeaconSetting" id="beacons.${index}.smartBeaconSetting" class="form-control">
-                    <option value="0" ${beacons.smartBeaconSetting == 0 ? 'selected' : ''}>Human/Runner (Slow Speed)</option>
-                    <option value="1" ${beacons.smartBeaconSetting == 1 ? 'selected' : ''}>Bicycle (Mid Speed)</option>
-                    <option value="2" ${beacons.smartBeaconSetting == 2 ? 'selected' : ''}>Car/Motorcycle (Fast Speed)</option>
+                    <option value="0" ${beacons.smartBeaconSetting == 0 ? 'selected' : ''}>Runner/Hiking (Slow)</option>
+                    <option value="1" ${beacons.smartBeaconSetting == 1 ? 'selected' : ''}>Motorcycle (Medium)</option>
+                    <option value="2" ${beacons.smartBeaconSetting == 2 ? 'selected' : ''}>Car (Fast)</option>
                 </select>
             </div>
             <div class="form-floating col-12 col-md-9 px-1 mb-2" style="margin-left: 50px;">
