@@ -34,8 +34,8 @@ Fork of CA2RXU LoRa APRS Tracker, modified by 9M2PJU for Malaysia.
 
 ## Config (data/tracker_conf.json)
 - Display timeout: 3 seconds
-- Winlink email: 9m2pju@gmail.com (used for posmsg command to 9M2PJU-4 APRS Bot, menu option 60)
-- Winlink password: ABCDEF (placeholder — should be real Winlink account password)
+- Posmsg email: 9m2pju@gmail.com (used by Extras → Send Email(GPS), sends `posmsg <email>` to 9M2PJU-4 APRS Bot, menu option 60)
+- Winlink password: ABCDEF (placeholder — should be real Winlink account password, used for Winlink login challenge-response, menu option 50)
 - 3 beacon profiles: Profile 1=Runner(setting 0), Profile 2=Car(setting 2), Profile 3=Bike(setting 1)
 - Smart beacon presets are in src/smartbeacon_utils.cpp lines 38-42 (all original values, not modified)
 
