@@ -87,7 +87,7 @@
             <div class="device-label">Heltec Wireless Tracker (ESP32-S3 + ST7735 TFT)</div>
             <div class="install-btn-wrapper">
                 <esp-web-install-button
-                    manifest="manifest-heltec-wireless-tracker.json?v=12">
+                    manifest="manifest-heltec-wireless-tracker.json?v=13">
                     <button slot="activate">INSTALL</button>
                 </esp-web-install-button>
             </div>
@@ -159,6 +159,7 @@
                 <li>LoRa label: <strong>LoRa[MY]</strong></li>
                 <li>Clock: <strong>Malaysia Time (UTC+8)</strong></li>
                 <li><strong>APRSMYSunday</strong> net check-in (Messages menu)</li>
+                <li><strong>SOTA &amp; POTA</strong> spots and alerts (Reports menu)</li>
                 <li>Centered text on all screens</li>
                 <li>Navy blue header bar with yellow text</li>
                 <li>Cyan menu items, yellow selection indicator</li>
@@ -237,6 +238,21 @@
                 <li>Quick Check In: sends <code>CHECK #APRSMYSunday Net from LoRa Tracker 73!</code></li>
                 <li>Custom message: type your own text, sent as <code>CHECK #APRSMY &lt;your text&gt;</code></li>
                 <li>Messages are sent to callsign <strong>APRSMY</strong> via LoRa APRS</li>
+            </ul>
+        </div>
+
+        <div class="info">
+            <h2>SOTA &amp; POTA Reports</h2>
+            <p style="margin-bottom: 10px; line-height: 1.6;">
+                Query SOTA (Summits On The Air) and POTA (Parks On The Air) spots and alerts
+                from the 9M2PJU-4 gateway, right from your tracker.
+            </p>
+            <ul>
+                <li>Go to <strong>Reports → SOTA → Spots</strong> — sends <code>SOTA spots</code> to 9M2PJU-4</li>
+                <li>Go to <strong>Reports → SOTA → Alerts</strong> — sends <code>SOTA alerts</code> to 9M2PJU-4</li>
+                <li>Go to <strong>Reports → POTA → Spots</strong> — sends <code>POTA spots</code> to 9M2PJU-4</li>
+                <li>Go to <strong>Reports → POTA → Alerts</strong> — sends <code>POTA alerts</code> to 9M2PJU-4</li>
+                <li>Replies come back as APRS messages — read via <strong>Messages → Read</strong></li>
             </ul>
         </div>
 
