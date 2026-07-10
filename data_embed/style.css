@@ -7,23 +7,61 @@
     border-radius:0px
 }
 
+:root {
+    --accent: #1565d8;
+    --accent-light: #4a9eff;
+    --accent-bg: rgba(21, 101, 216, 0.08);
+    --accent-border: rgba(21, 101, 216, 0.25);
+}
+[data-bs-theme="dark"] {
+    --accent: #4a9eff;
+    --accent-light: #6ab0ff;
+    --accent-bg: rgba(74, 158, 255, 0.1);
+    --accent-border: rgba(74, 158, 255, 0.3);
+}
+
+/* Navbar */
+.navbar { border-bottom: 2px solid var(--accent) !important; }
+.navbar-brand { color: var(--accent) !important; font-weight: 600; }
+.navbar-brand:hover { color: var(--accent-light) !important; }
+
 /* Section cards */
 .config-section {
     background: var(--bs-body-bg);
-    border: 1px solid var(--bs-border-color);
+    border: 1px solid var(--accent-border);
+    border-left: 3px solid var(--accent);
     border-radius: .5rem;
     padding: 1rem 1.25rem;
     margin-bottom: 1.5rem;
 }
-.config-section h5 { margin-bottom: .25rem; }
+.config-section h5 { margin-bottom: .25rem; color: var(--accent); }
 .config-section > .row { margin-bottom: 0; }
+
+/* Form focus states */
+.form-control:focus, .form-select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 .2rem var(--accent-bg);
+}
+.form-check-input:checked {
+    background-color: var(--accent);
+    border-color: var(--accent);
+}
+.form-check-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 .2rem var(--accent-bg);
+}
+
+/* Save button */
+.btn-save { background: var(--accent); border-color: var(--accent); }
+.btn-save:hover { background: var(--accent-light); border-color: var(--accent-light); }
 
 /* Beacon entries */
 .beacons .beacon-indent { padding-left: .5rem; }
 .beacons .beacon-indent2 { padding-left: 2.5rem; }
 
-/* Navbar save button always visible */
-.navbar .btn-save { white-space: nowrap; }
+/* Links */
+a { color: var(--accent); }
+a:hover { color: var(--accent-light); }
 
 /* Mobile: stack form fields full width */
 @media (max-width: 575.98px) {
