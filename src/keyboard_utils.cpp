@@ -112,9 +112,9 @@ namespace KEYBOARD_Utils {
             if (menuDisplay < 240) menuDisplay = 241;
         }
 
-        else if (menuDisplay >= 30 && menuDisplay <= 35) {
+        else if (menuDisplay >= 30 && menuDisplay <= 36) {
             menuDisplay--;
-            if (menuDisplay < 30) menuDisplay = 35;
+            if (menuDisplay < 30) menuDisplay = 36;
         }
         else if (menuDisplay >= 340 && menuDisplay <= 341) {
             menuDisplay--;
@@ -207,9 +207,9 @@ namespace KEYBOARD_Utils {
             if (menuDisplay > 241) menuDisplay = 240;
         }
 
-        else if (menuDisplay >= 30 && menuDisplay <= 35) {
+        else if (menuDisplay >= 30 && menuDisplay <= 36) {
             menuDisplay++;
-            if (menuDisplay > 35) menuDisplay = 30;
+            if (menuDisplay > 36) menuDisplay = 30;
         }
         else if (menuDisplay >= 340 && menuDisplay <= 341) {
             menuDisplay++;
@@ -503,6 +503,13 @@ namespace KEYBOARD_Utils {
             MSG_Utils::addToOutputBuffer(0, "9M2PJU-4", "POTA alerts");
             #ifdef HAS_JOYSTICK
                 menuDisplay = 35;
+            #endif
+        }
+        else if (menuDisplay == 36) {
+            logger.log(logging::LoggerLevel::LOGGER_LEVEL_INFO, "Loop", "%s", "9M2PJU-4: prop");
+            MSG_Utils::addToOutputBuffer(0, "9M2PJU-4", "prop");
+            #ifdef HAS_JOYSTICK
+                menuDisplay = 3;
             #endif
         }
 

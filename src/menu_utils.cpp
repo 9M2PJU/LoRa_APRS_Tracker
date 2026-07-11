@@ -480,10 +480,10 @@ namespace MENU_Utils {
 
 //////////
             case 30:     // 3. Reports : Wx Report
-                displayShow(" REPORTS >", "  5.SOTA", "  6.POTA", "> 1.Wx Report", "  2.Hospital QTH", lastLine);
+                displayShow(" REPORTS >", "  6.POTA", "  7.HF Report", "> 1.Wx Report", "  2.Hospital QTH", lastLine);
                 break;
             case 31:     // 3. Reports : Nearest Hospital
-                displayShow(" REPORTS >", "  6.POTA", "  1.Wx Report", "> 2.Hospital QTH", "  3.Police QTH", lastLine);
+                displayShow(" REPORTS >", "  7.HF Report", "  1.Wx Report", "> 2.Hospital QTH", "  3.Police QTH", lastLine);
                 break;
             case 32:     // 3. Reports : Nearest Police Station
                 displayShow(" REPORTS >", "  1.Wx Report", "  2.Hospital QTH", "> 3.Police QTH", "  4.Fire Station QTH", lastLine);
@@ -495,7 +495,10 @@ namespace MENU_Utils {
                 displayShow(" REPORTS >", "  3.Police QTH", "  4.Fire Station QTH", "> 5.SOTA", "  6.POTA", lastLine);
                 break;
             case 35:     // 3. Reports : POTA
-                displayShow(" REPORTS >", "  4.Fire Station QTH", "  5.SOTA", "> 6.POTA", "  1.Wx Report", lastLine);
+                displayShow(" REPORTS >", "  4.Fire Station QTH", "  5.SOTA", "> 6.POTA", "  7.HF Report", lastLine);
+                break;
+            case 36:     // 3. Reports : HF Report
+                displayShow(" REPORTS >", "  5.SOTA", "  6.POTA", "> 7.HF Report", "  1.Wx Report", lastLine);
                 break;
 
             case 300:
