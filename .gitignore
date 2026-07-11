@@ -8,3 +8,5 @@
 installer/firmware
 installer/*.bin
 **/__pycache__/AGENTS.md
+# Personal device backups — never commit (contains callsign, WiFi AP password, Winlink password, etc.)
+backups/
