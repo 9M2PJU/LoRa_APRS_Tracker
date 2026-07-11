@@ -75,6 +75,13 @@
         .footer a:hover { text-decoration: underline; }
         #browserWarning { display: none; background: rgba(80, 30, 30, 0.7); border: 1px solid #a04040; border-radius: 8px; padding: 15px; margin: 20px 0; color: #e0a0a0; }
         code { background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+        details { margin: 12px 0; border: 1px solid #1a3a6a; border-radius: 8px; background: rgba(10, 20, 40, 0.5); overflow: hidden; }
+        details summary { padding: 10px 16px; cursor: pointer; font-weight: 600; color: #6ab0ff; list-style: none; display: flex; align-items: center; gap: 8px; user-select: none; }
+        details summary::-webkit-details-marker { display: none; }
+        details summary::before { content: "\25B6"; font-size: 0.7em; transition: transform 0.2s; }
+        details[open] summary::before { transform: rotate(90deg); }
+        details summary:hover { background: rgba(20, 40, 70, 0.5); }
+        details .details-content { padding: 0 16px 14px 16px; }
     </style>
 </head>
 <body>
@@ -285,142 +292,159 @@
                 the correct choice for LoRa APRS in Malaysia.
             </p>
 
-            <h3 style="color: #6ab0ff; font-size: 1em; margin: 18px 0 8px 0;">What is an APRS WIDE path?</h3>
-            <p style="margin-bottom: 10px; line-height: 1.6;">
-                When you send an APRS packet, it only travels as far as your radio signal reaches.
-                A <strong>digipeater</strong> (digital repeater) is a station that hears your packet
-                and re-transmits it so it can travel further &mdash; like passing a message along a
-                chain of people. The <strong>path</strong> field in your settings tells digipeaters
-                <em>which ones</em> may relay your packet and <em>how many times</em>.
-            </p>
-            <p style="margin-bottom: 10px; line-height: 1.6;">
-                The path uses the format <code>WIDE<em>n</em>-<em>N</em></code>, where:
-            </p>
-            <ul>
-                <li><strong>First number (<code>WIDE<strong>1</strong>-1</code>) = the digipeater type (alias).</strong> This tells <em>which kind</em> of digipeater may relay your packet:
-                    <ul style="margin-top: 5px; padding-left: 20px;">
-                        <li><code>WIDE1</code> = <strong>fill-in digipeater</strong> &mdash; simple, low-power stations like another tracker or a home station. Good for one short hop to fill coverage gaps.</li>
-                        <li><code>WIDE2</code> = <strong>wide-coverage digipeater</strong> &mdash; higher-power stations on tall buildings or hills, covering a larger area.</li>
-                        <li><code>WIDE3</code> = rarely used, would require a WIDE3-capable digipeater. Almost never needed.</li>
+            <details>
+                <summary>What is an APRS WIDE path?</summary>
+                <div class="details-content">
+                    <p style="margin-bottom: 10px; line-height: 1.6;">
+                        When you send an APRS packet, it only travels as far as your radio signal reaches.
+                        A <strong>digipeater</strong> (digital repeater) is a station that hears your packet
+                        and re-transmits it so it can travel further &mdash; like passing a message along a
+                        chain of people. The <strong>path</strong> field in your settings tells digipeaters
+                        <em>which ones</em> may relay your packet and <em>how many times</em>.
+                    </p>
+                    <p style="margin-bottom: 10px; line-height: 1.6;">
+                        The path uses the format <code>WIDE<em>n</em>-<em>N</em></code>, where:
+                    </p>
+                    <ul>
+                        <li><strong>First number (<code>WIDE<strong>1</strong>-1</code>) = the digipeater type (alias).</strong> This tells <em>which kind</em> of digipeater may relay your packet:
+                            <ul style="margin-top: 5px; padding-left: 20px;">
+                                <li><code>WIDE1</code> = <strong>fill-in digipeater</strong> &mdash; simple, low-power stations like another tracker or a home station. Good for one short hop to fill coverage gaps.</li>
+                                <li><code>WIDE2</code> = <strong>wide-coverage digipeater</strong> &mdash; higher-power stations on tall buildings or hills, covering a larger area.</li>
+                                <li><code>WIDE3</code> = rarely used, would require a WIDE3-capable digipeater. Almost never needed.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Second number (<code>WIDE1-<strong>1</strong></code>) = the hop counter.</strong> This tells <em>how many times</em> the packet may be relayed. Each digipeater that relays it subtracts 1. When it reaches 0, no more relaying.
+                            <ul style="margin-top: 5px; padding-left: 20px;">
+                                <li><code>-1</code> = one hop (relayed once, then stops)</li>
+                                <li><code>-2</code> = two hops (relayed twice, then stops)</li>
+                                <li><code>-3</code> = three hops (rarely appropriate)</li>
+                            </ul>
+                        </li>
                     </ul>
-                </li>
-                <li><strong>Second number (<code>WIDE1-<strong>1</strong></code>) = the hop counter.</strong> This tells <em>how many times</em> the packet may be relayed. Each digipeater that relays it subtracts 1. When it reaches 0, no more relaying.
-                    <ul style="margin-top: 5px; padding-left: 20px;">
-                        <li><code>-1</code> = one hop (relayed once, then stops)</li>
-                        <li><code>-2</code> = two hops (relayed twice, then stops)</li>
-                        <li><code>-3</code> = three hops (rarely appropriate)</li>
+                    <p style="margin-top: 10px; line-height: 1.6;">
+                        <strong>Example:</strong> You send <code>WIDE2-2</code>. Digipeater A hears it,
+                        relays it as <code>WIDE2-1</code> (subtracted 1). Digipeater B hears that, relays it
+                        as <code>WIDE2-0</code> (subtracted 1 again). Now the counter is 0 &mdash; no more
+                        digipeaters will relay it. Your packet traveled 2 hops total.
+                    </p>
+                </div>
+            </details>
+
+            <details>
+                <summary>All WIDE path combinations (WIDE1-1, WIDE1-2, WIDE2-1, WIDE2-2, etc.)</summary>
+                <div class="details-content">
+                    <div style="overflow-x: auto; margin: 10px 0;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 0.9em;">
+                            <thead>
+                                <tr style="border-bottom: 2px solid #1a3a6a;">
+                                    <th style="text-align: left; padding: 8px; color: #6ab0ff;">Path</th>
+                                    <th style="text-align: left; padding: 8px; color: #6ab0ff;">Type</th>
+                                    <th style="text-align: left; padding: 8px; color: #6ab0ff;">Hops</th>
+                                    <th style="text-align: left; padding: 8px; color: #6ab0ff;">Good for LoRa?</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom: 1px solid #1a3a6a;">
+                                    <td style="padding: 8px;"><code>WIDE1-1</code></td>
+                                    <td style="padding: 8px;">Fill-in</td>
+                                    <td style="padding: 8px;">1</td>
+                                    <td style="padding: 8px; color: #4caf50;"><strong>Yes &mdash; recommended</strong></td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #1a3a6a;">
+                                    <td style="padding: 8px;"><code>WIDE1-2</code></td>
+                                    <td style="padding: 8px;">Fill-in</td>
+                                    <td style="padding: 8px;">2</td>
+                                    <td style="padding: 8px; color: #d4a017;">No &mdash; non-standard, fill-in digis should only do 1 hop</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #1a3a6a;">
+                                    <td style="padding: 8px;"><code>WIDE2-1</code></td>
+                                    <td style="padding: 8px;">Wide</td>
+                                    <td style="padding: 8px;">1</td>
+                                    <td style="padding: 8px; color: #d4a017;">Rarely &mdash; needs a wide digi, most LoRa trackers only do WIDE1</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #1a3a6a;">
+                                    <td style="padding: 8px;"><code>WIDE2-2</code></td>
+                                    <td style="padding: 8px;">Wide</td>
+                                    <td style="padding: 8px;">2</td>
+                                    <td style="padding: 8px; color: #ff5252;">No &mdash; too many hops for LoRa, causes congestion</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #1a3a6a;">
+                                    <td style="padding: 8px;"><code>WIDE1-1,WIDE2-1</code></td>
+                                    <td style="padding: 8px;">Fill-in + Wide</td>
+                                    <td style="padding: 8px;">2 total</td>
+                                    <td style="padding: 8px; color: #d4a017;">Only if two digipeaters are chained between you and the iGATE</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #1a3a6a;">
+                                    <td style="padding: 8px;"><code>WIDE1-1,WIDE2-2</code></td>
+                                    <td style="padding: 8px;">Fill-in + Wide</td>
+                                    <td style="padding: 8px;">3 total</td>
+                                    <td style="padding: 8px; color: #ff5252;">No &mdash; 3 hops is too much for LoRa</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #1a3a6a;">
+                                    <td style="padding: 8px;"><code>WIDE3-3</code></td>
+                                    <td style="padding: 8px;">N/A</td>
+                                    <td style="padding: 8px;">3</td>
+                                    <td style="padding: 8px; color: #ff5252;">No &mdash; never appropriate, considered interference (QRM)</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px;"><code>RELAY</code></td>
+                                    <td style="padding: 8px;">Legacy</td>
+                                    <td style="padding: 8px;">1</td>
+                                    <td style="padding: 8px; color: #ff5252;">No &mdash; obsolete, no longer used in modern APRS</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p style="margin-top: 10px; line-height: 1.6;">
+                        <strong>Composite paths</strong> like <code>WIDE1-1,WIDE2-1</code> request a chain:
+                        first a fill-in digipeater handles the <code>WIDE1-1</code> part (1 hop), then a
+                        wide digipeater handles the <code>WIDE2-1</code> part (1 more hop). The total is 2
+                        hops. This is the classic path for VHF mobile stations in areas with no direct
+                        iGATE coverage, but on LoRa it's almost never needed.
+                    </p>
+                </div>
+            </details>
+
+            <details>
+                <summary>Why WIDE1-1 for LoRa APRS?</summary>
+                <div class="details-content">
+                    <ul>
+                        <li><strong>LoRa range is already large</strong> (2-10 km+), so one hop is almost always enough to reach an iGATE</li>
+                        <li><strong>LoRa is slow</strong> (~300 bps). Every extra hop means another full packet transmission on the air, eating airtime</li>
+                        <li><strong>More hops = more collisions.</strong> On a shared channel, every relayed packet is another chance for two stations to transmit at once and destroy both packets</li>
+                        <li><strong>WIDE1-1 is the global standard</strong> for portable and mobile trackers &mdash; it means "I'm a low-power portable, please relay me once"</li>
+                        <li><strong>WIDE2-2 and higher</strong> are designed for VHF radio (144 MHz) where range is smaller and multiple hops are needed. On LoRa at 433 MHz, they just waste bandwidth</li>
                     </ul>
-                </li>
-            </ul>
-            <p style="margin-top: 10px; line-height: 1.6;">
-                <strong>Example:</strong> You send <code>WIDE2-2</code>. Digipeater A hears it,
-                relays it as <code>WIDE2-1</code> (subtracted 1). Digipeater B hears that, relays it
-                as <code>WIDE2-0</code> (subtracted 1 again). Now the counter is 0 &mdash; no more
-                digipeaters will relay it. Your packet traveled 2 hops total.
-            </p>
+                </div>
+            </details>
 
-            <h3 style="color: #6ab0ff; font-size: 1em; margin: 18px 0 8px 0;">All WIDE path combinations</h3>
-            <div style="overflow-x: auto; margin: 10px 0;">
-                <table style="width: 100%; border-collapse: collapse; font-size: 0.9em;">
-                    <thead>
-                        <tr style="border-bottom: 2px solid #1a3a6a;">
-                            <th style="text-align: left; padding: 8px; color: #6ab0ff;">Path</th>
-                            <th style="text-align: left; padding: 8px; color: #6ab0ff;">Type</th>
-                            <th style="text-align: left; padding: 8px; color: #6ab0ff;">Hops</th>
-                            <th style="text-align: left; padding: 8px; color: #6ab0ff;">Good for LoRa?</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr style="border-bottom: 1px solid #1a3a6a;">
-                            <td style="padding: 8px;"><code>WIDE1-1</code></td>
-                            <td style="padding: 8px;">Fill-in</td>
-                            <td style="padding: 8px;">1</td>
-                            <td style="padding: 8px; color: #4caf50;"><strong>Yes &mdash; recommended</strong></td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid #1a3a6a;">
-                            <td style="padding: 8px;"><code>WIDE1-2</code></td>
-                            <td style="padding: 8px;">Fill-in</td>
-                            <td style="padding: 8px;">2</td>
-                            <td style="padding: 8px; color: #d4a017;">No &mdash; non-standard, fill-in digis should only do 1 hop</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid #1a3a6a;">
-                            <td style="padding: 8px;"><code>WIDE2-1</code></td>
-                            <td style="padding: 8px;">Wide</td>
-                            <td style="padding: 8px;">1</td>
-                            <td style="padding: 8px; color: #d4a017;">Rarely &mdash; needs a wide digi, most LoRa trackers only do WIDE1</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid #1a3a6a;">
-                            <td style="padding: 8px;"><code>WIDE2-2</code></td>
-                            <td style="padding: 8px;">Wide</td>
-                            <td style="padding: 8px;">2</td>
-                            <td style="padding: 8px; color: #ff5252;">No &mdash; too many hops for LoRa, causes congestion</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid #1a3a6a;">
-                            <td style="padding: 8px;"><code>WIDE1-1,WIDE2-1</code></td>
-                            <td style="padding: 8px;">Fill-in + Wide</td>
-                            <td style="padding: 8px;">2 total</td>
-                            <td style="padding: 8px; color: #d4a017;">Only if two digipeaters are chained between you and the iGATE</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid #1a3a6a;">
-                            <td style="padding: 8px;"><code>WIDE1-1,WIDE2-2</code></td>
-                            <td style="padding: 8px;">Fill-in + Wide</td>
-                            <td style="padding: 8px;">3 total</td>
-                            <td style="padding: 8px; color: #ff5252;">No &mdash; 3 hops is too much for LoRa</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid #1a3a6a;">
-                            <td style="padding: 8px;"><code>WIDE3-3</code></td>
-                            <td style="padding: 8px;">N/A</td>
-                            <td style="padding: 8px;">3</td>
-                            <td style="padding: 8px; color: #ff5252;">No &mdash; never appropriate, considered interference (QRM)</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 8px;"><code>RELAY</code></td>
-                            <td style="padding: 8px;">Legacy</td>
-                            <td style="padding: 8px;">1</td>
-                            <td style="padding: 8px; color: #ff5252;">No &mdash; obsolete, no longer used in modern APRS</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <p style="margin-top: 10px; line-height: 1.6;">
-                <strong>Composite paths</strong> like <code>WIDE1-1,WIDE2-1</code> request a chain:
-                first a fill-in digipeater handles the <code>WIDE1-1</code> part (1 hop), then a
-                wide digipeater handles the <code>WIDE2-1</code> part (1 more hop). The total is 2
-                hops. This is the classic path for VHF mobile stations in areas with no direct
-                iGATE coverage, but on LoRa it's almost never needed.
-            </p>
+            <details>
+                <summary>Using a friend's tracker as your relay</summary>
+                <div class="details-content">
+                    <p style="margin-bottom: 10px; line-height: 1.6;">
+                        If you have no iGATE nearby but a friend with a LoRa APRS tracker is near one, they
+                        can turn ON their digipeater to relay your packets to the iGATE.
+                    </p>
+                    <ul>
+                        <li>Both trackers must use the same path: <code>WIDE1-1</code></li>
+                        <li>The digipeater only relays packets whose path matches its own configured path</li>
+                        <li>Your friend turns ON digipeater (Extras &rarr; Digipeater). You keep yours OFF</li>
+                        <li>You must be within LoRa range of your friend (typically 2-10 km, more with line-of-sight)</li>
+                        <li>Your packet: <code>9M2PJU-7&gt;APLRT1,WIDE1-1:...</code> &rarr; friend relays as <code>9M2PJU-7&gt;APLRT1,9M2ABC*,WIDE1-1:...</code> &rarr; iGATE &rarr; APRS-IS</li>
+                    </ul>
+                    <p style="margin-top: 8px; font-size: 0.9em; color: #8ab8f0; line-height: 1.5;">
+                        The <code>*</code> after your friend's callsign means "this hop has been used."
+                        It tells other digipeaters not to relay the same packet again, preventing loops.
+                    </p>
+                    <p style="margin-top: 12px; line-height: 1.6;">
+                        <strong>How to verify:</strong> Search your callsign on
+                        <a href="https://aprs.fi" target="_blank" style="color: #6ab0ff;">aprs.fi</a>.
+                        You should see your friend's callsign with <code>*</code> in the path column &mdash;
+                        that confirms their digipeater relayed your packet.
+                    </p>
+                </div>
+            </details>
 
-            <h3 style="color: #6ab0ff; font-size: 1em; margin: 18px 0 8px 0;">Why WIDE1-1 for LoRa APRS?</h3>
-            <ul>
-                <li><strong>LoRa range is already large</strong> (2-10 km+), so one hop is almost always enough to reach an iGATE</li>
-                <li><strong>LoRa is slow</strong> (~300 bps). Every extra hop means another full packet transmission on the air, eating airtime</li>
-                <li><strong>More hops = more collisions.</strong> On a shared channel, every relayed packet is another chance for two stations to transmit at once and destroy both packets</li>
-                <li><strong>WIDE1-1 is the global standard</strong> for portable and mobile trackers &mdash; it means "I'm a low-power portable, please relay me once"</li>
-                <li><strong>WIDE2-2 and higher</strong> are designed for VHF radio (144 MHz) where range is smaller and multiple hops are needed. On LoRa at 433 MHz, they just waste bandwidth</li>
-            </ul>
-
-            <h3 style="color: #6ab0ff; font-size: 1em; margin: 18px 0 8px 0;">Using a friend's tracker as your relay</h3>
-            <p style="margin-bottom: 10px; line-height: 1.6;">
-                If you have no iGATE nearby but a friend with a LoRa APRS tracker is near one, they
-                can turn ON their digipeater to relay your packets to the iGATE.
-            </p>
-            <ul>
-                <li>Both trackers must use the same path: <code>WIDE1-1</code></li>
-                <li>The digipeater only relays packets whose path matches its own configured path</li>
-                <li>Your friend turns ON digipeater (Extras &rarr; Digipeater). You keep yours OFF</li>
-                <li>You must be within LoRa range of your friend (typically 2-10 km, more with line-of-sight)</li>
-                <li>Your packet: <code>9M2PJU-7&gt;APLRT1,WIDE1-1:...</code> &rarr; friend relays as <code>9M2PJU-7&gt;APLRT1,9M2ABC*,WIDE1-1:...</code> &rarr; iGATE &rarr; APRS-IS</li>
-            </ul>
-            <p style="margin-top: 8px; font-size: 0.9em; color: #8ab8f0; line-height: 1.5;">
-                The <code>*</code> after your friend's callsign means "this hop has been used."
-                It tells other digipeaters not to relay the same packet again, preventing loops.
-            </p>
-            <p style="margin-top: 12px; line-height: 1.6;">
-                <strong>How to verify:</strong> Search your callsign on
-                <a href="https://aprs.fi" target="_blank" style="color: #6ab0ff;">aprs.fi</a>.
-                You should see your friend's callsign with <code>*</code> in the path column &mdash;
-                that confirms their digipeater relayed your packet.
-            </p>
             <p style="margin-top: 12px; font-size: 0.9em; color: #8ab8f0;">
                 Note: The <strong>S.O.S.</strong> menu item (Extras &rarr; S.O.S.) is a placeholder
                 in the upstream firmware &mdash; it only toggles a flag on the display and does not
