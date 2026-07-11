@@ -98,6 +98,19 @@ Replies come back as APRS messages — read them via Messages → Read.
 
 > **Full user guide for 9M2PJU-4 APRS Bot:** https://hamradio.my/9m2pju-aprs-bot/
 
+### HF Propagation Report
+
+Added by 9M2PJU. Check current HF propagation conditions from the **9M2PJU-4 APRS Bot**, right from the Reports menu. Useful before a SOTA activation, DXpedition, or anytime you want to know if the HF bands are open.
+
+**How to use:**
+1. Menu → Reports → HF Report — sends `prop` to `9M2PJU-4`
+
+The bot replies with current HF band conditions (MUF, solar flux, K-index, band-by-band status). The reply comes back as an APRS message — read it via Messages → Read.
+
+**Menu path:** Reports → HF Report (menu 36)
+
+> **Full user guide for 9M2PJU-4 APRS Bot:** https://hamradio.my/9m2pju-aprs-bot/
+
 ### Smart Beaconing (Malaysia-tuned)
 
 All 3 beacon profiles have been retuned for Malaysian use cases, with battery preservation as a priority. The original CA2RXU values were designed for European cycling/driving — this fork adjusts speed bands, beacon intervals, and turn thresholds to match Malaysian conditions while reducing TX frequency 20-33% across all profiles.
@@ -197,8 +210,8 @@ The web admin UI (accessible via WiFi AP at `192.168.4.1`) has been redesigned f
 |---|---|
 | `src/display.cpp` | Color helpers, military green headers, color-coded centered body text, colored symbols, status accent bar, startup branding, header/symbol layout |
 | `src/utils.cpp` | UTC+8 offset for display clock |
-| `src/menu_utils.cpp` | `LoRa[MY]` label, APRSMYSunday menu entries (case 14/140/1400), SOTA/POTA report menus (case 34/35/340/341/350/351) |
-| `src/keyboard_utils.cpp` | APRSMY check-in send logic (lines 363-372, 622-625), SOTA/POTA report send logic |
+| `src/menu_utils.cpp` | `LoRa[MY]` label, APRSMYSunday menu entries (case 14/140/1400), SOTA/POTA report menus (case 34/35/340/341/350/351), HF Report menu (case 36) |
+| `src/keyboard_utils.cpp` | APRSMY check-in send logic (lines 363-372, 622-625), SOTA/POTA report send logic, HF Report send logic (case 36 sends `prop` to 9M2PJU-4) |
 | `src/lora_utils.cpp` | `MALAYSIA` frequency label |
 | `src/smartbeacon_utils.cpp` | Malaysia-tuned smart beacon presets (runner/motorcycle/car), 20-33% fewer TX for battery preservation |
 | `data/tracker_conf.json` | Callsign, frequency, symbols, GPS Eco Mode off |
