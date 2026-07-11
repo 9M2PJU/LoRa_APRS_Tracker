@@ -76,9 +76,9 @@ Fork of CA2RXU LoRa APRS Tracker, modified by 9M2PJU for Malaysia.
 - Status accent bar: 2px left edge (green=GPS lock, yellow=GPS searching, blue=BT, grey=idle)
 
 ## Git History
-- All commits authored by 9M2PJU only (Devin co-author lines removed via filter-branch)
+- All commits authored by 9M2PJU only (no Devin/Co-Authored-By lines in any commit message)
 - Tags: v1.0-stable, v2.0-stable (both force-pushed after history rewrite)
-- Force push was used to rewrite 8 commits removing Devin co-author
+- History rewrites via filter-branch: first pass removed Devin co-author lines from 8 commits; second pass (2026-07-12) stripped remaining `Co-Authored-By: Devin` lines from 7 commits on main (29 commits rewritten, tree unchanged, force-pushed)
 
 ## Our Modifications (must preserve during upstream sync)
 - **APRSMY check-in** — Malaysia APRS Sunday Net feature in `src/menu_utils.cpp` (case 14/140/1400) and `src/keyboard_utils.cpp` (lines 363-372, 622-625). Sends `CHECK #APRSMY <text>` to callsign `APRSMY`.
