@@ -56,5 +56,7 @@ jobs:
 
             Built from source changes on main. Deploy workflow will
             publish these to GitHub Pages."
+            git fetch --unshallow origin main || git fetch origin main
+            git rebase origin/main
             git push
           fi
