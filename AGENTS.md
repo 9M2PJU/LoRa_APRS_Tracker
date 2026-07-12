@@ -46,8 +46,8 @@ Fork of CA2RXU LoRa APRS Tracker, modified by 9M2PJU for Malaysia.
 ## Key Files
 - `src/smartbeacon_utils.cpp` — smart beacon presets (runner/bike/car)
 - `src/configuration.cpp` — config load/save, defaults (hardcoded fallbacks)
-- `src/keyboard_utils.cpp` — menu logic, email posmsg (line 536), winlink commands, APRSMY check-in (lines 363-372, 622-625), SOTA/POTA report send logic (menu 34/35/340/341/350/351)
-- `src/menu_utils.cpp` — menu display, APRSMY entries (case 14/140/1400), SOTA/POTA report menus (case 34/35/340/341/350/351)
+- `src/keyboard_utils.cpp` — menu logic, email posmsg (line 536), winlink commands, APRSMY check-in (lines 363-372, 622-625), APRSMY query commands STATUS/COUNT/LAST/TOP/ME (cases 141-145), SOTA/POTA report send logic (menu 34/35/340/341/350/351)
+- `src/menu_utils.cpp` — menu display, APRSMY entries (case 14/140-145/1400), SOTA/POTA report menus (case 34/35/340/341/350/351)
 - `src/winlink_utils.cpp` — Winlink challenge-response auth (Fisher-Yates shuffle as of upstream sync)
 - `src/display.cpp` — display rendering, custom Heltec colors (heltecHeaderColor line 331, heltecBodyColor line 337), startup screen (line 647, shows "9M2PJU Mod <versionDate>")
 - `src/LoRa_APRS_Tracker.cpp` — version strings (versionDate, versionNumber line 72-73)
@@ -81,7 +81,7 @@ Fork of CA2RXU LoRa APRS Tracker, modified by 9M2PJU for Malaysia.
 - History rewrites via filter-branch: first pass removed Devin co-author lines from 8 commits; second pass (2026-07-12) stripped remaining `Co-Authored-By: Devin` lines from 7 commits on main (29 commits rewritten, tree unchanged, force-pushed)
 
 ## Our Modifications (must preserve during upstream sync)
-- **APRSMY check-in** — Malaysia APRS Sunday Net feature in `src/menu_utils.cpp` (case 14/140/1400) and `src/keyboard_utils.cpp` (lines 363-372, 622-625). Sends `CHECK #APRSMY <text>` to callsign `APRSMY`.
+- **APRSMY check-in** — Malaysia APRS Sunday Net feature in `src/menu_utils.cpp` (case 14/140-145/1400) and `src/keyboard_utils.cpp` (lines 363-372, 622-625). Sends `CHECK #APRSMY <text>` to callsign `APRSMY`. Sub-menu has 6 items: Check In (case 140, opens write screen with keyboard or sends predefined check-in), STATUS (case 141, sends `STATUS`), COUNT (case 142, sends `COUNT`), LAST (case 143, sends `LAST`), TOP (case 144, sends `TOP`), ME (case 145, sends `ME`). Query commands (141-145) are sent immediately to APRSMY without text input. Replies come as APRS messages read via Messages → Read.
 - **SOTA & POTA reports** — New Reports submenu items (case 34/35/340/341/350/351) in `src/menu_utils.cpp` and `src/keyboard_utils.cpp`. Sends `SOTA spots`, `SOTA alerts`, `POTA spots`, `POTA alerts` to `9M2PJU-4` (9M2PJU-4 APRS Bot). No waiting screen — behaves like existing QTH reports (send and stay on menu). Replies come as APRS messages read via Messages → Read. User guide: https://hamradio.my/9m2pju-aprs-bot/
 - **Custom Heltec display colors** — `heltecHeaderColor()` and `heltecBodyColor()` functions in `src/display.cpp`, used in displayShow for HELTEC_WIRELESS_TRACKER
 - **Centered display text** — body text centered via `(160 - textWidth) / 2`, header centered in symbol-aware space
@@ -104,8 +104,8 @@ When syncing with upstream (`git fetch upstream main && git merge upstream/main`
 |---|---|---|
 | `src/smartbeacon_utils.cpp` | Lines 38-42: our tuned values + comments. Keep original CA2RXU values in comments. | Preset values, struct fields |
 | `src/display.cpp` | `heltecHeaderColor()`, `heltecBodyColor()`, centered text logic, startup screen "9M2PJU Mod", LoRa[MY] label, status accent bar | Display rendering, new features |
-| `src/menu_utils.cpp` | APRSMY entries (case 14/140/1400), SOTA/POTA menus (case 34/35/340/341/350/351), LoRa[MY] label | New menu items, case numbers |
-| `src/keyboard_utils.cpp` | APRSMY send logic (lines 363-372, 622-625), SOTA/POTA send logic, email posmsg | Menu logic, new features |
+| `src/menu_utils.cpp` | APRSMY entries (case 14/140-145/1400), SOTA/POTA menus (case 34/35/340/341/350/351), LoRa[MY] label | New menu items, case numbers |
+| `src/keyboard_utils.cpp` | APRSMY send logic (lines 363-372, 622-625), APRSMY query commands (cases 141-145: STATUS/COUNT/LAST/TOP/ME), SOTA/POTA send logic, email posmsg | Menu logic, new features |
 | `src/lora_utils.cpp` | "MALAYSIA" frequency change label | LoRa init, frequency handling |
 | `src/utils.cpp` | UTC+8 offset for display clock | Time utilities |
 | `src/LoRa_APRS_Tracker.cpp` | versionDate/versionNumber strings (lines 72-73) | Version strings |

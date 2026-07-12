@@ -97,6 +97,10 @@ namespace KEYBOARD_Utils {
             menuDisplay--;
             if (menuDisplay < 130) menuDisplay = 133;
         }
+ else if (menuDisplay >= 140 && menuDisplay <= 145) {
+            menuDisplay--;
+            if (menuDisplay < 140) menuDisplay = 145;
+        }
 
         else if (menuDisplay >= 20 && menuDisplay <= 27) {
             menuDisplay--;
@@ -180,6 +184,9 @@ namespace KEYBOARD_Utils {
  else if (menuDisplay >= 130 && menuDisplay <= 133) {
             menuDisplay++;
             if (menuDisplay > 133) menuDisplay = 130;
+        } else if (menuDisplay >= 140 && menuDisplay <= 145) {
+            menuDisplay++;
+            if (menuDisplay > 145) menuDisplay = 140;
         } else if (menuDisplay == 100) {
             messagesIterator++;
             if (messagesIterator == MSG_Utils::getNumAPRSMessages()) {
@@ -280,7 +287,7 @@ namespace KEYBOARD_Utils {
         } else if (menuDisplay == 1300 ||  menuDisplay == 1310 || menuDisplay == 1400) {
             messageText = "";
             menuDisplay = menuDisplay/10;
-        } else if ((menuDisplay>=10 && menuDisplay<=14) || (menuDisplay>=20 && menuDisplay<=29) || (menuDisplay == 120) || (menuDisplay>=130 && menuDisplay<=133) || (menuDisplay == 140) || (menuDisplay>=50 && menuDisplay<=53) || (menuDisplay>=200 && menuDisplay<=290) || (menuDisplay>=2210 && menuDisplay<=2212) || (menuDisplay>=60 && menuDisplay<=64) || (menuDisplay>=30 && menuDisplay<=35) || (menuDisplay>=340 && menuDisplay<=341) || (menuDisplay>=350 && menuDisplay<=351) || (menuDisplay>=40 && menuDisplay<=41) || (menuDisplay>=400 && menuDisplay<=410)) {
+        } else if ((menuDisplay>=10 && menuDisplay<=14) || (menuDisplay>=20 && menuDisplay<=29) || (menuDisplay == 120) || (menuDisplay>=130 && menuDisplay<=133) || (menuDisplay>=140 && menuDisplay<=145) || (menuDisplay>=50 && menuDisplay<=53) || (menuDisplay>=200 && menuDisplay<=290) || (menuDisplay>=2210 && menuDisplay<=2212) || (menuDisplay>=60 && menuDisplay<=64) || (menuDisplay>=30 && menuDisplay<=35) || (menuDisplay>=340 && menuDisplay<=341) || (menuDisplay>=350 && menuDisplay<=351) || (menuDisplay>=40 && menuDisplay<=41) || (menuDisplay>=400 && menuDisplay<=410)) {
             menuDisplay = int(menuDisplay/10);
         }
  else if (menuDisplay == 5000 || menuDisplay == 5010 || menuDisplay == 5020 || menuDisplay == 5030 || menuDisplay == 5040 || menuDisplay == 5050 || menuDisplay == 5060 || menuDisplay == 5070 || menuDisplay == 5080) {
@@ -385,6 +392,13 @@ namespace KEYBOARD_Utils {
                     menuDisplay = 14;
                 #endif
             }
+        } else if (menuDisplay >= 141 && menuDisplay <= 145) {
+            String aprsmyCmd = (menuDisplay == 141) ? "STATUS" : (menuDisplay == 142) ? "COUNT" : (menuDisplay == 143) ? "LAST" : (menuDisplay == 144) ? "TOP" : "ME";
+            displayShow(" APRSMYSunday", "Sending:", aprsmyCmd, "to APRSMY ...", "", "", 2000);
+            MSG_Utils::addToOutputBuffer(0, "APRSMY", aprsmyCmd);
+            #ifdef HAS_JOYSTICK
+                menuDisplay = 14;
+            #endif
         }
 
         else if (menuDisplay == 210) {

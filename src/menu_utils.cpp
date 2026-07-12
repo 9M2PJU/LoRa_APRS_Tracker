@@ -265,8 +265,23 @@ namespace MENU_Utils {
             case 14:    // 1.Messages ---> APRSMYSunday
                 displayShow(" MESSAGES>", "  Delete", "  APRSThursday", "> APRSMYSunday", "  Read (" + String(MSG_Utils::getNumAPRSMessages()) + ")", lastLine);
                 break;
-            case 140:   // 1.Messages ---> APRSMYSunday ---> Check In
-                displayShow(" APRSMYSunday", "", "", "> Check In", "", lastLine);
+            case 140:   // 1.Messages ---> APRSMYSunday ---> Check-In
+                displayShow(" APRSMYSunday", "  Top", "  Me", "> Check-In", "  Status", lastLine);
+                break;
+            case 141:   // 1.Messages ---> APRSMYSunday ---> Status
+                displayShow(" APRSMYSunday", "  Me", "  Check-In", "> Status", "  Count", lastLine);
+                break;
+            case 142:   // 1.Messages ---> APRSMYSunday ---> Count
+                displayShow(" APRSMYSunday", "  Check-In", "  Status", "> Count", "  Last", lastLine);
+                break;
+            case 143:   // 1.Messages ---> APRSMYSunday ---> Last
+                displayShow(" APRSMYSunday", "  Status", "  Count", "> Last", "  Top", lastLine);
+                break;
+            case 144:   // 1.Messages ---> APRSMYSunday ---> Top
+                displayShow(" APRSMYSunday", "  Count", "  Last", "> Top", "  Me", lastLine);
+                break;
+            case 145:   // 1.Messages ---> APRSMYSunday ---> Me
+                displayShow(" APRSMYSunday", "  Last", "  Top", "> Me", "  Check-In", lastLine);
                 break;
             case 1400:
                 if (messageText.length() <= 67) {
