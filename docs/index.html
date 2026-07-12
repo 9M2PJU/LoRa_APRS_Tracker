@@ -165,7 +165,7 @@
                 <li>LoRa frequency: <strong>433.400 MHz</strong> (Malaysia)</li>
                 <li>LoRa label: <strong>LoRa[MY]</strong></li>
                 <li>Clock: <strong>Malaysia Time (UTC+8)</strong></li>
-                <li><strong>APRSMYSunday</strong> net check-in (Messages menu)</li>
+                <li><strong>APRSMYSunday</strong> net check-in &amp; stats query (Messages menu)</li>
                 <li><strong>SOTA &amp; POTA</strong> spots and alerts (Reports menu)</li>
                 <li><strong>HF Prop Report</strong> &mdash; HF propagation conditions from 9M2PJU-4 bot (Reports menu)</li>
                 <li>Centered text on all screens</li>
@@ -240,14 +240,18 @@
             <h2>APRSMYSunday Net Check-In</h2>
             <p style="margin-bottom: 10px; line-height: 1.6;">
                 This fork includes Malaysia's APRS Sunday Net check-in feature.
-                Check in to the net right from your tracker — no phone or computer needed.
+                Check in to the net and query net stats right from your tracker — no phone or computer needed.
             </p>
+            <p style="margin-bottom: 10px;"><strong>Menu path:</strong> Messages → APRSMYSunday</p>
             <ul>
-                <li>Go to <strong>Messages → APRSMYSunday → Check In</strong></li>
-                <li>Quick Check In: sends <code>CHECK #APRSMYSunday Net from LoRa Tracker 73!</code></li>
-                <li>Custom message: type your own text, sent as <code>CHECK #APRSMY &lt;your text&gt;</code></li>
-                <li>Messages are sent to callsign <strong>APRSMY</strong> via LoRa APRS</li>
+                <li><strong>Check-In</strong> — sends check-in to <code>APRSMY</code>. With keyboard: type custom text (sent as <code>CHECK #APRSMY &lt;your text&gt;</code>). Without keyboard: sends canned <code>CHECK #APRSMYSunday Net from LoRa Tracker 73!</code></li>
+                <li><strong>Status</strong> — sends <code>STATUS</code> to query current net status</li>
+                <li><strong>Count</strong> — sends <code>COUNT</code> to query check-in count</li>
+                <li><strong>Last</strong> — sends <code>LAST</code> to query latest check-in</li>
+                <li><strong>Top</strong> — sends <code>TOP</code> to query top operators</li>
+                <li><strong>Me</strong> — sends <code>ME</code> to query your own check-in stats</li>
             </ul>
+            <p style="margin-bottom: 0;">Replies come back as APRS messages — read them via Messages → Read.</p>
         </div>
 
         <div class="info">
