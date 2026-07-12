@@ -75,12 +75,20 @@ Flash directly from your browser — no software needed:
 
 Malaysia's APRS Sunday Net check-in feature, added by 9M2PJU. The original project only has APRSThursday — this fork adds a Malaysia-specific counterpart.
 
-**How to use:**
-1. Menu → Messages → APRSMYSunday → Check In
-2. Quick Check In: sends the canned message `CHECK #APRSMYSunday Net from LoRa Tracker 73!` to callsign `APRSMY`
-3. Custom message: type your own text, which gets sent to `APRSMY` with prefix `CHECK #APRSMY `
+**Sub-menu items (Messages → APRSMYSunday):**
 
-**Menu path:** Messages → APRSMYSunday → Check In (menu 14 → 140)
+| Item | What it does |
+|---|---|
+| **Check-In** | Sends check-in to `APRSMY`. With keyboard: opens write screen for custom text (sent as `CHECK #APRSMY <text>`). Without keyboard: sends canned `CHECK #APRSMYSunday Net from LoRa Tracker 73!` |
+| **Status** | Sends `STATUS` to `APRSMY` — query current net status |
+| **Count** | Sends `COUNT` to `APRSMY` — query check-in count |
+| **Last** | Sends `LAST` to `APRSMY` — query latest check-in |
+| **Top** | Sends `TOP` to `APRSMY` — query top operators |
+| **Me** | Sends `ME` to `APRSMY` — query your own check-in stats |
+
+Replies come back as APRS messages — read them via Messages → Read.
+
+**Menu path:** Messages → APRSMYSunday (menu 14 → 140-145)
 
 ### SOTA & POTA Reports
 
@@ -210,8 +218,8 @@ The web admin UI (accessible via WiFi AP at `192.168.4.1`) has been redesigned f
 |---|---|
 | `src/display.cpp` | Color helpers, military green headers, color-coded centered body text, colored symbols, status accent bar, startup branding, header/symbol layout |
 | `src/utils.cpp` | UTC+8 offset for display clock |
-| `src/menu_utils.cpp` | `LoRa[MY]` label, APRSMYSunday menu entries (case 14/140/1400), SOTA/POTA report menus (case 34/35/340/341/350/351), HF Report menu (case 36) |
-| `src/keyboard_utils.cpp` | APRSMY check-in send logic (lines 363-372, 622-625), SOTA/POTA report send logic, HF Report send logic (case 36 sends `prop` to 9M2PJU-4) |
+| `src/menu_utils.cpp` | `LoRa[MY]` label, APRSMYSunday menu entries (case 14/140-145/1400), SOTA/POTA report menus (case 34/35/340/341/350/351), HF Report menu (case 36) |
+| `src/keyboard_utils.cpp` | APRSMY check-in send logic (lines 363-372, 622-625), APRSMY query commands Status/Count/Last/Top/Me (case 141-145), SOTA/POTA report send logic, HF Report send logic (case 36 sends `prop` to 9M2PJU-4) |
 | `src/lora_utils.cpp` | `MALAYSIA` frequency label |
 | `src/smartbeacon_utils.cpp` | Malaysia-tuned smart beacon presets (runner/motorcycle/car), 20-33% fewer TX for battery preservation |
 | `data/tracker_conf.json` | Callsign, frequency, symbols, GPS Eco Mode off |
