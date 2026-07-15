@@ -189,7 +189,7 @@ The web admin UI (accessible via WiFi AP at `192.168.4.1`) has been redesigned f
 - **Card-style sections** — each config group (Beacons, LoRa, Display, etc.) is wrapped in a bordered card with a red left border for visual separation
 - **Mobile-responsive** — form fields stack full-width on small screens, larger touch targets, Save button always visible in navbar (not hidden in hamburger menu)
 - **Desktop-optimized** — content constrained to 900px max-width for readability on large screens
-- **Sponsor links as text** — removed 49 KB of base64-encoded sponsor button images, replaced with simple text hyperlinks (GitHub Sponsors, PayPal CA2RXU, PayPal 9M2PJU)
+- **Sponsor links as text** — removed 49 KB of base64-encoded sponsor button images, replaced with simple text hyperlinks (GitHub Sponsors, PayPal CA2RXU, Buy Me a Coffee 9M2PJU, Wise 9M2PJU)
 
 | Metric | Original (upstream) | 9M2PJU Mod | Savings |
 |---|---|---|---|
@@ -226,7 +226,7 @@ The web admin UI (accessible via WiFi AP at `192.168.4.1`) has been redesigned f
 | `data_embed/index.html` | Web admin UI: dark mode, Malaysia flag accent, card sections, mobile-responsive, text sponsor links |
 | `data_embed/style.css` | Malaysia flag accent colors (blue/red/yellow), responsive layout, card sections, touch targets |
 | `data_embed/script.js` | Smart Beacon Setting labels (Runner/Motorcycle/Car), CSS classes replacing inline styles |
-| `docs/index.html` | Web installer page |
+| `docs/index.html` | Web installer page, donation popup (Buy Me a Coffee / Wise / GitHub Sponsors) |
 | `docs/manifest-heltec-wireless-tracker.json` | ESP Web Tools flash manifest |
 | `docs/firmware/` | Pre-built binaries |
 
@@ -250,3 +250,16 @@ Based on [LoRa APRS Tracker](https://github.com/richonguzman/LoRa_APRS_Tracker) 
 
 Fork by **9M2PJU** — Malaysia.
 Web installer at **https://lora.hamradio.my** powered by [ESP Web Tools](https://esphome.github.io/esp-web-tools/).
+
+---
+
+## Support the project
+
+This firmware and the [9M2PJU-4 APRS Bot](https://hamradio.my/9m2pju-aprs-bot/) are free and open source, maintained in spare time. If it has helped you on the trail, on the road, or on the air, a small donation keeps the project running.
+
+- **Buy Me a Coffee** — https://www.buymeacoffee.com/9m2pju
+- **Wise** — https://wise.com/pay/me/faizulz13
+- **GitHub Sponsors (CA2RXU — upstream author)** — https://github.com/sponsors/richonguzman
+- **PayPal (CA2RXU — upstream author)** — http://paypal.me/richonguzman
+
+The web installer at [lora.hamradio.my](https://lora.hamradio.my) shows a donation popup once every 30 days, with a persistent floating Donate button in the bottom-right corner.
