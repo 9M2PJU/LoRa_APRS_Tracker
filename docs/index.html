@@ -625,12 +625,20 @@
             }
         });
 
-        // Donation popup — shows on every visit, plus a floating button
+        // Donation popup — shows on every visit, auto-closes after 10s, plus a floating button
         (function() {
             var modal = document.getElementById('donateModal');
             var floatBtn = document.getElementById('donateFloat');
-            function openModal() { modal.classList.add('open'); }
-            function closeModal() { modal.classList.remove('open'); }
+            var autoCloseTimer = null;
+            function openModal() {
+                modal.classList.add('open');
+                if (autoCloseTimer) clearTimeout(autoCloseTimer);
+                autoCloseTimer = setTimeout(closeModal, 10000);
+            }
+            function closeModal() {
+                modal.classList.remove('open');
+                if (autoCloseTimer) { clearTimeout(autoCloseTimer); autoCloseTimer = null; }
+            }
             floatBtn.addEventListener('click', openModal);
             modal.addEventListener('click', function(e) { if (e.target === modal) closeModal(); });
             document.querySelector('.donate-close').addEventListener('click', closeModal);
