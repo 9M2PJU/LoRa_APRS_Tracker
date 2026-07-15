@@ -255,7 +255,7 @@ Web installer at **https://lora.hamradio.my** powered by [ESP Web Tools](https:/
 
 ## Support the project
 
-This firmware and the [9M2PJU-4 APRS Bot](https://hamradio.my/9m2pju-aprs-bot/) are free and open source, maintained in spare time. If it has helped you on the trail, on the road, or on the air, a small donation keeps the project running.
+This firmware mod is free and open source, maintained in spare time. If it has helped you on the trail, on the road, or on the air, a small donation keeps the project running.
 
 - **Buy Me a Coffee** — https://www.buymeacoffee.com/9m2pju
 - **Wise** — https://wise.com/pay/me/faizulz13
