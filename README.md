@@ -262,4 +262,4 @@ This firmware and the [9M2PJU-4 APRS Bot](https://hamradio.my/9m2pju-aprs-bot/) 
 - **GitHub Sponsors (CA2RXU — upstream author)** — https://github.com/sponsors/richonguzman
 - **PayPal (CA2RXU — upstream author)** — http://paypal.me/richonguzman
 
-The web installer at [lora.hamradio.my](https://lora.hamradio.my) shows a donation popup once every 30 days, with a persistent floating Donate button in the bottom-right corner.
+The web installer at [lora.hamradio.my](https://lora.hamradio.my) shows a donation popup on every visit, with a persistent floating Donate button in the bottom-right corner.

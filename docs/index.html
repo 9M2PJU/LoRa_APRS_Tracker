@@ -553,7 +553,7 @@
                 <li><a href="http://paypal.me/richonguzman" target="_blank" style="color: #6ab0ff;">PayPal (CA2RXU &mdash; upstream author)</a></li>
             </ul>
             <p style="margin-top: 12px; font-size: 0.9em; color: #8ab8f0;">
-                This page also shows a donation popup once every 30 days, with a
+                This page also shows a donation popup on every visit, with a
                 floating <strong>Donate</strong> button in the bottom-right corner.
             </p>
         </div>
@@ -617,27 +617,17 @@
             }
         });
 
-        // Donation popup — shows once per 30 days, plus a floating button
+        // Donation popup — shows on every visit, plus a floating button
         (function() {
             var modal = document.getElementById('donateModal');
             var floatBtn = document.getElementById('donateFloat');
-            var KEY = 'donatePopupShown_v1';
-            var THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
             function openModal() { modal.classList.add('open'); }
             function closeModal() { modal.classList.remove('open'); }
             floatBtn.addEventListener('click', openModal);
             modal.addEventListener('click', function(e) { if (e.target === modal) closeModal(); });
             document.querySelector('.donate-close').addEventListener('click', closeModal);
             document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
-            try {
-                var last = localStorage.getItem(KEY);
-                if (!last || (Date.now() - parseInt(last, 10)) > THIRTY_DAYS) {
-                    setTimeout(function() {
-                        openModal();
-                        localStorage.setItem(KEY, Date.now().toString());
-                    }, 2500);
-                }
-            } catch (e) { /* localStorage unavailable */ }
+            setTimeout(openModal, 2500);
         })();
     </script>
 </body>
