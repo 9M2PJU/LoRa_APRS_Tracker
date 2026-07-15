@@ -131,6 +131,9 @@
             display: flex; align-items: center; gap: 6px;
         }
         #donateFloat:hover { background: #1976e8; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(21, 101, 216, 0.8); }
+        #downloadCounter { padding: 8px 16px; border-radius: 8px; background: rgba(10, 20, 40, 0.5); display: inline-block; }
+        #downloadCounter .counter-num { font-size: 1.4em; font-weight: bold; color: #6ab0ff; }
+        #downloadCounter .counter-suffix { color: #8ab8f0; }
     </style>
 </head>
 <body>
@@ -163,6 +166,9 @@
                 Click INSTALL, pick your device's USB port,<br>
                 and the firmware installs right from your browser.
             </p>
+            <div id="downloadCounter" style="margin-top: 15px; font-size: 0.85em; color: #506080;">
+                <span id="counterLabel">Loading install count&hellip;</span>
+            </div>
         </div>
 
         <div id="rebootMessage" class="warning" style="display: none;">
@@ -630,6 +636,33 @@
             document.querySelector('.donate-close').addEventListener('click', closeModal);
             document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
             setTimeout(openModal, 2500);
+        })();
+
+        // Download counter — shows total INSTALL clicks via counterapi.dev V1
+        (function() {
+            var API_BASE = 'https://api.counterapi.dev/v1/9m2pju-lora-tracker/install-clicks';
+            var counterLabel = document.getElementById('counterLabel');
+            function renderCount(n) {
+                counterLabel.innerHTML = '<span class="counter-num">' + n + '</span> <span class="counter-suffix">installs via this page</span>';
+            }
+            // Fetch current count on page load
+            fetch(API_BASE + '/')
+                .then(function(r) { return r.json(); })
+                .then(function(data) { renderCount(data.count || 0); })
+                .catch(function() { counterLabel.textContent = ''; });
+            // Increment when INSTALL button is clicked
+            var counted = false;
+            function registerClick() {
+                if (counted) return;
+                counted = true;
+                fetch(API_BASE + '/up')
+                    .then(function(r) { return r.json(); })
+                    .then(function(data) { renderCount(data.count || 0); })
+                    .catch(function() { counted = false; });
+            }
+            // Use event delegation — the button is slotted inside esp-web-install-button
+            document.querySelector('.install-btn-wrapper')
+                .addEventListener('click', registerClick);
         })();
     </script>
 </body>
