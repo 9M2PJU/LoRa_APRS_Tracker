@@ -62,10 +62,10 @@ function loadSettings(settings) {
         beaconElement.classList.add("row", "beacons", "border-bottom", "py-2");
 
         beaconElement.innerHTML = `
-            <div class="col-1 px-1 mb-2 d-flex align-items-center">
-                <strong>${index + 1})</strong> <!-- Adding numbering here -->
+            <div class="col-12 col-lg-1 px-1 mb-2 d-flex align-items-center">
+                <strong>${index + 1})</strong>
             </div>
-            <div class="form-floating col-6 col-md-3 px-1 mb-2">
+            <div class="form-floating col-12 col-lg-3 px-1 mb-2">
                 <input 
                     type="text" 
                     class="form-control form-control-sm" 
@@ -75,7 +75,7 @@ function loadSettings(settings) {
                     oninput="this.value = this.value.toUpperCase();">
                 <label for="beacons.${index}.callsign">Callsign</label>
             </div>
-            <div class="form-floating col-6 col-md-2 px-1 mb-2">
+            <div class="form-floating col-6 col-lg-2 px-1 mb-2">
                 <input 
                     type="text" 
                     class="form-control form-control-sm" 
@@ -84,7 +84,7 @@ function loadSettings(settings) {
                     value="${beacons.symbol}">
                 <label for="beacons.${index}.symbol">Symbol</label>
             </div>
-            <div class="form-floating col-6 col-md-2 px-1 mb-2">
+            <div class="form-floating col-6 col-lg-2 px-1 mb-2">
                 <input 
                     type="text" 
                     class="form-control form-control-sm" 
@@ -93,7 +93,7 @@ function loadSettings(settings) {
                     value="${beacons.overlay}">
                 <label for="beacons.${index}.overlay">Overlay</label>
             </div>
-            <div class="form-floating col-6 col-md-2 px-1 mb-2">
+            <div class="form-floating col-12 col-lg-2 px-1 mb-2">
                 <input 
                     type="text" 
                     class="form-control form-control-sm" 
@@ -102,7 +102,7 @@ function loadSettings(settings) {
                     value="${beacons.micE}">
                 <label for="beacons.${index}.micE">Mic-E</label>
             </div>
-            <div class="form-floating col-12 col-md-9 px-1 mb-2 beacon-indent">
+            <div class="form-floating col-12 col-lg-9 px-1 mb-2 beacon-indent">
                 <input
                     type="text"
                     class="form-control form-control-sm"
@@ -111,7 +111,7 @@ function loadSettings(settings) {
                     value="${beacons.comment}">
                 <label for="beacons.${index}.comment">Comment</label>
             </div>
-            <div class="form-check form-switch col-6 col-md-5 px-1 mb-2 beacon-indent2">
+            <div class="form-check form-switch col-12 col-lg-5 px-1 mb-2 beacon-indent2">
                 <input
                     class="form-check-input"
                     type="checkbox"
@@ -123,7 +123,7 @@ function loadSettings(settings) {
                     Smart Beacon Active
                 </label>
             </div>
-            <div class="form-check form-switch col-6 col-md-3 px-1 mb-2">
+            <div class="form-check form-switch col-12 col-lg-3 px-1 mb-2">
                 <input
                     class="form-check-input"
                     type="checkbox"
@@ -135,7 +135,7 @@ function loadSettings(settings) {
                     GPS Eco Mode
                 </label>
             </div>
-            <div class="form-check form-switch col-6 col-md-5 px-1 mb-2 beacon-indent">
+            <div class="form-check form-switch col-12 col-lg-5 px-1 mb-2 beacon-indent">
                 <label for="beacons.${index}.smartBeaconSetting" class="form-label"><small>Smart Beacon Setting</small></label>
                 <select name="beacons.${index}.smartBeaconSetting" id="beacons.${index}.smartBeaconSetting" class="form-control">
                     <option value="0" ${beacons.smartBeaconSetting == 0 ? 'selected' : ''}>Runner/Hiking (Slow)</option>
@@ -143,7 +143,7 @@ function loadSettings(settings) {
                     <option value="2" ${beacons.smartBeaconSetting == 2 ? 'selected' : ''}>Car (Fast)</option>
                 </select>
             </div>
-            <div class="form-floating col-12 col-md-9 px-1 mb-2 beacon-indent">
+            <div class="form-floating col-12 col-lg-9 px-1 mb-2 beacon-indent">
                  <input
                      type="text"
                      class="form-control form-control-sm"
@@ -152,7 +152,7 @@ function loadSettings(settings) {
                      value="${beacons.status}">
                  <label for="beacons.${index}.status">Status</label>
              </div>
-            <div class="form-floating col-12 col-md-9 px-1 mb-2 beacon-indent">
+            <div class="form-floating col-12 col-lg-9 px-1 mb-2 beacon-indent">
                  <input
                      type="text"
                      class="form-control form-control-sm"
@@ -203,10 +203,10 @@ function loadSettings(settings) {
         loraElement.classList.add("row", "lora", "border-bottom", "py-2");
 
         loraElement.innerHTML = `
-            <div class="col-1 px-1 mb-2 d-flex align-items-center">
-                <strong>${index + 1})</strong> <!-- Adding numbering here -->
+            <div class="col-12 col-lg-1 px-1 mb-2 d-flex align-items-center">
+                <strong>${index + 1})</strong>
             </div>
-            <div class="form-floating col-6 col-md-3 px-1 mb-2">
+            <div class="form-floating col-12 col-lg-3 px-1 mb-2">
                 <input 
                     type="number" 
                     class="form-control form-control-sm" 
@@ -215,7 +215,7 @@ function loadSettings(settings) {
                     value="${lora.frequency}">
                 <label for="lora.${index}.frequency">Frequency</label>
             </div>
-            <div class="form-floating col-4 col-md-2 px-1 mb-2">
+            <div class="form-floating col-6 col-lg-2 px-1 mb-2">
                 <input 
                     type="number" 
                     class="form-control form-control-sm" 
@@ -226,7 +226,7 @@ function loadSettings(settings) {
                     max="12">
                 <label for="lora.${index}.spreadingFactor">SF</label>
             </div>
-            <div class="form-floating col-4 col-md-2 px-1 mb-2">
+            <div class="form-floating col-6 col-lg-2 px-1 mb-2">
                 <input 
                     type="number" 
                     class="form-control form-control-sm" 
@@ -237,7 +237,7 @@ function loadSettings(settings) {
                     max="8">
                 <label for="lora.${index}.codingRate4">CR4</label>
             </div>
-            <div class="form-floating col-4 col-md-2 px-1 mb-2">
+            <div class="form-floating col-12 col-lg-2 px-1 mb-2">
                 <input 
                     type="number" 
                     class="form-control form-control-sm" 

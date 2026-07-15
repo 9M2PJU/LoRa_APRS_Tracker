@@ -7,7 +7,7 @@
     border-radius:0px
 }
 
-/* Malaysia flag accent colors (dark-mode tuned) */
+/* ===== Malaysia flag accent colors ===== */
 :root {
     --my-blue: #1565d8;
     --my-blue-light: #4a9eff;
@@ -18,6 +18,8 @@
     --my-blue-bg: rgba(21, 101, 216, 0.08);
     --my-blue-border: rgba(21, 101, 216, 0.25);
     --my-red-border: rgba(224, 36, 36, 0.3);
+    --section-radius: .625rem;
+    --touch-min: 44px;
 }
 [data-bs-theme="dark"] {
     --my-blue: #4a9eff;
@@ -31,7 +33,7 @@
     --my-red-border: rgba(255, 82, 82, 0.35);
 }
 
-/* Navbar: blue canton accent + red stripe (flag vibe) */
+/* ===== Navbar ===== */
 .navbar {
     border-bottom: 2px solid var(--my-blue) !important;
     box-shadow: 0 2px 0 0 var(--my-red) !important;
@@ -39,19 +41,19 @@
 .navbar-brand { color: var(--my-blue) !important; font-weight: 600; }
 .navbar-brand:hover { color: var(--my-yellow) !important; }
 
-/* Section cards: red left border (red stripes), blue heading (blue canton) */
+/* ===== Section cards ===== */
 .config-section {
     background: var(--bs-body-bg);
     border: 1px solid var(--my-blue-border);
     border-left: 3px solid var(--my-red);
-    border-radius: .5rem;
-    padding: 1rem 1.25rem;
-    margin-bottom: 1.5rem;
+    border-radius: var(--section-radius);
+    padding: .875rem 1rem;
+    margin-bottom: 1.25rem;
 }
 .config-section h5 { margin-bottom: .25rem; color: var(--my-blue); }
 .config-section > .row { margin-bottom: 0; }
 
-/* Form focus states: blue ring */
+/* ===== Form focus states ===== */
 .form-control:focus, .form-select:focus {
     border-color: var(--my-blue);
     box-shadow: 0 0 0 .2rem var(--my-blue-bg);
@@ -65,44 +67,228 @@
     box-shadow: 0 0 0 .2rem var(--my-blue-bg);
 }
 
-/* Save button: blue with yellow hover (blue canton + yellow star) */
+/* ===== Save button ===== */
 .btn-save { background: var(--my-blue); border-color: var(--my-blue); color: #fff; }
 .btn-save:hover { background: var(--my-blue-light); border-color: var(--my-blue-light); color: var(--my-yellow); }
 
-/* Beacon entries */
+/* ===== Beacon entries ===== */
 .beacons .beacon-indent { padding-left: .5rem; }
 .beacons .beacon-indent2 { padding-left: 2.5rem; }
 
-/* Links: blue, yellow on hover */
+/* ===== Links ===== */
 a { color: var(--my-blue); }
 a:hover { color: var(--my-yellow); }
 
-/* Mobile: stack form fields full width */
-@media (max-width: 575.98px) {
-    .config-section { padding: .75rem; }
-    .config-section .col-6 { width: 100%; flex: 0 0 100%; }
-    .beacons .beacon-indent, .beacons .beacon-indent2 { padding-left: 0; margin-left: 0 !important; }
-    .navbar-brand { font-size: .95rem; }
-    .container { padding-left: .5rem; padding-right: .5rem; }
-    main > .col-10 { width: 100%; flex: 0 0 100%; max-width: 100%; padding: 0; }
-}
-
-/* Tablet: two columns */
-@media (min-width: 576px) and (max-width: 991.98px) {
-    .config-section .col-lg-3 { margin-bottom: .75rem; }
-}
-
-/* Desktop: max width constraint */
-@media (min-width: 992px) {
-    main > .col-10 { max-width: 900px; }
-}
-
-/* Better touch targets on mobile */
-@media (max-width: 575.98px) {
-    .form-control, .form-check-input { min-height: 2.5rem; }
-    .form-check-label { padding-top: .15rem; }
-}
-
-/* Footer cleanup */
+/* ===== Footer ===== */
 footer img { display: none; }
 footer .sponsor-links a { margin: 0 .5rem; }
+
+/* ===== Sticky mobile save bar ===== */
+#mobileSaveBar {
+    display: none;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 1030;
+    padding: .5rem .75rem;
+    background: var(--bs-body-bg);
+    border-top: 2px solid var(--my-blue);
+    box-shadow: 0 -2px 0 0 var(--my-red), 0 -4px 12px rgba(0,0,0,0.2);
+}
+#mobileSaveBar button {
+    width: 100%;
+    min-height: var(--touch-min);
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+/* ============================================================
+   MOBILE-FIRST: Default styles target phones (<= 991px)
+   Desktop enhancements kick in at lg breakpoint (992px+)
+   ============================================================ */
+
+/* --- Compact section headers on mobile --- */
+.config-section > .row > .col-lg-3 {
+    margin-bottom: .5rem;
+    padding-bottom: .5rem;
+    border-bottom: 1px solid var(--my-blue-border);
+}
+.config-section > .row > .col-lg-3 h5 {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin-bottom: 0 !important;
+    font-size: 1rem;
+}
+.config-section > .row > .col-lg-3 h5 svg {
+    flex-shrink: 0;
+}
+.config-section > .row > .col-lg-3 small {
+    display: block;
+    margin-top: .25rem;
+    font-size: .8rem;
+    line-height: 1.3;
+}
+
+/* --- Container: minimal padding on mobile --- */
+.container {
+    padding-left: .625rem;
+    padding-right: .625rem;
+}
+
+/* --- Larger touch targets --- */
+.form-control, .form-select {
+    min-height: var(--touch-min);
+    font-size: 16px; /* prevents iOS auto-zoom */
+}
+.form-floating > .form-control {
+    min-height: var(--touch-min);
+}
+.form-floating > label {
+    line-height: 1.5;
+}
+
+/* --- Bigger switches --- */
+.form-switch .form-check-input {
+    cursor: pointer;
+    height: 1.5rem;
+    width: 2.75rem;
+    margin-top: 0;
+}
+.form-switch .form-check-input:checked {
+    background-size: 60%;
+}
+.form-check-label {
+    padding-left: .25rem;
+    cursor: pointer;
+}
+.form-check {
+    min-height: var(--touch-min);
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding-left: 2.5rem;
+}
+.form-check .form-check-input {
+    margin-left: -2.5rem;
+    flex-shrink: 0;
+}
+
+/* --- Labels: make small text more readable --- */
+.form-label small {
+    display: block;
+    font-size: .8rem;
+    opacity: .7;
+    line-height: 1.3;
+}
+
+/* --- Input groups: full width, no cramped suffix --- */
+.input-group-text {
+    min-height: var(--touch-min);
+    font-size: .85rem;
+}
+
+/* --- Row spacing: tighter on mobile --- */
+.config-section .row {
+    --bs-gutter-x: .5rem;
+}
+.config-section .row + .row {
+    margin-top: .625rem;
+}
+
+/* --- Beacon/lora: remove indent on mobile (full width) --- */
+.beacons .beacon-indent,
+.beacons .beacon-indent2 {
+    padding-left: 0;
+    margin-left: 0 !important;
+}
+
+/* --- Navbar: compact on mobile --- */
+.navbar-brand { font-size: .95rem; }
+.navbar .container {
+    padding-left: .625rem;
+    padding-right: .625rem;
+}
+
+/* --- Show mobile save bar, hide navbar save button on mobile --- */
+#mobileSaveBar { display: block; }
+.navbar .d-lg-none.btn-save { display: none; }
+/* Add bottom padding so content isn't hidden behind sticky bar */
+body { padding-bottom: 4.5rem; }
+
+/* --- Modals: better sizing on mobile --- */
+.modal-dialog {
+    margin: .5rem;
+}
+
+/* --- Tables: scroll horizontally on mobile --- */
+.table {
+    font-size: .85rem;
+}
+.table thead th {
+    white-space: nowrap;
+}
+
+/* ============================================================
+   TABLET (sm to md): slight improvements
+   ============================================================ */
+@media (min-width: 576px) and (max-width: 991.98px) {
+    .config-section .row {
+        --bs-gutter-x: 1rem;
+    }
+    /* Keep section headers compact on tablet too */
+    .config-section > .row > .col-lg-3 {
+        margin-bottom: .5rem;
+        padding-bottom: .5rem;
+        border-bottom: 1px solid var(--my-blue-border);
+    }
+}
+
+/* ============================================================
+   DESKTOP (lg+): restore multi-column layout
+   ============================================================ */
+@media (min-width: 992px) {
+    /* Section headers: sidebar layout on desktop */
+    .config-section > .row > .col-lg-3 {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+    }
+    .config-section > .row > .col-lg-3 h5 {
+        font-size: 1.25rem;
+        display: block;
+    }
+    .config-section > .row > .col-lg-3 h5 svg {
+        vertical-align: text-bottom;
+    }
+
+    /* Normal container padding */
+    .container {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+
+    /* Normal row spacing */
+    .config-section .row {
+        --bs-gutter-x: 1.5rem;
+    }
+    .config-section .row + .row {
+        margin-top: 1rem;
+    }
+
+    /* Restore beacon indent on desktop */
+    .beacons .beacon-indent { padding-left: .5rem; }
+    .beacons .beacon-indent2 { padding-left: 2.5rem; }
+
+    /* Hide mobile save bar on desktop */
+    #mobileSaveBar { display: none; }
+    body { padding-bottom: 0; }
+
+    /* Restore navbar save button on desktop */
+    .navbar .d-lg-none.btn-save { display: inline-block; }
+
+    /* Normal section padding */
+    .config-section {
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.5rem;
+    }
+}
