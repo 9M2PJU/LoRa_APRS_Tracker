@@ -82,6 +82,53 @@
         details[open] summary::before { transform: rotate(90deg); }
         details summary:hover { background: rgba(20, 40, 70, 0.5); }
         details .details-content { padding: 0 16px 14px 16px; }
+        /* Donation popup */
+        #donateModal {
+            display: none; position: fixed; inset: 0; z-index: 1000;
+            background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(4px);
+            align-items: center; justify-content: center; padding: 20px;
+        }
+        #donateModal.open { display: flex; }
+        .donate-card {
+            background: linear-gradient(160deg, #0f1e38 0%, #0a1428 100%);
+            border: 1px solid #1a3a6a; border-radius: 18px;
+            max-width: 460px; width: 100%; padding: 32px 28px;
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.7);
+            text-align: center; position: relative;
+            animation: donatePop 0.3s ease-out;
+        }
+        @keyframes donatePop { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .donate-card .donate-close {
+            position: absolute; top: 10px; right: 14px;
+            background: none; border: none; color: #506080;
+            font-size: 1.6em; cursor: pointer; line-height: 1; padding: 4px;
+        }
+        .donate-card .donate-close:hover { color: #8ab8f0; }
+        .donate-card h2 { color: #FFD700; font-size: 1.4em; margin-bottom: 8px; }
+        .donate-card .donate-heart { font-size: 2.2em; margin-bottom: 6px; }
+        .donate-card p { color: #c0d0e8; line-height: 1.6; font-size: 0.95em; margin-bottom: 18px; }
+        .donate-btns { display: flex; flex-direction: column; gap: 10px; }
+        .donate-btns a {
+            display: block; padding: 13px 20px; border-radius: 10px;
+            font-weight: 600; text-decoration: none; font-size: 1em;
+            transition: all 0.2s;
+        }
+        .donate-btn-bmc { background: #ffdd00; color: #000; }
+        .donate-btn-bmc:hover { background: #ffe44d; transform: translateY(-1px); }
+        .donate-btn-wise { background: #163300; color: #9fe870; border: 1px solid #2a6b00; }
+        .donate-btn-wise:hover { background: #1f4a00; transform: translateY(-1px); }
+        .donate-btn-gs { background: rgba(255,255,255,0.06); color: #8ab8f0; border: 1px solid #1a3a6a; }
+        .donate-btn-gs:hover { background: rgba(255,255,255,0.12); }
+        .donate-card .donate-footer { margin-top: 14px; font-size: 0.8em; color: #506080; }
+        /* Floating donate button */
+        #donateFloat {
+            position: fixed; bottom: 20px; right: 20px; z-index: 900;
+            background: #1565d8; color: #fff; border: none; border-radius: 50px;
+            padding: 12px 20px; font-size: 0.95em; font-weight: 600; cursor: pointer;
+            box-shadow: 0 4px 16px rgba(21, 101, 216, 0.6); transition: all 0.2s;
+            display: flex; align-items: center; gap: 6px;
+        }
+        #donateFloat:hover { background: #1976e8; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(21, 101, 216, 0.8); }
     </style>
 </head>
 <body>
@@ -94,7 +141,7 @@
             <div class="device-label">Heltec Wireless Tracker (ESP32-S3 + ST7735 TFT)</div>
             <div class="install-btn-wrapper">
                 <esp-web-install-button
-                    manifest="manifest-heltec-wireless-tracker.json?v=17">
+                    manifest="manifest-heltec-wireless-tracker.json?v=18">
                     <button slot="activate">INSTALL</button>
                 </esp-web-install-button>
             </div>
@@ -486,7 +533,7 @@
                 <li><strong>Card-style sections</strong> with red left borders for clear visual grouping</li>
                 <li><strong>Mobile-responsive</strong>: full-width fields, larger touch targets, always-visible Save button</li>
                 <li><strong>Desktop-optimized</strong>: 900px max-width content area for readability</li>
-                <li><strong>Text sponsor links</strong> instead of 49 KB base64 images (GitHub Sponsors, PayPal CA2RXU, PayPal 9M2PJU)</li>
+                <li><strong>Text sponsor links</strong> instead of 49 KB base64 images (GitHub Sponsors, PayPal CA2RXU, Buy Me a Coffee &amp; Wise for 9M2PJU)</li>
             </ul>
         </div>
 
@@ -498,6 +545,27 @@
             </p>
         </div>
     </div>
+
+    <!-- Donation popup -->
+    <div id="donateModal">
+        <div class="donate-card">
+            <button class="donate-close" aria-label="Close">&times;</button>
+            <div class="donate-heart">&#9749;</div>
+            <h2>Support 9M2PJU</h2>
+            <p>
+                This firmware and the 9M2PJU-4 APRS Bot are free and open source,
+                maintained in spare time. If it has helped you on the trail, on the
+                road, or on the air, a small donation keeps the project running.
+            </p>
+            <div class="donate-btns">
+                <a class="donate-btn-bmc" href="https://www.buymeacoffee.com/9m2pju" target="_blank" rel="noopener">Buy Me a Coffee</a>
+                <a class="donate-btn-wise" href="https://wise.com/pay/me/faizulz13" target="_blank" rel="noopener">Wise (faizulz13)</a>
+                <a class="donate-btn-gs" href="https://github.com/sponsors/richonguzman" target="_blank" rel="noopener">GitHub Sponsors (CA2RXU)</a>
+            </div>
+            <p class="donate-footer">73 and thanks for the support!</p>
+        </div>
+    </div>
+    <button id="donateFloat" aria-label="Donate">&#9749; Donate</button>
 
     <script>
         if (!('serial' in navigator)) {
@@ -527,6 +595,29 @@
                 msg.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         });
+
+        // Donation popup — shows once per 30 days, plus a floating button
+        (function() {
+            var modal = document.getElementById('donateModal');
+            var floatBtn = document.getElementById('donateFloat');
+            var KEY = 'donatePopupShown_v1';
+            var THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
+            function openModal() { modal.classList.add('open'); }
+            function closeModal() { modal.classList.remove('open'); }
+            floatBtn.addEventListener('click', openModal);
+            modal.addEventListener('click', function(e) { if (e.target === modal) closeModal(); });
+            document.querySelector('.donate-close').addEventListener('click', closeModal);
+            document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
+            try {
+                var last = localStorage.getItem(KEY);
+                if (!last || (Date.now() - parseInt(last, 10)) > THIRTY_DAYS) {
+                    setTimeout(function() {
+                        openModal();
+                        localStorage.setItem(KEY, Date.now().toString());
+                    }, 2500);
+                }
+            } catch (e) { /* localStorage unavailable */ }
+        })();
     </script>
 </body>
 </html>
