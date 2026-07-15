@@ -49,6 +49,10 @@ extern const unsigned char favicon_data[] asm("_binary_data_embed_favicon_png_gz
 extern const unsigned char favicon_data_end[] asm("_binary_data_embed_favicon_png_gz_end");
 extern const size_t favicon_data_len = favicon_data_end - favicon_data;
 
+extern const unsigned char donate_qr_data[] asm("_binary_data_embed_donate_qr_jpg_gz_start");
+extern const unsigned char donate_qr_data_end[] asm("_binary_data_embed_donate_qr_jpg_gz_end");
+extern const size_t donate_qr_data_len = donate_qr_data_end - donate_qr_data;
+
 namespace WEB_Utils {
 
     AsyncWebServer server(80);
@@ -73,6 +77,13 @@ namespace WEB_Utils {
     void handleFavicon(AsyncWebServerRequest *request) {
         AsyncWebServerResponse *response = request->beginResponse(200, "image/x-icon", (const uint8_t*)favicon_data, favicon_data_len);
         response->addHeader("Content-Encoding", "gzip");
+        request->send(response);
+    }
+
+    void handleDonateQr(AsyncWebServerRequest *request) {
+        AsyncWebServerResponse *response = request->beginResponse(200, "image/jpeg", (const uint8_t*)donate_qr_data, donate_qr_data_len);
+        response->addHeader("Content-Encoding", "gzip");
+        response->addHeader("Cache-Control", "max-age=3600");
         request->send(response);
     }
 
@@ -326,6 +337,7 @@ namespace WEB_Utils {
         server.on("/bootstrap.css", HTTP_GET, handleBootstrapStyle);
         server.on("/bootstrap.js", HTTP_GET, handleBootstrapScript);
         server.on("/favicon.png", HTTP_GET, handleFavicon);
+        server.on("/donate-qr.jpg", HTTP_GET, handleDonateQr);
 
         server.onNotFound(handleNotFound);
 

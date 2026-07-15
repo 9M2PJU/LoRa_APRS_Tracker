@@ -27,6 +27,7 @@ files = [
   'data_embed/bootstrap.js',
   'data_embed/bootstrap.css',
   'data_embed/favicon.png',
+  'data_embed/donate-qr.jpg',
 ]
 
 string_to_find_str = "String"
