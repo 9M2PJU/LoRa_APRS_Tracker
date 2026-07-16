@@ -183,7 +183,7 @@ namespace MENU_Utils {
 
 //////////
             case 10:    // 1.Messages ---> Messages Read
-                displayShow(" MESSAGES>", "  Bulletins (" + String(MSG_Utils::getNumBulletins()) + ")", "  Delete BLN (" + String(MSG_Utils::getNumBulletins()) + ")", "> Read (" + String(MSG_Utils::getNumAPRSMessages()) + ")", "  Write", lastLine);
+                displayShow(" MESSAGES>", "  Bulletins (" + String(MSG_Utils::getNumBulletins()) + ")", "  Delete BLN", "> Read (" + String(MSG_Utils::getNumAPRSMessages()) + ")", "  Write", lastLine);
                 break;
             case 100:   // 1.Messages ---> Messages Read ---> Display Received/Saved APRS Messages
                 {
@@ -202,7 +202,7 @@ namespace MENU_Utils {
                 }
                 break;
             case 11:    // 1.Messages ---> Messages Write
-                displayShow(" MESSAGES>", "  Delete BLN (" + String(MSG_Utils::getNumBulletins()) + ")", "  Read (" + String(MSG_Utils::getNumAPRSMessages()) + ")", "> Write", "  Delete", lastLine);
+                displayShow(" MESSAGES>", "  Delete BLN", "  Read (" + String(MSG_Utils::getNumAPRSMessages()) + ")", "> Write", "  Delete", lastLine);
                 break;
             case 110:   // 1.Messages ---> Messages Write ---> Write
                 if (keyDetected || keyboardConnected) {
@@ -267,10 +267,10 @@ namespace MENU_Utils {
                 displayShow(" MESSAGES>", "  Delete", "  APRSThursday", "> APRSMYSunday", "  Bulletins (" + String(MSG_Utils::getNumBulletins()) + ")", lastLine);
                 break;
             case 15:    // 1.Messages ---> Bulletins
-                displayShow(" MESSAGES>", "  APRSThursday", "  APRSMYSunday", "> Bulletins (" + String(MSG_Utils::getNumBulletins()) + ")", "  Delete BLN (" + String(MSG_Utils::getNumBulletins()) + ")", lastLine);
+                displayShow(" MESSAGES>", "  APRSThursday", "  APRSMYSunday", "> Bulletins (" + String(MSG_Utils::getNumBulletins()) + ")", "  Delete BLN", lastLine);
                 break;
             case 16:    // 1.Messages ---> Delete BLN
-                displayShow(" MESSAGES>", "  APRSMYSunday", "  Bulletins (" + String(MSG_Utils::getNumBulletins()) + ")", "> Delete BLN (" + String(MSG_Utils::getNumBulletins()) + ")", "  Read (" + String(MSG_Utils::getNumAPRSMessages()) + ")", lastLine);
+                displayShow(" MESSAGES>", "  APRSMYSunday", "  Bulletins (" + String(MSG_Utils::getNumBulletins()) + ")", "> Delete BLN", "  Read (" + String(MSG_Utils::getNumAPRSMessages()) + ")", lastLine);
                 break;
             case 161:   // 1.Messages ---> Delete BLN ---> Delete: ALL Bulletins
                 displayShow("DELETE BLN", "", "  DELETE BULLETINS?", "", "", " Confirm = LP or '>'");
