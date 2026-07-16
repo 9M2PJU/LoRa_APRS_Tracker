@@ -175,6 +175,9 @@ namespace WEB_Utils {
         Config.disableGPS                       = request->hasParam("disableGPS", true);
         Config.simplifiedTrackerMode            = request->hasParam("simplifiedTrackerMode", true);
 
+        //  Bulletins (BLN reception)
+        Config.bulletins.active                 = request->hasParam("bulletins.active", true);
+
         //  Display
         Config.display.ecoMode                  = request->hasParam("display.ecoMode", true);
         if (Config.display.ecoMode) {

@@ -118,6 +118,11 @@ public:
     bool    useKISS;
 };
 
+class Bulletins {
+public:
+    bool    active;
+};
+
 
 class Configuration {
 public:
@@ -132,6 +137,7 @@ public:
     std::vector<LoraType>   loraTypes;
     PTT                     ptt;
     BLUETOOTH               bluetooth;
+    Bulletins               bulletins;
 
     bool    simplifiedTrackerMode;
     int     sendCommentAfterXBeacons;

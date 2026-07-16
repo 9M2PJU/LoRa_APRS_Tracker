@@ -40,6 +40,7 @@ extern Configuration        Config;
 extern TinyGPSPlus          gps;
 extern std::vector<String>  loadedAPRSMessages;
 extern std::vector<String>  loadedWLNKMails;
+extern std::vector<String>  loadedBulletins;
 extern int                  messagesIterator;
 extern uint8_t              loraIndex;
 extern uint32_t             menuTime;
@@ -182,7 +183,7 @@ namespace MENU_Utils {
 
 //////////
             case 10:    // 1.Messages ---> Messages Read
-                displayShow(" MESSAGES>", "  APRSThursday", "  APRSMYSunday", "> Read (" + String(MSG_Utils::getNumAPRSMessages()) + ")", "  Write", lastLine);
+                displayShow(" MESSAGES>", "  Bulletins (" + String(MSG_Utils::getNumBulletins()) + ")", "  Delete BLN (" + String(MSG_Utils::getNumBulletins()) + ")", "> Read (" + String(MSG_Utils::getNumAPRSMessages()) + ")", "  Write", lastLine);
                 break;
             case 100:   // 1.Messages ---> Messages Read ---> Display Received/Saved APRS Messages
                 {
@@ -201,7 +202,7 @@ namespace MENU_Utils {
                 }
                 break;
             case 11:    // 1.Messages ---> Messages Write
-                displayShow(" MESSAGES>", "  APRSMYSunday", "  Read (" + String(MSG_Utils::getNumAPRSMessages()) + ")", "> Write", "  Delete", lastLine);
+                displayShow(" MESSAGES>", "  Delete BLN (" + String(MSG_Utils::getNumBulletins()) + ")", "  Read (" + String(MSG_Utils::getNumAPRSMessages()) + ")", "> Write", "  Delete", lastLine);
                 break;
             case 110:   // 1.Messages ---> Messages Write ---> Write
                 if (keyDetected || keyboardConnected) {
@@ -263,7 +264,35 @@ namespace MENU_Utils {
                 displayShow(" MESSAGES>", "  Write", "  Delete", "> APRSThursday", "  APRSMYSunday", lastLine);
                 break;
             case 14:    // 1.Messages ---> APRSMYSunday
-                displayShow(" MESSAGES>", "  Delete", "  APRSThursday", "> APRSMYSunday", "  Read (" + String(MSG_Utils::getNumAPRSMessages()) + ")", lastLine);
+                displayShow(" MESSAGES>", "  Delete", "  APRSThursday", "> APRSMYSunday", "  Bulletins (" + String(MSG_Utils::getNumBulletins()) + ")", lastLine);
+                break;
+            case 15:    // 1.Messages ---> Bulletins
+                displayShow(" MESSAGES>", "  APRSThursday", "  APRSMYSunday", "> Bulletins (" + String(MSG_Utils::getNumBulletins()) + ")", "  Delete BLN (" + String(MSG_Utils::getNumBulletins()) + ")", lastLine);
+                break;
+            case 16:    // 1.Messages ---> Delete BLN
+                displayShow(" MESSAGES>", "  APRSMYSunday", "  Bulletins (" + String(MSG_Utils::getNumBulletins()) + ")", "> Delete BLN (" + String(MSG_Utils::getNumBulletins()) + ")", "  Read (" + String(MSG_Utils::getNumAPRSMessages()) + ")", lastLine);
+                break;
+            case 161:   // 1.Messages ---> Delete BLN ---> Delete: ALL Bulletins
+                displayShow("DELETE BLN", "", "  DELETE BULLETINS?", "", "", " Confirm = LP or '>'");
+                break;
+            case 160:   // 1.Messages ---> Bulletins ---> Display Received/Saved BLN Bulletins
+                {
+                    String blnLine      = loadedBulletins[messagesIterator];
+                    String blnSender    = blnLine.substring(0, blnLine.indexOf(","));
+                    String rest         = blnLine.substring(blnLine.indexOf(",") + 1);
+                    String blnAddressee = rest.substring(0, rest.indexOf(","));
+                    String blnText      = rest.substring(rest.indexOf(",") + 1);
+
+                    #ifdef HAS_TFT
+                        #if defined(HELTEC_WIRELESS_TRACKER)
+                            displayShow("BULLETINS>", "From --> " + blnSender, "[" + blnAddressee + "] " + blnText, "                 Next=Down", "", "");
+                        #else   // T-Deck
+                            displayShow("BULLETINS>", "From --> " + blnSender, "[" + blnAddressee + "] " + blnText, "             Next=Down", "", "");
+                        #endif
+                    #else
+                        displayShow("BULLETINS>", "From --> " + blnSender, blnAddressee + ": " + blnText, "", "", "           Next=Down");
+                    #endif
+                }
                 break;
             case 140:   // 1.Messages ---> APRSMYSunday ---> Check-In
                 displayShow(" APRSMYSunday", "  Top", "  Me", "> Check-In", "  Status", lastLine);
@@ -404,10 +433,10 @@ namespace MENU_Utils {
 
 //////////
             case 20:    // 2.Configuration ---> Callsign
-                displayShow(" CONFIG>", "  Reboot", "  Power Off", "> Change Callsign ", "  Change Frequency",lastLine);
+                displayShow(" CONFIG>", "  Power Off", "  Bulletins", "> Change Callsign ", "  Change Frequency",lastLine);
                 break;
             case 21:    // 2.Configuration ---> Change Freq
-                displayShow(" CONFIG>", "  Power Off", "  Change Callsign ", "> Change Frequency", "  Display",lastLine);
+                displayShow(" CONFIG>", "  Bulletins", "  Change Callsign ", "> Change Frequency", "  Display",lastLine);
                 break;
             case 22:    // 2.Configuration ---> Display
                 displayShow(" CONFIG>", "  Change Callsign ", "  Change Frequency", "> Display", "  " + checkBTType() + " (" + checkProcessActive(bluetoothActive) + ")",lastLine);
@@ -425,7 +454,10 @@ namespace MENU_Utils {
                 displayShow(" CONFIG>", "  Status", "  Notifications", "> Reboot", "  Power Off",lastLine);
                 break;
             case 27:    // 2.Configuration ---> Power Off
-                displayShow(" CONFIG>", "  Notifications", "  Reboot", "> Power Off", "  Change Callsign",lastLine);
+                displayShow(" CONFIG>", "  Notifications", "  Reboot", "> Power Off", "  Bulletins",lastLine);
+                break;
+            case 28:    // 2.Configuration ---> Bulletin
+                displayShow(" CONFIG>", "  Reboot", "  Power Off", "> Bulletins", "  Change Callsign",lastLine);
                 break;
 
 
@@ -491,6 +523,9 @@ namespace MENU_Utils {
                 break;
             case 270:   // 2.Configuration ---> Power Off
                 displayShow("POWER OFF?", "","Confirm Power Off...","","","<Back Enter/>=Confirm");
+                break;
+            case 280:   // 2.Configuration ---> Bulletin ---> Toggle
+                displayShow("BULLETINS>", "", "Receive Bulletins", Config.bulletins.active ? "> Currently ON" : "> Currently OFF", "", "<Back Enter/>=Toggle");
                 break;
 
 //////////

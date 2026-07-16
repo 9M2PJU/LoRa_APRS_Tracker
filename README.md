@@ -119,6 +119,50 @@ The bot replies with current HF band conditions (MUF, solar flux, K-index, band-
 
 > **Full user guide for 9M2PJU-4 APRS Bot:** https://hamradio.my/9m2pju-aprs-bot/
 
+### Bulletins Reception (BLN)
+
+Added by 9M2PJU. Receive and store APRS **BLN bulletins** (broadcast announcements addressed to `BLN` / `BLN0`–`BLN9`) in a dedicated Bulletins view — separate from your personal APRS messages.
+
+Bulletins are general-purpose broadcasts sent to all stations (weather alerts, net announcements, emergency notices, event info, etc.) rather than to a specific callsign. Most APRS clients (APRSISCE, YAAC, etc.) put them in a separate "Bulletins" folder — this fork now does the same.
+
+**Distance filter: 500 km** — only bulletins from senders within 500 km of your GPS position are stored. The tracker caches the last known position of every station it hears (from their beacon packets), then calculates the distance when a BLN bulletin arrives. If the sender is beyond 500 km, the bulletin is silently dropped. If the sender's position is unknown (no beacon heard yet) or your GPS has no lock, the bulletin is stored anyway (benefit of the doubt).
+
+**Dedup: full file scan** — before saving a bulletin, the tracker reads the entire `/bulletins.txt` file and checks for an exact match (sender + addressee + text). If a duplicate is found, it's skipped. This prevents duplicate bulletins from digipeated/repeated packets filling up storage.
+
+**Default: OFF** — you must enable bulletin reception explicitly. Three ways to toggle:
+
+| Method | Path |
+|---|---|
+| On-device menu | Configuration → Bulletins → toggle (persists immediately) |
+| Web admin UI | Station Config → "Receive Bulletins" switch → Save |
+| Edit config JSON | `bulletins.active: true/false` in `tracker_conf.json` |
+
+**To view saved bulletins:**
+
+Menu → Messages → **Bulletins (N)** — shows each bulletin one at a time:
+```
+BULLETINS>
+From --> 9M2PJU
+[BLN1] Severe weather warning...
+             Next=Down
+```
+Press Down to scroll through bulletins, Back to return.
+
+**To delete all saved bulletins:**
+
+Menu → Messages → **Delete BLN (N)** → confirm with Long Press or `>`.
+
+**Menu paths:**
+- View: Messages → Bulletins (menu 15 → 160)
+- Delete: Messages → Delete BLN (menu 16 → 161)
+- Toggle: Configuration → Bulletins (menu 28 → 280)
+
+**Notes:**
+- Bulletins are stored in SPIFFS flash — they survive reboots and power cycles
+- BLN packets are still digipeated if your digipeater is ON, regardless of this setting
+- No ack is sent back to the sender (BLN is broadcast, not a personal message)
+- The `(N)` next to Bulletins / Delete BLN shows the current count of saved bulletins
+
 ### Smart Beaconing (Malaysia-tuned)
 
 All 3 beacon profiles have been retuned for Malaysian use cases, with battery preservation as a priority. The original CA2RXU values were designed for European cycling/driving — this fork adjusts speed bands, beacon intervals, and turn thresholds to match Malaysian conditions while reducing TX frequency 20-33% across all profiles.
@@ -222,15 +266,19 @@ The web admin UI (accessible via WiFi AP at `192.168.4.1`) has been redesigned m
 |---|---|
 | `src/display.cpp` | Color helpers, military green headers, color-coded centered body text, colored symbols, status accent bar, startup branding, header/symbol layout |
 | `src/utils.cpp` | UTC+8 offset for display clock |
-| `src/menu_utils.cpp` | `LoRa[MY]` label, APRSMYSunday menu entries (case 14/140-145/1400), SOTA/POTA report menus (case 34/35/340/341/350/351), HF Report menu (case 36) |
-| `src/keyboard_utils.cpp` | APRSMY check-in send logic (lines 363-372, 622-625), APRSMY query commands Status/Count/Last/Top/Me (case 141-145), SOTA/POTA report send logic, HF Report send logic (case 36 sends `prop` to 9M2PJU-4) |
+| `src/menu_utils.cpp` | `LoRa[MY]` label, APRSMYSunday menu entries (case 14/140-145/1400), SOTA/POTA report menus (case 34/35/340/341/350/351), HF Report menu (case 36), BLN bulletins view/delete/toggle (case 15/160/16/161/28/280), 7-item Messages submenu (cases 10-16), 9-item Configuration submenu (cases 20-28) |
+| `src/keyboard_utils.cpp` | APRSMY check-in send logic (lines 363-372, 622-625), APRSMY query commands Status/Count/Last/Top/Me (case 141-145), SOTA/POTA report send logic, HF Report send logic (case 36 sends `prop` to 9M2PJU-4), BLN bulletins view/delete/toggle navigation (case 15→160, 16→161, 28→280, 280 toggles + persists) |
+| `src/msg_utils.cpp` | BLN bulletin storage (`/bulletins.txt`), `saveNewBulletin()` with full-file-scan dedup / `loadBulletinsFromMemory()` / `deleteBulletins()` / `getNumBulletins()`, BLN detection in `checkReceivedMessage()` (addressee starts with `BLN`), 500 km distance filter (`isWithinBlnRange()` + `cacheStationPos()` + `stationCache[20]`) |
+| `include/configuration.h` | `Bulletins` class (bool `active`), `Config.bulletins` member |
+| `src/configuration.cpp` | `bulletins.active` read/write/defaults (default `false`) |
+| `src/web_utils.cpp` | `bulletins.active` form parsing from web admin UI |
 | `src/lora_utils.cpp` | `MALAYSIA` frequency label |
 | `src/smartbeacon_utils.cpp` | Malaysia-tuned smart beacon presets (runner/motorcycle/car), 20-33% fewer TX for battery preservation |
-| `data/tracker_conf.json` | Callsign, frequency, symbols, GPS Eco Mode off |
-| `data_embed/index.html` | Web admin UI: dark mode, Malaysia flag accent, card sections, mobile-first responsive layout, sticky save bar |
+| `data/tracker_conf.json` | Callsign, frequency, symbols, GPS Eco Mode off, `bulletins.active: false` |
+| `data_embed/index.html` | Web admin UI: dark mode, Malaysia flag accent, card sections, mobile-first responsive layout, sticky save bar, "Receive Bulletins" toggle |
 | `data_embed/style.css` | Malaysia flag accent colors (blue/red/yellow), mobile-first responsive layout, 44px touch targets, bigger switches, compact mobile headers |
-| `data_embed/script.js` | Smart Beacon Setting labels (Runner/Motorcycle/Car), mobile-first col-12 col-lg-* responsive beacon/lora templates |
-| `docs/index.html` | Web installer page, donation popup (Buy Me a Coffee / Wise / GitHub Sponsors) |
+| `data_embed/script.js` | Smart Beacon Setting labels (Runner/Motorcycle/Car), mobile-first col-12 col-lg-* responsive beacon/lora templates, `bulletins.active` loader |
+| `docs/index.html` | Web installer page, BLN bulletins feature section, donation popup (Buy Me a Coffee / Wise / GitHub Sponsors) |
 | `docs/manifest-heltec-wireless-tracker.json` | ESP Web Tools flash manifest |
 | `docs/firmware/` | Pre-built binaries |
 

@@ -221,6 +221,7 @@
                 <li><strong>APRSMYSunday</strong> net check-in &amp; stats query (Messages menu)</li>
                 <li><strong>SOTA &amp; POTA</strong> spots and alerts (Reports menu)</li>
                 <li><strong>HF Prop Report</strong> &mdash; HF propagation conditions from 9M2PJU-4 bot (Reports menu)</li>
+                <li><strong>Bulletins (BLN)</strong> &mdash; receive &amp; store APRS broadcast bulletins with 500 km filter + dedup, separate view + on/off toggle (Messages &amp; Configuration menus)</li>
                 <li>Centered text on all screens</li>
                 <li>Navy blue header bar with yellow text</li>
                 <li>Cyan menu items, yellow selection indicator</li>
@@ -340,6 +341,43 @@
             <p style="margin-top: 12px; font-size: 0.9em;">
                 Full user guide for 9M2PJU-4 APRS Bot: <a href="https://hamradio.my/9m2pju-aprs-bot/" target="_blank" style="color: #6ab0ff;">https://hamradio.my/9m2pju-aprs-bot/</a>
             </p>
+        </div>
+
+        <div class="info">
+            <h2>Bulletins Reception (BLN)</h2>
+            <p style="margin-bottom: 10px; line-height: 1.6;">
+                Receive and store APRS <strong>BLN bulletins</strong> (broadcast announcements
+                addressed to <code>BLN</code> / <code>BLN0</code>&ndash;<code>BLN9</code>) in a
+                dedicated Bulletins view &mdash; separate from your personal APRS messages.
+                Bulletins are general-purpose broadcasts sent to all stations (weather alerts,
+                net announcements, emergency notices, event info) rather than to a specific callsign.
+            </p>
+            <p style="margin-bottom: 10px; line-height: 1.6;">
+                <strong>Distance filter: 500 km</strong> &mdash; only bulletins from senders within
+                500 km of your GPS position are stored. The tracker caches the last known position
+                of every station it hears (from their beacon packets), then calculates the distance
+                when a BLN bulletin arrives. Senders beyond 500 km are silently dropped. If the
+                sender's position is unknown or your GPS has no lock, the bulletin is stored anyway.
+            </p>
+            <p style="margin-bottom: 10px; line-height: 1.6;">
+                <strong>Dedup: full file scan</strong> &mdash; before saving, the tracker reads the
+                entire bulletins file and checks for an exact match (sender + addressee + text).
+                Duplicates from digipeated/repeated packets are skipped, so your storage stays clean.
+            </p>
+            <p style="margin-bottom: 6px;"><strong>Default: OFF</strong> &mdash; enable it in one of three ways:</p>
+            <ul>
+                <li><strong>On-device menu:</strong> Configuration &rarr; Bulletins &rarr; toggle (persists immediately, no reboot needed)</li>
+                <li><strong>Web admin UI:</strong> Station Config &rarr; "Receive Bulletins" switch &rarr; Save</li>
+                <li><strong>Edit config JSON:</strong> <code>bulletins.active: true</code> in <code>tracker_conf.json</code></li>
+            </ul>
+            <p style="margin-bottom: 6px;"><strong>Once enabled:</strong></p>
+            <ul>
+                <li><strong>View bulletins:</strong> Messages &rarr; Bulletins (N) &mdash; scroll through saved bulletins one at a time</li>
+                <li><strong>Delete all bulletins:</strong> Messages &rarr; Delete BLN (N) &rarr; confirm with Long Press or <code>&gt;</code></li>
+                <li>Bulletins are stored in flash &mdash; they survive reboots and power cycles</li>
+                <li>BLN packets are still digipeated if your digipeater is ON, regardless of this setting</li>
+                <li>No ack is sent back (BLN is broadcast, not a personal message)</li>
+            </ul>
         </div>
 
         <div class="info">

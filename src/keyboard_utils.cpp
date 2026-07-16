@@ -89,9 +89,9 @@ namespace KEYBOARD_Utils {
         if (menuDisplay >= 1 && menuDisplay <= 6) {
             menuDisplay--;
             if (menuDisplay < 1) menuDisplay = 6;
-        } else if (menuDisplay >= 10 && menuDisplay <= 14) {
+        } else if (menuDisplay >= 10 && menuDisplay <= 16) {
             menuDisplay--;
-            if (menuDisplay < 10) menuDisplay = 14;
+            if (menuDisplay < 10) menuDisplay = 16;
         }
  else if (menuDisplay >= 130 && menuDisplay <= 133) {
             menuDisplay--;
@@ -102,9 +102,9 @@ namespace KEYBOARD_Utils {
             if (menuDisplay < 140) menuDisplay = 145;
         }
 
-        else if (menuDisplay >= 20 && menuDisplay <= 27) {
+        else if (menuDisplay >= 20 && menuDisplay <= 28) {
             menuDisplay--;
-            if (menuDisplay < 20) menuDisplay = 27;
+            if (menuDisplay < 20) menuDisplay = 28;
         } else if (menuDisplay >= 220 && menuDisplay <= 221) {
             menuDisplay--;
             if (menuDisplay < 220) menuDisplay = 221;
@@ -177,9 +177,9 @@ namespace KEYBOARD_Utils {
             menuDisplay++;
             if (menuDisplay > 6) menuDisplay = 1;
         }
-        else if (menuDisplay >= 10 && menuDisplay <= 14) {
+        else if (menuDisplay >= 10 && menuDisplay <= 16) {
             menuDisplay++;
-            if (menuDisplay > 14) menuDisplay = 10;
+            if (menuDisplay > 16) menuDisplay = 10;
         }
  else if (menuDisplay >= 130 && menuDisplay <= 133) {
             menuDisplay++;
@@ -196,13 +196,21 @@ namespace KEYBOARD_Utils {
             } else {
                 menuDisplay = 100;
             }
+        } else if (menuDisplay == 160) {
+            messagesIterator++;
+            if (messagesIterator == MSG_Utils::getNumBulletins()) {
+                menuDisplay = 15;
+                messagesIterator = 0;
+            } else {
+                menuDisplay = 160;
+            }
         } else if (menuDisplay == 110) {
             menuDisplay = 11;
         }
 
-        else if (menuDisplay >= 20 && menuDisplay <= 27) {
+        else if (menuDisplay >= 20 && menuDisplay <= 28) {
         menuDisplay++;
-        if (menuDisplay > 27) menuDisplay = 20;
+        if (menuDisplay > 28) menuDisplay = 20;
         } else if (menuDisplay >= 220 && menuDisplay <= 221) {
             menuDisplay++;
             if (menuDisplay > 221) menuDisplay = 220;
@@ -278,6 +286,11 @@ namespace KEYBOARD_Utils {
         } else if (menuDisplay == 100) {
             messagesIterator = 0;
             menuDisplay = 10;
+        } else if (menuDisplay == 160) {
+            messagesIterator = 0;
+            menuDisplay = 15;
+        } else if (menuDisplay == 161) {
+            menuDisplay = 16;
         } else if (menuDisplay == 110) {
             messageCallsign = "";
             menuDisplay = 11;
@@ -287,10 +300,9 @@ namespace KEYBOARD_Utils {
         } else if (menuDisplay == 1300 ||  menuDisplay == 1310 || menuDisplay == 1400) {
             messageText = "";
             menuDisplay = menuDisplay/10;
-        } else if ((menuDisplay>=10 && menuDisplay<=14) || (menuDisplay>=20 && menuDisplay<=29) || (menuDisplay == 120) || (menuDisplay>=130 && menuDisplay<=133) || (menuDisplay>=140 && menuDisplay<=145) || (menuDisplay>=50 && menuDisplay<=53) || (menuDisplay>=200 && menuDisplay<=290) || (menuDisplay>=2210 && menuDisplay<=2212) || (menuDisplay>=60 && menuDisplay<=64) || (menuDisplay>=30 && menuDisplay<=35) || (menuDisplay>=340 && menuDisplay<=341) || (menuDisplay>=350 && menuDisplay<=351) || (menuDisplay>=40 && menuDisplay<=41) || (menuDisplay>=400 && menuDisplay<=410)) {
+        } else if ((menuDisplay>=10 && menuDisplay<=16) || (menuDisplay>=20 && menuDisplay<=29) || (menuDisplay == 120) || (menuDisplay>=130 && menuDisplay<=133) || (menuDisplay>=140 && menuDisplay<=145) || (menuDisplay>=50 && menuDisplay<=53) || (menuDisplay>=200 && menuDisplay<=290) || (menuDisplay>=2210 && menuDisplay<=2212) || (menuDisplay>=60 && menuDisplay<=64) || (menuDisplay>=30 && menuDisplay<=35) || (menuDisplay>=340 && menuDisplay<=341) || (menuDisplay>=350 && menuDisplay<=351) || (menuDisplay>=40 && menuDisplay<=41) || (menuDisplay>=400 && menuDisplay<=410)) {
             menuDisplay = int(menuDisplay/10);
-        }
- else if (menuDisplay == 5000 || menuDisplay == 5010 || menuDisplay == 5020 || menuDisplay == 5030 || menuDisplay == 5040 || menuDisplay == 5050 || menuDisplay == 5060 || menuDisplay == 5070 || menuDisplay == 5080) {
+        } else if (menuDisplay == 5000 || menuDisplay == 5010 || menuDisplay == 5020 || menuDisplay == 5030 || menuDisplay == 5040 || menuDisplay == 5050 || menuDisplay == 5060 || menuDisplay == 5070 || menuDisplay == 5080) {
             menuDisplay = 5;
         } else if (menuDisplay == 5021 || menuDisplay == 5041 || menuDisplay == 5051) {
             winlinkMailNumber = "_?";
@@ -349,7 +361,7 @@ namespace KEYBOARD_Utils {
             STATION_Utils::saveIndex(0, myBeaconsIndex);
             sendStartTelemetry = true;
             if (menuDisplay == 200) menuDisplay = 20;
-        } else if ((menuDisplay >= 1 && menuDisplay <= 6) || (menuDisplay >= 11 &&menuDisplay <= 14) || (menuDisplay >= 20 && menuDisplay <= 27) || (menuDisplay >= 40 && menuDisplay <= 41)) {
+        } else if ((menuDisplay >= 1 && menuDisplay <= 6) || (menuDisplay >= 11 &&menuDisplay <= 14) || (menuDisplay >= 20 && menuDisplay <= 28) || (menuDisplay >= 40 && menuDisplay <= 41)) {
             menuDisplay = menuDisplay * 10;
         } else if (menuDisplay == 10) {
             MSG_Utils::loadMessagesFromMemory(0);
@@ -362,6 +374,24 @@ namespace KEYBOARD_Utils {
             } else {
                 menuDisplay = 100;
             }
+        } else if (menuDisplay == 15) {
+            MSG_Utils::loadBulletinsFromMemory();
+            if (MSG_Utils::warnNoBulletins()) {
+                #ifdef HAS_JOYSTICK
+                    menuDisplay = 15;
+                #else
+                    menuDisplay = 15;
+                #endif
+            } else {
+                menuDisplay = 160;
+            }
+        } else if (menuDisplay == 16) {
+            menuDisplay = 161;
+        } else if (menuDisplay == 161) {
+            MSG_Utils::deleteBulletins();
+            displayShow("   INFO", "", "ALL BULLETINS DELETED!", 2000);
+            MSG_Utils::loadNumMessages();
+            menuDisplay = 16;
         } else if (menuDisplay == 120) {
             MSG_Utils::deleteFile(0);
             displayShow("   INFO", "", "ALL MESSAGES DELETED!", 2000);
@@ -460,6 +490,13 @@ namespace KEYBOARD_Utils {
                 displayShow("", "", " starting DEEP SLEEP", 2000);
             #endif
             POWER_Utils::shutdown();
+        } else if (menuDisplay == 280) {
+            Config.bulletins.active = !Config.bulletins.active;
+            Config.writeFile();
+            displayShow("BULLETINS>", "", "Receive Bulletins", Config.bulletins.active ? "   Now ON" : "   Now OFF", "", "", 1500);
+            #ifdef HAS_JOYSTICK
+                menuDisplay = 28;
+            #endif
         }
 
         else if (menuDisplay == 30) {
@@ -713,6 +750,11 @@ namespace KEYBOARD_Utils {
                 displayShow("", "", " starting DEEP SLEEP", 2000);
             #endif
             POWER_Utils::shutdown();
+        } else if (menuDisplay == 280 && key == 13) {
+            Config.bulletins.active = !Config.bulletins.active;
+            Config.writeFile();
+            displayShow("BULLETINS>", "", "Receive Bulletins", Config.bulletins.active ? "   Now ON" : "   Now OFF", "", "", 1500);
+            menuDisplay = 28;
         } else if ((menuDisplay == 5021 || menuDisplay == 5031 || menuDisplay == 5041 || menuDisplay == 5051) && key >= 48 && key <= 57) {
             winlinkMailNumber = key;
         } else if ((menuDisplay == 5021 || menuDisplay == 5031 || menuDisplay == 5041 || menuDisplay == 5051) && key == 8) {

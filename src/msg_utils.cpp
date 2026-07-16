@@ -58,15 +58,20 @@ extern APRSPacket           lastReceivedPacket;
 
 extern bool                 SleepModeActive;
 
+extern TinyGPSPlus          gps;
+
 String  lastMessageSaved        = "";
 int     numAPRSMessages         = 0;
 int     numWLNKMessages         = 0;
+int     numBulletins            = 0;
 bool    noAPRSMsgWarning        = false;
 bool    noWLNKMsgWarning        = false;
+bool    noBLNWarning            = false;
 String  lastHeardTracker        = "NONE";
 
 std::vector<String>             loadedAPRSMessages;
 std::vector<String>             loadedWLNKMails;
+std::vector<String>             loadedBulletins;
 std::vector<String>             outputMessagesBuffer;
 std::vector<String>             outputAckRequestBuffer;
 std::vector<Packet15SegBuffer>  packet15SegBuffer;
@@ -80,6 +85,64 @@ uint32_t    lastRetryTime       = millis();
 
 bool        messageLed          = false;
 uint32_t    messageLedTime      = millis();
+String  lastBulletinSaved       = "";
+
+// --- BLN distance filter: cache of recently heard station positions ---
+struct StationPosCache {
+    String      callsign;
+    float       latitude;
+    float       longitude;
+    uint32_t    lastTime;
+};
+const int stationCacheSize = 20;
+StationPosCache stationCache[stationCacheSize];
+
+void cacheStationPos(const String& callsign, float lat, float lon) {
+    // Try to find existing entry
+    for (int i = 0; i < stationCacheSize; i++) {
+        if (stationCache[i].callsign == callsign) {
+            stationCache[i].latitude  = lat;
+            stationCache[i].longitude = lon;
+            stationCache[i].lastTime  = millis();
+            return;
+        }
+    }
+    // Find empty slot
+    for (int i = 0; i < stationCacheSize; i++) {
+        if (stationCache[i].callsign == "") {
+            stationCache[i].callsign  = callsign;
+            stationCache[i].latitude  = lat;
+            stationCache[i].longitude = lon;
+            stationCache[i].lastTime  = millis();
+            return;
+        }
+    }
+    // Cache full: replace oldest entry
+    int oldest = 0;
+    for (int i = 1; i < stationCacheSize; i++) {
+        if (stationCache[i].lastTime < stationCache[oldest].lastTime) oldest = i;
+    }
+    stationCache[oldest].callsign  = callsign;
+    stationCache[oldest].latitude  = lat;
+    stationCache[oldest].longitude = lon;
+    stationCache[oldest].lastTime  = millis();
+}
+
+// Returns true if sender is within BLN_MAX_DISTANCE_KM, or if position unknown (give benefit of the doubt)
+bool isWithinBlnRange(const String& callsign) {
+    const float BLN_MAX_DISTANCE_KM = 500.0;
+    for (int i = 0; i < stationCacheSize; i++) {
+        if (stationCache[i].callsign == callsign) {
+            if (gps.location.isValid()) {
+                float dist = TinyGPSPlus::distanceBetween(gps.location.lat(), gps.location.lng(), stationCache[i].latitude, stationCache[i].longitude) / 1000.0;
+                logger.log(logging::LoggerLevel::LOGGER_LEVEL_DEBUG, "BLN", "Sender %s distance: %.1f km", callsign.c_str(), dist);
+                return (dist <= BLN_MAX_DISTANCE_KM);
+            }
+            return true; // no GPS lock yet, accept
+        }
+    }
+    return true; // sender position unknown, accept
+}
 
 
 namespace MSG_Utils {
@@ -92,6 +155,10 @@ namespace MSG_Utils {
         return noWLNKMsgWarning;
     }
 
+    bool warnNoBulletins() {
+        return noBLNWarning;
+    }
+
     const String getLastHeardTracker() {
         return lastHeardTracker;
     }
@@ -102,6 +169,10 @@ namespace MSG_Utils {
 
     int getNumWLNKMails() {
         return numWLNKMessages;
+    }
+
+    int getNumBulletins() {
+        return numBulletins;
     }
 
     void loadNumMessages() {
@@ -145,6 +216,20 @@ namespace MSG_Utils {
             numWLNKMessages++;
         }
         logger.log(logging::LoggerLevel::LOGGER_LEVEL_DEBUG, "Main", "Number of Winlink Mails : %s", String(numWLNKMessages));
+
+        File fileToReadBLN = SPIFFS.open("/bulletins.txt");
+        numBulletins = 0;
+        if (fileToReadBLN) {
+            std::vector<String> v3;
+            while (fileToReadBLN.available()) {
+                v3.push_back(fileToReadBLN.readStringUntil('\n'));
+            }
+            fileToReadBLN.close();
+            for (String s3 : v3) {
+                numBulletins++;
+            }
+        }
+        logger.log(logging::LoggerLevel::LOGGER_LEVEL_DEBUG, "Main", "Number of BLN Bulletins : %s", String(numBulletins));
     }
 
     void loadMessagesFromMemory(uint8_t typeOfMessage) {
@@ -192,6 +277,29 @@ namespace MSG_Utils {
         }
     }
 
+    void loadBulletinsFromMemory() {
+        noBLNWarning = false;
+        File fileToRead;
+        if (numBulletins == 0) {
+            noBLNWarning = true;
+        } else {
+            loadedBulletins.clear();
+            fileToRead = SPIFFS.open("/bulletins.txt");
+        }
+        if (noBLNWarning) {
+            displayShow("   INFO", "", " NO BLN BULLETINS", 1500);
+        } else {
+            if (!fileToRead) {
+                Serial.println("Failed to open bulletins for reading");
+                return;
+            }
+            while (fileToRead.available()) {
+                loadedBulletins.push_back(fileToRead.readStringUntil('\n'));
+            }
+            fileToRead.close();
+        }
+    }
+
     void ledNotification() {
         uint32_t currentTime = millis();
         uint32_t ledTimeDelta = currentTime - messageLedTime;
@@ -218,6 +326,54 @@ namespace MSG_Utils {
             SPIFFS.remove("/winlinkMails.txt");
         }
         if (Config.notification.ledMessage) messageLed = false;
+    }
+
+    void deleteBulletins() {
+        if (!SPIFFS.begin(true)) {
+            Serial.println("An Error has occurred while mounting SPIFFS");
+            return;
+        }
+        SPIFFS.remove("/bulletins.txt");
+        numBulletins = 0;
+        loadedBulletins.clear();
+        lastBulletinSaved = "";
+    }
+
+    void saveNewBulletin(const String& station, const String& addressee, const String& newMessage) {
+        String message = newMessage;
+        String bulletinKey = station + "|" + addressee + "|" + message;
+        // Full dedup: scan entire bulletins file before saving
+        bool isDuplicate = false;
+        if (SPIFFS.exists("/bulletins.txt")) {
+            File fileToRead = SPIFFS.open("/bulletins.txt", "r");
+            if (fileToRead) {
+                while (fileToRead.available() && !isDuplicate) {
+                    String line = fileToRead.readStringUntil('\n');
+                    line.trim();
+                    if (line == (station + "," + addressee + "," + message)) {
+                        isDuplicate = true;
+                    }
+                }
+                fileToRead.close();
+            }
+        }
+        if (!isDuplicate) {
+            File fileToAppendBLN = SPIFFS.open("/bulletins.txt", FILE_APPEND);
+            if (!fileToAppendBLN) {
+                Serial.println("There was an error opening bulletins for appending");
+                return;
+            }
+            message.trim();
+            if (!fileToAppendBLN.println(station + "," + addressee + "," + message)) {
+                Serial.println("Bulletins append failed");
+            }
+            lastBulletinSaved = bulletinKey;
+            numBulletins++;
+            fileToAppendBLN.close();
+            if (Config.notification.ledMessage) {
+                messageLed = true;
+            }
+        }
     }
 
     void saveNewMessage(uint8_t typeMessage, const String& station, const String& newMessage) {
@@ -546,8 +702,24 @@ namespace MSG_Utils {
                             }
                         }
                     } else {
+                        if (lastReceivedPacket.type == 1 && Config.bulletins.active && lastReceivedPacket.addressee.indexOf("BLN") == 0) {
+                            if (lastReceivedPacket.payload.indexOf("ack") != 0) {
+                                if (isWithinBlnRange(lastReceivedPacket.sender)) {
+                                    saveNewBulletin(lastReceivedPacket.sender, lastReceivedPacket.addressee, lastReceivedPacket.payload);
+                                    if (Config.notification.buzzerActive && Config.notification.messageRxBeep) NOTIFICATION_Utils::messageBeep();
+                                    #ifdef HAS_TFT
+                                        displayShow("<BLN Rx >", "From --> " + lastReceivedPacket.sender, "[" + lastReceivedPacket.addressee + "] " + lastReceivedPacket.payload, 3000);
+                                    #else
+                                        displayShow("<BLN Rx >", "From --> " + lastReceivedPacket.sender, lastReceivedPacket.addressee + ": " + lastReceivedPacket.payload, "", "", "", 3000);
+                                    #endif
+                                } else {
+                                    logger.log(logging::LoggerLevel::LOGGER_LEVEL_INFO, "BLN", "Bulletin from %s dropped (>500km)", lastReceivedPacket.sender.c_str());
+                                }
+                            }
+                        }
                         if ((lastReceivedPacket.type == 0 || lastReceivedPacket.type == 4) && !Config.simplifiedTrackerMode) {
                             GPS_Utils::calculateDistanceCourse(lastReceivedPacket.sender, lastReceivedPacket.latitude, lastReceivedPacket.longitude);
+                            cacheStationPos(lastReceivedPacket.sender, lastReceivedPacket.latitude, lastReceivedPacket.longitude);
                         }
                         if (Config.notification.buzzerActive && Config.notification.stationBeep && !digipeaterActive) {
                             NOTIFICATION_Utils::stationHeardBeep();

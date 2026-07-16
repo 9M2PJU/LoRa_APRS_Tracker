@@ -175,6 +175,7 @@ function loadSettings(settings) {
     document.getElementById("sendAltitude").checked                     = settings.other.sendAltitude ;
     document.getElementById("disableGPS").checked                       = settings.other.disableGPS;
     document.getElementById("email").value                              = settings.other.email;
+    document.getElementById("bulletins.active").checked                 = settings.bulletins.active;
 
     // DISPLAY
     document.getElementById("display.ecoMode").checked                  = settings.display.ecoMode;

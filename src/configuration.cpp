@@ -70,6 +70,8 @@ bool Configuration::writeFile() {
         #endif
         data["bluetooth"]["useKISS"]                = bluetooth.useKISS;
 
+        data["bulletins"]["active"]                 = bulletins.active;
+
         for (int i = 0; i < loraTypes.size(); i++) {
             data["lora"][i]["frequency"]                = loraTypes[i].frequency;
             data["lora"][i]["spreadingFactor"]          = loraTypes[i].spreadingFactor;
@@ -189,6 +191,9 @@ bool Configuration::readFile() {
             bluetooth.useBLE            = true;    // fixed as BLE
             bluetooth.useKISS           = data["bluetooth"]["useKISS"] | true;    // true=KISS,  false=TNC2
         #endif
+
+        if (data["bulletins"]["active"].isNull()) needsRewrite = true;
+        bulletins.active                  = data["bulletins"]["active"] | false;
 
         JsonArray LoraTypesArray = data["lora"];
         for (int j = 0; j < LoraTypesArray.size(); j++) {
@@ -333,6 +338,8 @@ void Configuration::setDefaultValues() {
         bluetooth.useBLE            = true;    // fixed as BLE
         bluetooth.useKISS           = true;
     #endif
+
+    bulletins.active                  = false;
 
     for (int j = 0; j < 4; j++) {
         LoraType loraType;

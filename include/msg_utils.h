@@ -33,14 +33,19 @@ namespace MSG_Utils {
 
     bool    warnNoAPRSMessages();
     bool    warnNoWLNKMails();
+    bool    warnNoBulletins();
     const String getLastHeardTracker();
     int     getNumAPRSMessages();
     int     getNumWLNKMails();
+    int     getNumBulletins();
     void    loadNumMessages();
     void    loadMessagesFromMemory(uint8_t typeOfMessage);
+    void    loadBulletinsFromMemory();
     void    ledNotification();
     void    deleteFile(uint8_t typeOfFile);
+    void    deleteBulletins();
     void    saveNewMessage(uint8_t typeMessage, const String& station, const String& newMessage);
+    void    saveNewBulletin(const String& station, const String& addressee, const String& newMessage);
     void    sendMessage(const String& station, const String& textMessage);
     void    addToOutputBuffer(uint8_t typeOfMessage, const String& station, const String& textMessage);
     void    processOutputBuffer();

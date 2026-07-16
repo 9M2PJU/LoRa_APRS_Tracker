@@ -122,6 +122,9 @@
 		"useBLE": false,
 		"useKISS": false
 	},
+	"bulletins": {
+		"active": false
+	},
 	"pttTrigger": {
 		"active": false,
 		"io_pin": 4,
