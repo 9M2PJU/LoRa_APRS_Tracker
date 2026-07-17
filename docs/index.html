@@ -119,6 +119,14 @@
         .donate-btn-wise:hover { background: #1f4a00; transform: translateY(-1px); }
         .donate-btn-gs { background: rgba(255,255,255,0.06); color: #8ab8f0; border: 1px solid #1a3a6a; }
         .donate-btn-gs:hover { background: rgba(255,255,255,0.12); }
+        .donate-qr {
+            margin: 4px auto 16px auto; display: block;
+            width: 200px; height: 200px; border-radius: 12px;
+            background: #fff; padding: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+        }
+        .donate-qr-label { color: #FFD700; font-size: 0.9em; font-weight: 600; margin-bottom: 4px; }
+        .donate-qr-hint { color: #8090b0; font-size: 0.78em; margin-bottom: 14px; }
         .donate-card .donate-footer { margin-top: 14px; font-size: 0.8em; color: #506080; }
         /* Floating donate button */
         #donateFloat {
@@ -623,6 +631,9 @@
                 spare time. If it has helped you on the trail, on the road,
                 or on the air, a small donation keeps the project running.
             </p>
+            <div class="donate-qr-label">Scan with Malaysian e-wallet</div>
+            <img class="donate-qr" src="donate-qr.jpg" alt="9M2PJU e-wallet QR code" width="200" height="200">
+            <div class="donate-qr-hint">Touch 'n Go, GrabPay, Boost, ShopeePay, Maybank QRPay</div>
             <div class="donate-btns">
                 <a class="donate-btn-bmc" href="https://www.buymeacoffee.com/9m2pju" target="_blank" rel="noopener">Buy Me a Coffee</a>
                 <a class="donate-btn-wise" href="https://wise.com/pay/me/faizulz13" target="_blank" rel="noopener">Wise (faizulz13)</a>
