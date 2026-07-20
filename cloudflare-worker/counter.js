@@ -253,48 +253,14 @@ function renderBadge(project, count) {
 
 // Render the world map SVG (800x400) with graticule grid + plotted dots.
 function renderWorldMap(dots) {
-  const W = 800, H = 400;
-  // Graticule lines every 30 degrees
-  let grid = '';
-  for (let lng = -180; lng <= 180; lng += 30) {
-    const x = ((lng + 180) * (W / 360)).toFixed(1);
-    grid += `<line x1="${x}" y1="0" x2="${x}" y2="${H}" stroke="#13294a" stroke-width="0.5"/>`;
-  }
-  for (let lat = -90; lat <= 90; lat += 30) {
-    const y = ((90 - lat) * (H / 180)).toFixed(1);
-    grid += `<line x1="0" y1="${y}" x2="${W}" y2="${y}" stroke="#13294a" stroke-width="0.5"/>`;
-  }
-  // Equator + prime meridian highlighted
-  grid += `<line x1="0" y1="200" x2="${W}" y2="200" stroke="#1a3a5c" stroke-width="1"/>`;
-  grid += `<line x1="400" y1="0" x2="400" y2="${H}" stroke="#1a3a5c" stroke-width="1"/>`;
-  // Plot dots
-  let dotEls = '';
+  // Render a container div; Leaflet + OSM heatmap is initialized client-side.
+  // Dots data is embedded as JSON for the init script to pick up.
   const safeDots = Array.isArray(dots) ? dots.slice(-200) : [];
-  for (const d of safeDots) {
-    if (typeof d.lat !== 'number' || typeof d.lng !== 'number') continue;
-    const x = ((d.lng + 180) * (W / 360)).toFixed(1);
-    const y = ((90 - d.lat) * (H / 180)).toFixed(1);
-    dotEls += `<circle cx="${x}" cy="${y}" r="3" fill="#07b6d3" opacity="0.75"><title>${escapeHtml(d.project || '')}</title></circle>`;
-  }
-  // Region labels
-  const labels = [
-    { x: 180, y: 130, t: 'NORTH AMERICA' },
-    { x: 340, y: 110, t: 'EUROPE' },
-    { x: 470, y: 170, t: 'AFRICA' },
-    { x: 580, y: 130, t: 'ASIA' },
-    { x: 660, y: 300, t: 'OCEANIA' },
-    { x: 260, y: 320, t: 'SOUTH AMERICA' },
-  ];
-  let labelEls = '';
-  for (const l of labels) {
-    labelEls += `<text x="${l.x}" y="${l.y}" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#2a4a6a" letter-spacing="1">${l.t}</text>`;
-  }
-  return `<svg class="world-map" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
-<rect width="${W}" height="${H}" fill="#0a1628" rx="6"/>
-${grid}
-${labelEls}
-${dotEls}
-</svg>`;
+  const heatPoints = safeDots
+    .filter(d => typeof d.lat === 'number' && typeof d.lng === 'number')
+    .map(d => [d.lat, d.lng, 0.5]); // [lat, lng, intensity]
+  return `<div id="heatmap" class="world-map" role="img" aria-label="World map showing install locations"></div>
+<script id="heatmapData" type="application/json">${JSON.stringify(heatPoints)}</script>`;
 }
 
 function renderStatsPage(counts, analytics, trends, recentActivity, mapDots, firstInstalls) {
@@ -437,6 +403,11 @@ function renderStatsPage(counts, analytics, trends, recentActivity, mapDots, fir
 <link rel="canonical" href="https://counter.hamradio.my/">
 <link rel="icon" type="image/png" href="https://lora.hamradio.my/favicon.png">
 <link rel="apple-touch-icon" href="https://lora.hamradio.my/logo.png">
+
+<!-- Leaflet + OSM heatmap (unpkg CDN, pinned versions) -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="https://unpkg.com/leaflet.heat@0.2.0/leaflet-heat.js"></script>
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
@@ -793,14 +764,27 @@ function renderStatsPage(counts, analytics, trends, recentActivity, mapDots, fir
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* World map */
+  /* World map (Leaflet container) */
   .world-map {
-    display: block;
-    max-width: 100%;
-    height: auto;
+    width: 100%;
+    height: 400px;
     border: 1px solid #1e293b;
     border-radius: 6px;
+    background: #0a1628;
   }
+  /* Dark theme for Leaflet tiles + controls */
+  .leaflet-container { background: #0a1628 !important; }
+  .leaflet-control-attribution {
+    background: rgba(13, 27, 42, 0.8) !important;
+    color: #506080 !important;
+  }
+  .leaflet-control-attribution a { color: #07b6d3 !important; }
+  .leaflet-control-zoom a {
+    background: #111827 !important;
+    color: #e0e0e0 !important;
+    border-color: #1e293b !important;
+  }
+  .leaflet-control-zoom a:hover { background: #1e293b !important; }
 
   footer {
     text-align: center;
@@ -1019,6 +1003,47 @@ function renderStatsPage(counts, analytics, trends, recentActivity, mapDots, fir
       .catch(function() {});
   }
   setInterval(updateFeed, 10000);
+})();
+
+// Initialize Leaflet + OSM heatmap
+(function() {
+  var mapEl = document.getElementById('heatmap');
+  var dataEl = document.getElementById('heatmapData');
+  if (!mapEl || !dataEl || typeof L === 'undefined') return;
+  var points = [];
+  try { points = JSON.parse(dataEl.textContent) || []; } catch (e) {}
+
+  var map = L.map('heatmap', {
+    center: [20, 0],
+    zoom: 2,
+    minZoom: 2,
+    maxZoom: 12,
+    worldCopyJump: true,
+    scrollWheelZoom: false,
+    attributionControl: true,
+  });
+
+  // OSM standard tiles (free, no API key)
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  }).addTo(map);
+
+  // Heatmap layer (leaflet.heat) — cyan/blue gradient to match site theme
+  if (points.length && L.heatLayer) {
+    L.heatLayer(points, {
+      radius: 25,
+      blur: 35,
+      maxZoom: 10,
+      minOpacity: 0.4,
+      gradient: { 0.2: '#07b6d3', 0.5: '#6ab0ff', 1.0: '#ffffff' },
+    }).addTo(map);
+    // Fit bounds to show all dots
+    if (points.length > 1) {
+      var bounds = L.latLngBounds(points.map(function(p) { return [p[0], p[1]]; }));
+      map.fitBounds(bounds, { padding: [40, 40] });
+    }
+  }
 })();
 </script>
 </body>
