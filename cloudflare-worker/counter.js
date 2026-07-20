@@ -400,7 +400,7 @@ function renderStatsPage(counts, analytics, trends, recentActivity, mapDots, fir
 <meta name="author" content="9M2PJU">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="theme-color" content="#0d1b2a">
-<link rel="canonical" href="https://counter.hamradio.my/">
+<link rel="canonical" href="https://stats.hamradio.my/">
 <link rel="icon" type="image/png" href="https://lora.hamradio.my/favicon.png">
 <link rel="apple-touch-icon" href="https://lora.hamradio.my/logo.png">
 
@@ -414,7 +414,7 @@ function renderStatsPage(counts, analytics, trends, recentActivity, mapDots, fir
 <meta property="og:site_name" content="9M2PJU Ham Radio Projects">
 <meta property="og:title" content="9M2PJU Open Source Ham Radio Project Stats — Live Counters">
 <meta property="og:description" content="Live download and install counters for 9M2PJU amateur radio firmware and apps: LoRa APRS Tracker, ESP32 DX Cluster, ESP32 Fox Hunt Beacon, DroidStar Android &amp; Linux. ${total} total installs and downloads.">
-<meta property="og:url" content="https://counter.hamradio.my/">
+<meta property="og:url" content="https://stats.hamradio.my/">
 <meta property="og:image" content="https://lora.hamradio.my/logo.png">
 <meta property="og:image:alt" content="9M2PJU amateur radio open source projects">
 <meta property="og:locale" content="en_US">
@@ -434,7 +434,7 @@ function renderStatsPage(counts, analytics, trends, recentActivity, mapDots, fir
   "@context": "https://schema.org",
   "@type": "WebSite",
   "name": "9M2PJU Project Stats",
-  "url": "https://counter.hamradio.my/",
+  "url": "https://stats.hamradio.my/",
   "description": "Live download and install counters for 9M2PJU open source amateur radio projects",
   "publisher": {
     "@type": "Person",
@@ -457,10 +457,10 @@ function renderStatsPage(counts, analytics, trends, recentActivity, mapDots, fir
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "What is counter.hamradio.my?",
+      "name": "What is stats.hamradio.my?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "counter.hamradio.my is a live stats dashboard showing download and install counts for 9M2PJU open source amateur radio projects, including ESP32 firmware (LoRa APRS Tracker, DX Cluster Client, Fox Hunt Beacon) and the DroidStar digital voice client for Android and Linux."
+        "text": "stats.hamradio.my is a live stats dashboard showing download and install counts for 9M2PJU open source amateur radio projects, including ESP32 firmware (LoRa APRS Tracker, DX Cluster Client, Fox Hunt Beacon) and the DroidStar digital voice client for Android and Linux."
       }
     },
     {
@@ -1022,7 +1022,7 @@ function renderStatsPage(counts, analytics, trends, recentActivity, mapDots, fir
       by this counter, so those numbers reflect download intent rather than
       completed downloads. All counts are stored in
       <strong>Cloudflare KV</strong> storage and served by a
-      <strong>Cloudflare Worker</strong> at counter.hamradio.my &mdash; this
+      <strong>Cloudflare Worker</strong> at stats.hamradio.my &mdash; this
       domain is not on any ad blocker filter list, so counts work even when
       uBlock Origin or similar extensions are enabled.
     </p>
@@ -1183,7 +1183,7 @@ export default {
       const ghUrl = 'https://api.github.com/' + ghPath;
       try {
         const ghHeaders = {
-          'User-Agent': 'counter.hamradio.my Worker',
+          'User-Agent': 'stats.hamradio.my Worker',
           'Accept': 'application/vnd.github+json',
         };
         // Use GitHub PAT if available (raises rate limit from 60 to 5000 req/hr)
@@ -1216,7 +1216,7 @@ export default {
 
     // GET /robots.txt → allow all crawlers, point to sitemap
     if (parts.length === 1 && parts[0] === 'robots.txt') {
-      const body = 'User-agent: *\nAllow: /\n\nSitemap: https://counter.hamradio.my/sitemap.xml\n';
+      const body = 'User-agent: *\nAllow: /\n\nSitemap: https://stats.hamradio.my/sitemap.xml\n';
       return new Response(body, {
         headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'public, max-age=86400' },
       });
@@ -1227,7 +1227,7 @@ export default {
       const body = '<?xml version="1.0" encoding="UTF-8"?>\n' +
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
         '  <url>\n' +
-        '    <loc>https://counter.hamradio.my/</loc>\n' +
+        '    <loc>https://stats.hamradio.my/</loc>\n' +
         '    <changefreq>hourly</changefreq>\n' +
         '    <priority>1.0</priority>\n' +
         '  </url>\n' +

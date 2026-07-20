@@ -802,13 +802,13 @@
 
         // Install counter — shows total REAL successful installs via a
         // Cloudflare Worker + KV (not blocked by ad blockers like counterapi.dev).
-        // Multi-project: each project has its own counter under counter.hamradio.my.
+        // Multi-project: each project has its own counter under stats.hamradio.my.
         // This page uses the "lora-tracker" project. Other projects (esp32-fox-hunt,
         // esp32-dx-cluster, etc.) use the same Worker with a different project name.
         // Increment fires only when the install dialog reports state === 'finished'.
         var registerInstallCount;
         (function() {
-            var API_BASE = 'https://counter.hamradio.my/9m2pju-mod-lora-tracker-firmware';
+            var API_BASE = 'https://stats.hamradio.my/9m2pju-mod-lora-tracker-firmware';
             var counterLabel = document.getElementById('counterLabel');
             function renderCount(n) {
                 counterLabel.innerHTML = '<span class="counter-num">' + n + '</span> <span class="counter-suffix">installs via this page</span>';
