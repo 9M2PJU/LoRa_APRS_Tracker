@@ -22,8 +22,8 @@ const PROJECT_RE = /^[a-z0-9][a-z0-9-]{0,63}$/;
 //   category: grouping label for the stats page
 // Unknown projects (not in this map) get auto-generated defaults.
 const PROJECT_META = {
-  'lora-tracker': {
-    name: 'LoRa APRS Tracker',
+  '9m2pju-mod-lora-tracker-firmware': {
+    name: '9M2PJU Mod LoRa APRS Tracker',
     url: 'https://lora.hamradio.my/',
     desc: 'ESP32 LoRa APRS tracker firmware (Heltec Wireless Tracker)',
     type: 'install',
