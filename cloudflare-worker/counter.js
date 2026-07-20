@@ -797,10 +797,97 @@ function renderStatsPage(counts, analytics, trends, recentActivity, mapDots, fir
   footer a { color: #07b6d3; text-decoration: none; }
   footer a:hover { text-decoration: underline; }
 
-  @media (max-width: 600px) {
-    .bar-row { grid-template-columns: 120px 1fr 40px; }
+  /* Tablet (≤768px) */
+  @media (max-width: 768px) {
+    .container { padding: 0 8px; }
+    body { padding: 12px; }
+    header h1 { font-size: 1.6rem; }
+    header .total { font-size: 1rem; }
+    header .total strong { font-size: 1.5rem; }
+    header .note { font-size: 0.7rem; }
+    h2 { font-size: 1.1rem; margin: 30px 0 12px; }
+    /* Cards: 1 column on tablet portrait, 2 on landscape */
+    .card-grid {
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 12px;
+    }
+    .card { padding: 16px; }
+    .card-count { font-size: 2rem; }
+    .card-name { font-size: 0.9rem; }
+    .card-desc { font-size: 0.75rem; min-height: 2em; }
+    .card-flags { font-size: 1.1rem; }
+    .card-devices { font-size: 0.65rem; }
+    /* Bar chart: narrower label column */
+    .bar-row { grid-template-columns: 140px 1fr 40px; gap: 8px; }
     .bar-label-wrap { font-size: 0.75rem; }
-    header h1 { font-size: 1.5rem; }
+    .bar-count { font-size: 0.85rem; }
+    /* Table: smaller padding */
+    th, td { padding: 8px 10px; font-size: 0.8rem; }
+    td.num { font-size: 1rem; }
+    /* Activity feed */
+    .activity-item { padding: 8px 10px; font-size: 0.8rem; }
+    .activity-time { min-width: 70px; font-size: 0.75rem; }
+    /* World map: shorter on mobile */
+    .world-map { height: 300px; }
+  }
+
+  /* Mobile (≤480px) */
+  @media (max-width: 480px) {
+    body { padding: 8px; }
+    header { margin-bottom: 24px; }
+    header h1 { font-size: 1.3rem; letter-spacing: 0; }
+    header .total { font-size: 0.9rem; }
+    header .total strong { font-size: 1.3rem; }
+    header .note { font-size: 0.65rem; line-height: 1.4; }
+    header .refresh-indicator { font-size: 0.7rem; }
+    h2 { font-size: 1rem; margin: 24px 0 10px; }
+    /* Cards: single column on mobile */
+    .card-grid {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .card { padding: 14px; }
+    .card-count { font-size: 1.8rem; }
+    .card-name { font-size: 0.85rem; }
+    .card-desc { font-size: 0.7rem; min-height: 1.8em; margin: 6px 0 8px; }
+    .card-flags { font-size: 1rem; margin: 6px 0 4px; }
+    .card-flags .flag { margin-right: 4px; }
+    .card-flags .flag sup { font-size: 0.55rem; }
+    .card-devices { font-size: 0.6rem; }
+    .card-devices .dev { padding: 1px 4px; margin-right: 4px; }
+    .card-link { font-size: 0.75rem; }
+    .sparkline { width: 50px; height: 16px; }
+    .since-date { font-size: 0.65rem; }
+    /* Bar chart: very narrow label, hide overflow */
+    .bar-row { grid-template-columns: 100px 1fr 36px; gap: 6px; }
+    .bar-label-wrap { font-size: 0.7rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .bar-track { height: 20px; }
+    .bar-count { font-size: 0.8rem; }
+    /* Table: compact */
+    table { font-size: 0.75rem; }
+    th, td { padding: 6px 8px; }
+    td.num { font-size: 0.9rem; }
+    td.type { font-size: 0.7rem; }
+    tr.cat-row td { font-size: 0.75rem; }
+    /* Activity feed: tighter */
+    .activity-feed { max-height: 280px; }
+    .activity-item { padding: 6px 8px; font-size: 0.75rem; flex-wrap: wrap; gap: 4px; }
+    .activity-time { min-width: 60px; font-size: 0.7rem; }
+    /* World map: even shorter */
+    .world-map { height: 220px; }
+    /* Footer */
+    footer { font-size: 0.7rem; margin-top: 30px; }
+    /* SEO content hidden on mobile (already sr-only, but ensure) */
+    .seo-content { display: none; }
+  }
+
+  /* Small mobile (≤360px) */
+  @media (max-width: 360px) {
+    header h1 { font-size: 1.1rem; }
+    .card-count { font-size: 1.5rem; }
+    .bar-row { grid-template-columns: 80px 1fr 30px; }
+    .bar-label-wrap { font-size: 0.65rem; }
+    .world-map { height: 180px; }
   }
 
   /* Visually hidden but crawlable by search engines (sr-only pattern).
