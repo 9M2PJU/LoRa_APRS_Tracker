@@ -340,7 +340,7 @@ function renderStatsPage(counts, analytics, trends, recentActivity, mapDots, fir
       // Sparkline
       const trend = trends[key];
       const sparkEl = renderSparkline(trend);
-      return `<div class="card">
+      return `<div class="card" data-project="${escapeHtml(key)}">
         <div class="card-name">${escapeHtml(meta.name)}</div>
         <div class="card-count-row">
           <span class="card-count">${count}</span>${msEl}
@@ -1042,16 +1042,36 @@ function renderStatsPage(counts, analytics, trends, recentActivity, mapDots, fir
 
 <script>
 (function() {
-  // Full-page refresh every 30s (existing behaviour)
-  function refresh() {
+  // Lightweight count refresh — fetch /api/ and update only the numbers
+  // in the DOM. Avoids full-page reload (which triggers ~51 KV reads).
+  function refreshCounts() {
     fetch('/api/')
       .then(function(r) { return r.json(); })
-      .then(function() { location.reload(); })
+      .then(function(data) {
+        document.querySelectorAll('[data-project]').forEach(function(el) {
+          var key = el.getAttribute('data-project');
+          var n = data[key];
+          if (typeof n !== 'undefined') {
+            var countEl = el.querySelector('.card-count');
+            if (countEl && countEl.textContent !== String(n)) {
+              countEl.textContent = n;
+              countEl.style.transition = 'color 0.3s';
+              countEl.style.color = '#ffffff';
+              setTimeout(function() { countEl.style.color = ''; }, 600);
+            }
+          }
+        });
+        var totalEl = document.querySelector('header .total strong');
+        if (totalEl) {
+          var total = Object.values(data).reduce(function(a, b) { return a + b; }, 0);
+          if (totalEl.textContent !== String(total)) totalEl.textContent = total;
+        }
+      })
       .catch(function() {});
   }
-  setInterval(refresh, 30000);
+  setInterval(refreshCounts, 60000);
 
-  // Live activity feed — updates every 10s without page reload
+  // Live activity feed — updates every 30s without page reload
   function fmtRel(ts) {
     if (!ts) return 'just now';
     var diff = Math.max(0, Date.now() - ts);
@@ -1089,7 +1109,7 @@ function renderStatsPage(counts, analytics, trends, recentActivity, mapDots, fir
       })
       .catch(function() {});
   }
-  setInterval(updateFeed, 10000);
+  setInterval(updateFeed, 30000);
 })();
 
 // Initialize Leaflet + OSM heatmap
@@ -1187,7 +1207,9 @@ export default {
         })
       );
       const map = Object.fromEntries(entries);
-      return new Response(JSON.stringify(map), { headers: corsHeaders });
+      return new Response(JSON.stringify(map), {
+        headers: { ...corsHeaders, 'Cache-Control': 'public, max-age=30' },
+      });
     }
 
     // GET /api/recent → JSON array of recent activity events
@@ -1208,7 +1230,9 @@ export default {
           type: meta.type === 'install' ? 'install' : 'download',
         };
       });
-      return new Response(JSON.stringify(events), { headers: corsHeaders });
+      return new Response(JSON.stringify(events), {
+        headers: { ...corsHeaders, 'Cache-Control': 'public, max-age=15' },
+      });
     }
 
     // GET /badge/<project>.svg → shields.io-style SVG badge
@@ -1276,7 +1300,7 @@ export default {
       return new Response(html, {
         headers: {
           'Content-Type': 'text/html; charset=utf-8',
-          'Cache-Control': 'no-cache',
+          'Cache-Control': 'public, max-age=60',
         },
       });
     }
