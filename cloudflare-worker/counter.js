@@ -2,10 +2,12 @@
 // Not blocked by ad blockers (unlike counterapi.dev).
 //
 // URL scheme:
-//   GET /                  → HTML stats page (card grid + table + bar chart)
-//   GET /api/              → JSON map of all project counts
-//   GET /<project>/        → return current count for <project> (no increment)
-//   GET /<project>/up      → increment <project> counter by 1, return new count
+//   GET /                       → HTML stats page (card grid + table + bar chart)
+//   GET /api/                   → JSON map of all project counts
+//   GET /api/recent             → JSON array of recent activity events
+//   GET /<project>/             → return current count for <project> (no increment)
+//   GET /<project>/up           → increment <project> counter by 1, return new count
+//   GET /badge/<project>.svg    → shields.io-style SVG badge
 //
 // Project types:
 //   install  = counted on real successful browser flash (ESP32 firmware)
@@ -13,6 +15,13 @@
 //
 // Project names: lowercase letters, digits, hyphens. Stored in KV as
 // "project:<name>". KV keys are namespaced so projects never collide.
+//
+// Additional KV keys (written on each /up):
+//   first_install:<project>  → ISO timestamp of first install
+//   trend:<project>          → JSON array of last 30 daily counts
+//   analytics:<project>      → { countries: {}, devices: {} }
+//   recent_activity          → JSON array of last 50 events
+//   map_dots                 → JSON array of last 200 location dots
 
 const PROJECT_RE = /^[a-z0-9][a-z0-9-]{0,63}$/;
 
@@ -108,6 +117,14 @@ const PROJECT_META = {
   },
 };
 
+// Milestone thresholds: count → { label, color }
+const MILESTONES = [
+  { n: 5000, label: 'Platinum', color: '#e5e4e2' },
+  { n: 1000, label: 'Gold', color: '#ffd700' },
+  { n: 500, label: 'Silver', color: '#c0c0c0' },
+  { n: 100, label: 'Bronze', color: '#cd7f32' },
+];
+
 function escapeHtml(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
@@ -163,7 +180,124 @@ const COUNTRY_NAMES = {
   PA:'Panama', GT:'Guatemala', CU:'Cuba', DO:'Dominican Rep', JM:'Jamaica',
 };
 
-function renderStatsPage(counts, analytics) {
+// Format an ISO timestamp into "Mon YYYY" (e.g. "Jul 2026").
+function formatSinceMonth(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return '';
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return months[d.getUTCMonth()] + ' ' + d.getUTCFullYear();
+}
+
+// Format a timestamp into a relative time string.
+function formatRelativeTime(ts) {
+  if (!ts) return 'just now';
+  const now = Date.now();
+  const diff = Math.max(0, now - ts);
+  const min = Math.floor(diff / 60000);
+  if (min < 1) return 'just now';
+  if (min < 60) return min + ' min ago';
+  const hr = Math.floor(min / 60);
+  if (hr < 24) return hr + ' hr ago';
+  const days = Math.floor(hr / 24);
+  return days + 'd ago';
+}
+
+// Return the highest milestone reached for a given count, or null.
+function getMilestone(count) {
+  for (const m of MILESTONES) {
+    if (count >= m.n) return m;
+  }
+  return null;
+}
+
+// Render a mini sparkline SVG (60x20) from a trend array of {d, n}.
+function renderSparkline(trend) {
+  if (!trend || trend.length < 2) return '';
+  const ns = trend.map(e => e.n || 0);
+  const max = Math.max(...ns, 1);
+  const min = Math.min(...ns, 0);
+  const range = Math.max(1, max - min);
+  const w = 60, h = 20, pad = 2;
+  const step = (w - pad * 2) / (ns.length - 1);
+  const points = ns.map((n, i) => {
+    const x = pad + i * step;
+    const y = pad + (h - pad * 2) * (1 - (n - min) / range);
+    return x.toFixed(1) + ',' + y.toFixed(1);
+  }).join(' ');
+  return `<svg class="sparkline" width="60" height="20" viewBox="0 0 60 20" xmlns="http://www.w3.org/2000/svg"><polyline points="${points}" fill="none" stroke="#6ab0ff" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
+}
+
+// Render a shields.io-style SVG badge for a project.
+function renderBadge(project, count) {
+  const meta = PROJECT_META[project] || { type: 'download' };
+  const label = meta.type === 'install' ? 'installs' : 'downloads';
+  const valStr = String(count);
+  const labelW = 58;
+  const valW = Math.max(32, valStr.length * 8 + 14);
+  const totalW = labelW + valW;
+  const h = 20;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${totalW}" height="${h}" viewBox="0 0 ${totalW} ${h}">
+<linearGradient id="bg" x2="0" y2="1">
+<stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
+<stop offset="1" stop-color="#000" stop-opacity=".1"/>
+</linearGradient>
+<rect rx="4" width="${totalW}" height="${h}" fill="#4a4a4a"/>
+<rect x="${labelW}" width="${valW}" height="${h}" fill="#07b6d3"/>
+<rect rx="4" width="${totalW}" height="${h}" fill="url(#bg)"/>
+<text x="${labelW / 2}" y="14" text-anchor="middle" font-family="Verdana,DejaVu Sans,sans-serif" font-size="11" fill="#fff">${escapeHtml(label)}</text>
+<text x="${labelW + valW / 2}" y="14" text-anchor="middle" font-family="Verdana,DejaVu Sans,sans-serif" font-size="11" fill="#fff">${escapeHtml(valStr)}</text>
+</svg>`;
+  return svg;
+}
+
+// Render the world map SVG (800x400) with graticule grid + plotted dots.
+function renderWorldMap(dots) {
+  const W = 800, H = 400;
+  // Graticule lines every 30 degrees
+  let grid = '';
+  for (let lng = -180; lng <= 180; lng += 30) {
+    const x = ((lng + 180) * (W / 360)).toFixed(1);
+    grid += `<line x1="${x}" y1="0" x2="${x}" y2="${H}" stroke="#13294a" stroke-width="0.5"/>`;
+  }
+  for (let lat = -90; lat <= 90; lat += 30) {
+    const y = ((90 - lat) * (H / 180)).toFixed(1);
+    grid += `<line x1="0" y1="${y}" x2="${W}" y2="${y}" stroke="#13294a" stroke-width="0.5"/>`;
+  }
+  // Equator + prime meridian highlighted
+  grid += `<line x1="0" y1="200" x2="${W}" y2="200" stroke="#1a3a5c" stroke-width="1"/>`;
+  grid += `<line x1="400" y1="0" x2="400" y2="${H}" stroke="#1a3a5c" stroke-width="1"/>`;
+  // Plot dots
+  let dotEls = '';
+  const safeDots = Array.isArray(dots) ? dots.slice(-200) : [];
+  for (const d of safeDots) {
+    if (typeof d.lat !== 'number' || typeof d.lng !== 'number') continue;
+    const x = ((d.lng + 180) * (W / 360)).toFixed(1);
+    const y = ((90 - d.lat) * (H / 180)).toFixed(1);
+    dotEls += `<circle cx="${x}" cy="${y}" r="3" fill="#07b6d3" opacity="0.75"><title>${escapeHtml(d.project || '')}</title></circle>`;
+  }
+  // Region labels
+  const labels = [
+    { x: 180, y: 130, t: 'NORTH AMERICA' },
+    { x: 340, y: 110, t: 'EUROPE' },
+    { x: 470, y: 170, t: 'AFRICA' },
+    { x: 580, y: 130, t: 'ASIA' },
+    { x: 660, y: 300, t: 'OCEANIA' },
+    { x: 260, y: 320, t: 'SOUTH AMERICA' },
+  ];
+  let labelEls = '';
+  for (const l of labels) {
+    labelEls += `<text x="${l.x}" y="${l.y}" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#2a4a6a" letter-spacing="1">${l.t}</text>`;
+  }
+  return `<svg class="world-map" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+<rect width="${W}" height="${H}" fill="#0a1628" rx="6"/>
+${grid}
+${labelEls}
+${dotEls}
+</svg>`;
+}
+
+function renderStatsPage(counts, analytics, trends, recentActivity, mapDots, firstInstalls) {
   const projects = Object.entries(counts).sort((a, b) => b[1] - a[1]);
   const total = projects.reduce((sum, [, c]) => sum + c, 0);
   const maxCount = projects.length ? Math.max(...projects.map(([, c]) => c), 1) : 1;
@@ -179,6 +313,32 @@ function renderStatsPage(counts, analytics) {
   const sortedCategories = Object.keys(categories).sort(
     (a, b) => categoryOrder.indexOf(a) - categoryOrder.indexOf(b)
   );
+
+  // Live Activity feed (last 20 events)
+  const safeActivity = Array.isArray(recentActivity) ? recentActivity.slice(0, 20) : [];
+  const activityItems = safeActivity.map(ev => {
+    const meta = PROJECT_META[ev.project] || { name: ev.project, type: 'download' };
+    const noun = meta.type === 'install' ? 'install' : 'download';
+    const flag = countryFlag(ev.country);
+    const rel = formatRelativeTime(ev.ts);
+    return `<div class="activity-item">
+      <span class="activity-time">${escapeHtml(rel)}</span>
+      <span class="activity-sep">&mdash;</span>
+      <span class="activity-project">${escapeHtml(meta.name)}</span>
+      <span class="activity-type">${escapeHtml(noun)}</span>
+      <span class="activity-from">from ${flag}</span>
+      <span class="activity-device">on ${escapeHtml(ev.device || '')}</span>
+    </div>`;
+  }).join('');
+  const activitySection = safeActivity.length
+    ? `<h2>Live Activity</h2><div class="activity-feed" id="activityFeed">${activityItems}</div>`
+    : '';
+
+  // Global install map
+  const dotCount = Array.isArray(mapDots) ? mapDots.length : 0;
+  const mapSection = dotCount > 0
+    ? `<h2>Global Installs <span class="map-count">${dotCount} dots</span></h2>${renderWorldMap(mapDots)}`
+    : '';
 
   // Cards grouped by category
   const cardsByCategory = sortedCategories.map(cat => {
@@ -205,10 +365,23 @@ function renderStatsPage(counts, analytics) {
             `<span class="dev">${escapeHtml(d)} <em>${n}</em></span>`
           ).join('') + '</div>'
         : '';
+      // First install date
+      const sinceStr = formatSinceMonth(firstInstalls[key]);
+      const sinceEl = sinceStr ? `<div class="since-date">Since: ${escapeHtml(sinceStr)}</div>` : '';
+      // Milestone badge
+      const ms = getMilestone(count);
+      const msEl = ms ? `<span class="milestone-badge" title="${escapeHtml(ms.label)}: ${count} ${noun}" style="background:${ms.color}"></span>` : '';
+      // Sparkline
+      const trend = trends[key];
+      const sparkEl = renderSparkline(trend);
       return `<div class="card">
         <div class="card-name">${escapeHtml(meta.name)}</div>
-        <div class="card-count">${count}</div>
-        <div class="card-unit">${noun}</div>
+        <div class="card-count-row">
+          <span class="card-count">${count}</span>${msEl}
+          <span class="card-unit">${noun}</span>
+        </div>
+        ${sinceEl}
+        ${sparkEl}
         <div class="card-desc">${escapeHtml(meta.desc)}</div>
         ${countryFlags}
         ${deviceList}
@@ -385,6 +558,12 @@ function renderStatsPage(counts, analytics) {
     padding-bottom: 8px;
     border-bottom: 1px solid #1e293b;
   }
+  h2 .map-count {
+    font-size: 0.75rem;
+    color: #6ab0ff;
+    font-weight: normal;
+    margin-left: 8px;
+  }
 
   /* Card grid */
   .card-grid {
@@ -409,18 +588,20 @@ function renderStatsPage(counts, analytics) {
     margin-bottom: 8px;
     font-weight: 600;
   }
+  .card-count-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
   .card-count {
     font-size: 2.5rem;
     font-weight: bold;
     color: #6ab0ff;
     line-height: 1;
-    display: inline-block;
   }
   .card-unit {
     font-size: 0.85rem;
     color: #64748b;
-    display: inline-block;
-    margin-left: 6px;
   }
   .card-desc {
     font-size: 0.8rem;
@@ -468,6 +649,30 @@ function renderStatsPage(counts, analytics) {
     color: #6ab0ff;
     font-style: normal;
     font-weight: 600;
+  }
+
+  /* Since date */
+  .since-date {
+    font-size: 0.72rem;
+    color: #506080;
+    margin-top: 4px;
+  }
+
+  /* Milestone badge (medal dot) */
+  .milestone-badge {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.3);
+    box-shadow: 0 0 6px rgba(255,255,255,0.25);
+    flex-shrink: 0;
+  }
+
+  /* Sparkline */
+  .sparkline {
+    display: block;
+    margin: 8px 0 4px;
   }
 
   /* Table */
@@ -556,6 +761,47 @@ function renderStatsPage(counts, analytics) {
     font-size: 0.9rem;
   }
 
+  /* Live activity feed */
+  .activity-feed {
+    background: #111827;
+    border: 1px solid #1e293b;
+    border-radius: 10px;
+    padding: 12px 16px;
+    max-height: 320px;
+    overflow-y: auto;
+  }
+  .activity-item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 0;
+    border-bottom: 1px solid #16213a;
+    font-size: 0.82rem;
+    color: #cbd5e1;
+    animation: fadeIn 0.5s ease;
+  }
+  .activity-item:last-child { border-bottom: none; }
+  .activity-time { color: #6ab0ff; font-weight: 600; min-width: 90px; }
+  .activity-sep { color: #506080; }
+  .activity-project { color: #07b6d3; font-weight: 600; }
+  .activity-type { color: #64748b; font-size: 0.75rem; }
+  .activity-from { color: #cbd5e1; }
+  .activity-device { color: #64748b; font-size: 0.75rem; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* World map */
+  .world-map {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #1e293b;
+    border-radius: 6px;
+  }
+
   footer {
     text-align: center;
     margin-top: 50px;
@@ -609,6 +855,10 @@ function renderStatsPage(counts, analytics) {
   </header>
 
   ${emptyMsg}
+
+  ${activitySection}
+
+  ${mapSection}
 
   ${cardsByCategory}
 
@@ -721,6 +971,7 @@ function renderStatsPage(counts, analytics) {
 
 <script>
 (function() {
+  // Full-page refresh every 30s (existing behaviour)
   function refresh() {
     fetch('/api/')
       .then(function(r) { return r.json(); })
@@ -728,6 +979,46 @@ function renderStatsPage(counts, analytics) {
       .catch(function() {});
   }
   setInterval(refresh, 30000);
+
+  // Live activity feed — updates every 10s without page reload
+  function fmtRel(ts) {
+    if (!ts) return 'just now';
+    var diff = Math.max(0, Date.now() - ts);
+    var min = Math.floor(diff / 60000);
+    if (min < 1) return 'just now';
+    if (min < 60) return min + ' min ago';
+    var hr = Math.floor(min / 60);
+    if (hr < 24) return hr + ' hr ago';
+    return Math.floor(hr / 24) + 'd ago';
+  }
+
+  function updateFeed() {
+    fetch('/api/recent')
+      .then(function(r) { return r.json(); })
+      .then(function(events) {
+        var feed = document.getElementById('activityFeed');
+        if (!feed || !events || !events.length) return;
+        var html = '';
+        for (var i = 0; i < Math.min(20, events.length); i++) {
+          var ev = events[i];
+          var proj = ev.projectName || ev.project;
+          var noun = ev.type || 'download';
+          var flag = ev.countryFlag || '';
+          var rel = fmtRel(ev.ts);
+          html += '<div class="activity-item">' +
+            '<span class="activity-time">' + rel + '</span>' +
+            '<span class="activity-sep">&mdash;</span>' +
+            '<span class="activity-project">' + proj + '</span>' +
+            '<span class="activity-type">' + noun + '</span>' +
+            '<span class="activity-from">from ' + flag + '</span>' +
+            '<span class="activity-device">on ' + (ev.device || '') + '</span>' +
+            '</div>';
+        }
+        feed.innerHTML = html;
+      })
+      .catch(function() {});
+  }
+  setInterval(updateFeed, 10000);
 })();
 </script>
 </body>
@@ -787,13 +1078,55 @@ export default {
       return new Response(JSON.stringify(map), { headers: corsHeaders });
     }
 
+    // GET /api/recent → JSON array of recent activity events
+    if (parts.length === 2 && parts[0] === 'api' && parts[1] === 'recent') {
+      const raw = await env.COUNTER_KV.get('recent_activity');
+      let events = [];
+      try { if (raw) events = JSON.parse(raw); } catch (e) {}
+      // Enrich with display fields for the client-side feed
+      events = (Array.isArray(events) ? events : []).slice(0, 50).map(ev => {
+        const meta = PROJECT_META[ev.project] || { name: ev.project, type: 'download' };
+        return {
+          project: ev.project,
+          projectName: meta.name,
+          country: ev.country,
+          countryFlag: countryFlag(ev.country),
+          device: ev.device,
+          ts: ev.ts,
+          type: meta.type === 'install' ? 'install' : 'download',
+        };
+      });
+      return new Response(JSON.stringify(events), { headers: corsHeaders });
+    }
+
+    // GET /badge/<project>.svg → shields.io-style SVG badge
+    if (parts.length === 2 && parts[0] === 'badge' && parts[1].endsWith('.svg')) {
+      const project = parts[1].slice(0, -4); // strip .svg
+      if (!PROJECT_RE.test(project)) {
+        return new Response(JSON.stringify({ error: 'invalid project name' }), {
+          status: 400,
+          headers: corsHeaders,
+        });
+      }
+      const val = await env.COUNTER_KV.get('project:' + project);
+      const count = parseInt(val || '0', 10);
+      const svg = renderBadge(project, count);
+      return new Response(svg, {
+        headers: {
+          'Content-Type': 'image/svg+xml; charset=utf-8',
+          'Cache-Control': 'no-cache',
+          'Access-Control-Allow-Origin': '*',
+        },
+      });
+    }
+
     // GET / → HTML stats page
     if (parts.length === 0) {
       const list = await env.COUNTER_KV.list({ prefix: 'project:' });
       const projectKeys = list.keys
         .map(k => k.name.slice('project:'.length))
         .filter(name => !name.includes(':')); // skip non-project keys
-      const [countEntries, analyticsEntries] = await Promise.all([
+      const [countEntries, analyticsEntries, trendEntries, firstInstallEntries] = await Promise.all([
         Promise.all(projectKeys.map(async (name) => {
           const val = await env.COUNTER_KV.get('project:' + name);
           return [name, parseInt(val || '0', 10)];
@@ -802,10 +1135,32 @@ export default {
           const val = await env.COUNTER_KV.get('analytics:' + name);
           return [name, val ? JSON.parse(val) : { countries: {}, devices: {} }];
         })),
+        Promise.all(projectKeys.map(async (name) => {
+          const val = await env.COUNTER_KV.get('trend:' + name);
+          let arr = [];
+          try { if (val) arr = JSON.parse(val); } catch (e) {}
+          return [name, Array.isArray(arr) ? arr : []];
+        })),
+        Promise.all(projectKeys.map(async (name) => {
+          const val = await env.COUNTER_KV.get('first_install:' + name);
+          return [name, val || null];
+        })),
       ]);
+      // Fetch recent activity + map dots in parallel with the above
+      const [recentRaw, mapDotsRaw] = await Promise.all([
+        env.COUNTER_KV.get('recent_activity'),
+        env.COUNTER_KV.get('map_dots'),
+      ]);
+      let recentActivity = [];
+      try { if (recentRaw) recentActivity = JSON.parse(recentRaw); } catch (e) {}
+      let mapDots = [];
+      try { if (mapDotsRaw) mapDots = JSON.parse(mapDotsRaw); } catch (e) {}
+
       const counts = Object.fromEntries(countEntries);
       const analytics = Object.fromEntries(analyticsEntries);
-      const html = renderStatsPage(counts, analytics);
+      const trends = Object.fromEntries(trendEntries);
+      const firstInstalls = Object.fromEntries(firstInstallEntries);
+      const html = renderStatsPage(counts, analytics, trends, recentActivity, mapDots, firstInstalls);
       return new Response(html, {
         headers: {
           'Content-Type': 'text/html; charset=utf-8',
@@ -845,6 +1200,65 @@ export default {
       if (country) an.countries[country] = (an.countries[country] || 0) + 1;
       an.devices[device] = (an.devices[device] || 0) + 1;
       await env.COUNTER_KV.put(aKey, JSON.stringify(an));
+
+      // First install date — set once, backfill if missing for existing projects
+      const fiKey = 'first_install:' + project;
+      const existingFi = await env.COUNTER_KV.get(fiKey);
+      if (!existingFi) {
+        await env.COUNTER_KV.put(fiKey, new Date().toISOString());
+      }
+
+      // Daily trend — last 30 days of counts
+      const tKey = 'trend:' + project;
+      let trend = [];
+      try {
+        const rawT = await env.COUNTER_KV.get(tKey);
+        if (rawT) trend = JSON.parse(rawT);
+        if (!Array.isArray(trend)) trend = [];
+      } catch (e) { trend = []; }
+      const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+      if (trend.length > 0 && trend[trend.length - 1].d === today) {
+        trend[trend.length - 1].n += 1;
+      } else {
+        trend.push({ d: today, n: 1 });
+      }
+      if (trend.length > 30) trend = trend.slice(trend.length - 30);
+      await env.COUNTER_KV.put(tKey, JSON.stringify(trend));
+
+      // Recent activity feed — prepend event, keep last 50
+      const raKey = 'recent_activity';
+      let activity = [];
+      try {
+        const rawA = await env.COUNTER_KV.get(raKey);
+        if (rawA) activity = JSON.parse(rawA);
+        if (!Array.isArray(activity)) activity = [];
+      } catch (e) { activity = []; }
+      const meta = PROJECT_META[project] || { type: 'download' };
+      activity.unshift({
+        project,
+        country,
+        device,
+        ts: Date.now(),
+        type: meta.type === 'install' ? 'install' : 'download',
+      });
+      if (activity.length > 50) activity = activity.slice(0, 50);
+      await env.COUNTER_KV.put(raKey, JSON.stringify(activity));
+
+      // Map dots — store lat/lng from Cloudflare geoip, keep last 200
+      const mdKey = 'map_dots';
+      let dots = [];
+      try {
+        const rawD = await env.COUNTER_KV.get(mdKey);
+        if (rawD) dots = JSON.parse(rawD);
+        if (!Array.isArray(dots)) dots = [];
+      } catch (e) { dots = []; }
+      const lat = request.cf && typeof request.cf.latitude === 'string' ? parseFloat(request.cf.latitude) : null;
+      const lng = request.cf && typeof request.cf.longitude === 'string' ? parseFloat(request.cf.longitude) : null;
+      if (lat !== null && !isNaN(lat) && lng !== null && !isNaN(lng)) {
+        dots.push({ lat, lng, project, ts: Date.now() });
+        if (dots.length > 200) dots = dots.slice(dots.length - 200);
+        await env.COUNTER_KV.put(mdKey, JSON.stringify(dots));
+      }
 
       return new Response(JSON.stringify({ count: current, project }), { headers: corsHeaders });
     }
