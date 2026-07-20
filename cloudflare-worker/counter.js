@@ -112,7 +112,58 @@ function escapeHtml(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
-function renderStatsPage(counts) {
+// Convert ISO 3166-1 alpha-2 country code to emoji flag.
+function countryFlag(code) {
+  if (!code || code.length !== 2) return '';
+  const A = 0x1F1E6;
+  const cc = code.toUpperCase();
+  return String.fromCodePoint(A + (cc.charCodeAt(0) - 65), A + (cc.charCodeAt(1) - 65));
+}
+
+// Parse User-Agent into a compact "Browser/OS" label.
+// Only categorizes into major browsers and OSes — no version numbers stored.
+function parseUserAgent(ua) {
+  if (!ua) return 'Other/Other';
+  let browser = 'Other', os = 'Other';
+  // OS detection (order matters — check mobile first)
+  if (/Android/i.test(ua)) os = 'Android';
+  else if (/iPhone|iPad|iPod/i.test(ua)) os = 'iOS';
+  else if (/Windows/i.test(ua)) os = 'Windows';
+  else if (/Mac OS X/i.test(ua)) os = 'macOS';
+  else if (/Linux/i.test(ua)) os = 'Linux';
+  // Browser detection (order matters — check Edge/Opera before Chrome)
+  if (/Edg/i.test(ua)) browser = 'Edge';
+  else if (/OPR|Opera/i.test(ua)) browser = 'Opera';
+  else if (/Firefox/i.test(ua)) browser = 'Firefox';
+  else if (/Chrome/i.test(ua)) browser = 'Chrome';
+  else if (/Safari/i.test(ua)) browser = 'Safari';
+  return browser + '/' + os;
+}
+
+// Country code → short display name (for tooltip/title attr).
+// Falls back to the raw code if unknown.
+const COUNTRY_NAMES = {
+  MY:'Malaysia', US:'United States', GB:'United Kingdom', JP:'Japan',
+  DE:'Germany', FR:'France', AU:'Australia', CA:'Canada', BR:'Brazil',
+  IN:'India', ID:'Indonesia', TH:'Thailand', SG:'Singapore', PH:'Philippines',
+  VN:'Vietnam', CN:'China', KR:'South Korea', TW:'Taiwan', HK:'Hong Kong',
+  NL:'Netherlands', ES:'Spain', IT:'Italy', RU:'Russia', SE:'Sweden',
+  NO:'Norway', FI:'Finland', DK:'Denmark', PL:'Poland', TR:'Turkey',
+  ZA:'South Africa', MX:'Mexico', AR:'Argentina', NZ:'New Zealand',
+  AE:'UAE', SA:'Saudi Arabia', EG:'Egypt', NG:'Nigeria', KE:'Kenya',
+  PT:'Portugal', BE:'Belgium', CH:'Switzerland', AT:'Austria', IE:'Ireland',
+  CZ:'Czechia', RO:'Romania', HU:'Hungary', GR:'Greece', IL:'Israel',
+  PK:'Pakistan', BD:'Bangladesh', LK:'Sri Lanka', MM:'Myanmar', KH:'Cambodia',
+  LA:'Laos', BN:'Brunei', ET:'Ethiopia', GH:'Ghana', TZ:'Tanzania',
+  UG:'Uganda', MA:'Morocco', DZ:'Algeria', TN:'Tunisia', UA:'Ukraine',
+  HR:'Croatia', SK:'Slovakia', SI:'Slovenia', BG:'Bulgaria', RS:'Serbia',
+  LT:'Lithuania', LV:'Latvia', EE:'Estonia', IS:'Iceland', LU:'Luxembourg',
+  MT:'Malta', CY:'Cyprus', CO:'Colombia', CL:'Chile', PE:'Peru', VE:'Venezuela',
+  EC:'Ecuador', UY:'Uruguay', PY:'Paraguay', BO:'Bolivia', CR:'Costa Rica',
+  PA:'Panama', GT:'Guatemala', CU:'Cuba', DO:'Dominican Rep', JM:'Jamaica',
+};
+
+function renderStatsPage(counts, analytics) {
   const projects = Object.entries(counts).sort((a, b) => b[1] - a[1]);
   const total = projects.reduce((sum, [, c]) => sum + c, 0);
   const maxCount = projects.length ? Math.max(...projects.map(([, c]) => c), 1) : 1;
@@ -136,11 +187,31 @@ function renderStatsPage(counts) {
       const link = meta.url
         ? `<a href="${escapeHtml(meta.url)}" target="_blank" rel="noopener" class="card-link">Open page &rarr;</a>`
         : '';
+      // Analytics: top countries (flags) + device breakdown
+      const an = analytics[key] || { countries: {}, devices: {} };
+      const topCountries = Object.entries(an.countries || {})
+        .sort((a, b) => b[1] - a[1]).slice(0, 8);
+      const countryFlags = topCountries.length
+        ? '<div class="card-flags">' + topCountries.map(([cc, n]) => {
+            const flag = countryFlag(cc);
+            const name = COUNTRY_NAMES[cc] || cc;
+            return `<span class="flag" title="${escapeHtml(name)}: ${n}">${flag}<sup>${n}</sup></span>`;
+          }).join('') + '</div>'
+        : '';
+      const topDevices = Object.entries(an.devices || {})
+        .sort((a, b) => b[1] - a[1]).slice(0, 5);
+      const deviceList = topDevices.length
+        ? '<div class="card-devices">' + topDevices.map(([d, n]) =>
+            `<span class="dev">${escapeHtml(d)} <em>${n}</em></span>`
+          ).join('') + '</div>'
+        : '';
       return `<div class="card">
         <div class="card-name">${escapeHtml(meta.name)}</div>
         <div class="card-count">${count}</div>
         <div class="card-unit">${noun}</div>
         <div class="card-desc">${escapeHtml(meta.desc)}</div>
+        ${countryFlags}
+        ${deviceList}
         ${link}
       </div>`;
     }).join('\n');
@@ -363,6 +434,41 @@ function renderStatsPage(counts) {
     text-decoration: none;
   }
   .card-link:hover { text-decoration: underline; }
+  .card-flags {
+    font-size: 1.3rem;
+    margin: 8px 0 6px;
+    line-height: 1.4;
+    letter-spacing: 1px;
+  }
+  .card-flags .flag {
+    margin-right: 6px;
+    display: inline-block;
+  }
+  .card-flags .flag sup {
+    font-size: 0.6rem;
+    color: #6ab0ff;
+    font-weight: 600;
+    margin-left: 1px;
+  }
+  .card-devices {
+    font-size: 0.7rem;
+    color: #64748b;
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+  .card-devices .dev {
+    display: inline-block;
+    margin-right: 8px;
+    background: #0d1526;
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px solid #1e293b;
+  }
+  .card-devices .dev em {
+    color: #6ab0ff;
+    font-style: normal;
+    font-weight: 600;
+  }
 
   /* Table */
   table {
@@ -684,15 +790,22 @@ export default {
     // GET / → HTML stats page
     if (parts.length === 0) {
       const list = await env.COUNTER_KV.list({ prefix: 'project:' });
-      const entries = await Promise.all(
-        list.keys.map(async (k) => {
-          const name = k.name.slice('project:'.length);
-          const val = await env.COUNTER_KV.get(k.name);
+      const projectKeys = list.keys
+        .map(k => k.name.slice('project:'.length))
+        .filter(name => !name.includes(':')); // skip non-project keys
+      const [countEntries, analyticsEntries] = await Promise.all([
+        Promise.all(projectKeys.map(async (name) => {
+          const val = await env.COUNTER_KV.get('project:' + name);
           return [name, parseInt(val || '0', 10)];
-        })
-      );
-      const counts = Object.fromEntries(entries);
-      const html = renderStatsPage(counts);
+        })),
+        Promise.all(projectKeys.map(async (name) => {
+          const val = await env.COUNTER_KV.get('analytics:' + name);
+          return [name, val ? JSON.parse(val) : { countries: {}, devices: {} }];
+        })),
+      ]);
+      const counts = Object.fromEntries(countEntries);
+      const analytics = Object.fromEntries(analyticsEntries);
+      const html = renderStatsPage(counts, analytics);
       return new Response(html, {
         headers: {
           'Content-Type': 'text/html; charset=utf-8',
@@ -714,9 +827,25 @@ export default {
     const action = parts[1] || '';
 
     if (action === 'up') {
+      // Increment count
       let current = parseInt(await env.COUNTER_KV.get(key) || '0', 10);
       current += 1;
       await env.COUNTER_KV.put(key, current.toString());
+
+      // Record analytics: country (from Cloudflare geoip) + device (from UA)
+      // No IP address or raw UA string is stored — only aggregated counts.
+      const country = (request.cf && request.cf.country) || null;
+      const device = parseUserAgent(request.headers.get('User-Agent') || '');
+      const aKey = 'analytics:' + project;
+      let an = { countries: {}, devices: {} };
+      try {
+        const raw = await env.COUNTER_KV.get(aKey);
+        if (raw) an = JSON.parse(raw);
+      } catch (e) {}
+      if (country) an.countries[country] = (an.countries[country] || 0) + 1;
+      an.devices[device] = (an.devices[device] || 0) + 1;
+      await env.COUNTER_KV.put(aKey, JSON.stringify(an));
+
       return new Response(JSON.stringify({ count: current, project }), { headers: corsHeaders });
     }
 
