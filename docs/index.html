@@ -3,9 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>9M2PJU Mod LoRa APRS Tracker Firmware Web Installer</title>
+    <title>9M2PJU Mod LoRa APRS Tracker Firmware Web Installer — Browser-Based ESP32 Flash</title>
+    <meta name="description" content="Install 9M2PJU Mod LoRa APRS Tracker firmware directly from your browser — no Arduino IDE, no USB drivers, no app needed. ESP32 LoRa APRS tracker for the Heltec Wireless Tracker with smart beaconing, APRS messaging, Winlink, BLN bulletins, SOTA/POTA reports, and APRSMY Sunday Net check-in. Tuned for Malaysian ham radio use.">
+    <meta name="keywords" content="LoRa APRS, APRS tracker, ESP32, Heltec Wireless Tracker, ham radio, amateur radio, firmware, web flasher, browser install, 9M2PJU, Malaysia, smart beaconing, Winlink, SOTA, POTA, BLN bulletins, APRSMY, 433 MHz">
+    <meta name="author" content="9M2PJU">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="theme-color" content="#041326">
+    <link rel="canonical" href="https://lora.hamradio.my/">
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="apple-touch-icon" href="logo.png">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="9M2PJU Ham Radio Projects">
+    <meta property="og:title" content="9M2PJU Mod LoRa APRS Tracker — Browser-Based Firmware Installer">
+    <meta property="og:description" content="Install LoRa APRS Tracker firmware directly from your browser. ESP32 LoRa APRS tracker for Heltec Wireless Tracker with smart beaconing, APRS messaging, Winlink, BLN bulletins, SOTA/POTA reports. No Arduino IDE or USB drivers needed.">
+    <meta property="og:url" content="https://lora.hamradio.my/">
+    <meta property="og:image" content="https://lora.hamradio.my/logo.png">
+    <meta property="og:image:alt" content="9M2PJU Mod LoRa APRS Tracker firmware installer">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter / X Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@9M2PJU">
+    <meta name="twitter:creator" content="@9M2PJU">
+    <meta name="twitter:title" content="9M2PJU Mod LoRa APRS Tracker — Browser-Based Firmware Installer">
+    <meta name="twitter:description" content="Install LoRa APRS Tracker firmware directly from your browser. ESP32 LoRa APRS tracker for Heltec Wireless Tracker with smart beaconing, APRS messaging, Winlink, BLN bulletins, SOTA/POTA reports.">
+    <meta name="twitter:image" content="https://lora.hamradio.my/logo.png">
+    <meta name="twitter:image:alt" content="9M2PJU Mod LoRa APRS Tracker firmware installer">
+
+    <!-- Structured data for search engines -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "9M2PJU Mod LoRa APRS Tracker",
+      "operatingSystem": "ESP32",
+      "applicationCategory": "Firmware",
+      "softwareVersion": "v2.0",
+      "url": "https://lora.hamradio.my/",
+      "downloadUrl": "https://lora.hamradio.my/",
+      "description": "ESP32 LoRa APRS tracker firmware for the Heltec Wireless Tracker board. Forked from CA2RXU's LoRa APRS Tracker and tuned for Malaysian use cases with smart beaconing presets for hiking/SOTA, motorcycle, and car. Supports APRS messaging, Winlink, BLN bulletins, SOTA/POTA reports, and APRSMY Sunday Net check-in.",
+      "author": {
+        "@type": "Person",
+        "name": "9M2PJU",
+        "url": "https://hamradio.my/"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": [
+        "Browser-based firmware install (no Arduino IDE needed)",
+        "Smart beaconing presets (Runner/Hiking, Motorcycle, Car)",
+        "APRS messaging and Winlink support",
+        "BLN bulletin reception with 500 km distance filter",
+        "SOTA and POTA spot/alert reports via APRS Bot",
+        "APRSMY Sunday Net check-in",
+        "LoRa 433.400 MHz (Malaysia)",
+        "Heltec Wireless Tracker (ESP32-S3 + ST7735 TFT)"
+      ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I install the LoRa APRS Tracker firmware?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Open lora.hamradio.my in Chrome or Edge on a phone or computer, connect your Heltec Wireless Tracker via USB, click the Install button, and the firmware flashes directly in your browser. No Arduino IDE, no USB drivers, and no app installation required."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What hardware do I need?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You need a Heltec Wireless Tracker board (ESP32-S3 with LoRa and a ST7735 TFT display), a USB-C cable, and a web browser that supports Web Serial (Chrome, Edge, or Opera on desktop or Android). Firefox and Safari do not support Web Serial."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is this firmware free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, the 9M2PJU Mod LoRa APRS Tracker is open source and free to install. It is a fork of CA2RXU's LoRa APRS Tracker, modified by 9M2PJU for Malaysian ham radio use with tuned smart beaconing presets, APRSMY Sunday Net check-in, BLN bulletins, and SOTA/POTA reports."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What LoRa frequency does it use?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The default frequency is 433.400 MHz, which is legal for amateur radio use in Malaysia. The frequency can be changed in the web admin UI or on-device configuration menu to match your local regulations."
+          }
+        }
+      ]
+    }
+    </script>
     <script type="module" src="install-button.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
