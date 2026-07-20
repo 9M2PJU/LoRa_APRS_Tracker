@@ -1182,23 +1182,34 @@ export default {
       const ghPath = parts.slice(2).join('/');
       const ghUrl = 'https://api.github.com/' + ghPath;
       try {
-        const ghResp = await fetch(ghUrl, {
+        const ghHeaders = {
+          'User-Agent': 'counter.hamradio.my Worker',
+          'Accept': 'application/vnd.github+json',
+        };
+        // Use GitHub PAT if available (raises rate limit from 60 to 5000 req/hr)
+        if (env.GH_TOKEN) {
+          ghHeaders['Authorization'] = 'Bearer ' + env.GH_TOKEN;
+        }
+        const ghResp = await fetch(ghUrl, { headers: ghHeaders });
+        const ghBody = await ghResp.text();
+        // Only cache successful responses. Error responses (403 rate limit,
+        // 404, 5xx) must NOT be cached — otherwise visitors keep getting
+        // the cached error even after the issue resolves.
+        const cacheControl = ghResp.status === 200
+          ? 'public, max-age=300'
+          : 'no-store, max-age=0';
+        return new Response(ghBody, {
+          status: ghResp.status,
           headers: {
-            'User-Agent': 'counter.hamradio.my Worker',
-            'Accept': 'application/vnd.github+json',
+            'Content-Type': 'application/json; charset=utf-8',
+            'Access-Control-Allow-Origin': '*',
+            'Cache-Control': cacheControl,
           },
         });
-        const ghBody = await ghResp.text();
-        const ghHeaders = {
-          'Content-Type': 'application/json; charset=utf-8',
-          'Access-Control-Allow-Origin': '*',
-          'Cache-Control': 'public, max-age=300',
-        };
-        return new Response(ghBody, { status: ghResp.status, headers: ghHeaders });
       } catch (e) {
         return new Response(JSON.stringify({ error: 'GitHub API fetch failed' }), {
           status: 502,
-          headers: { ...corsHeaders, 'Cache-Control': 'public, max-age=60' },
+          headers: { ...corsHeaders, 'Cache-Control': 'no-store, max-age=0' },
         });
       }
     }
