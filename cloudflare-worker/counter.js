@@ -1173,6 +1173,36 @@ export default {
     const url = new URL(request.url);
     const parts = url.pathname.split('/').filter(Boolean);
 
+    // GET /api/gh/* → proxy to GitHub API with edge caching.
+    // Prevents 403 rate-limit errors on droidstar.hamradio.my and
+    // droidstar-linux.hamradio.my (unauthenticated limit is 60 req/hr per IP).
+    // Cached for 5 min at the edge, so only 1 GitHub API call per 5 min per
+    // edge location regardless of visitor count.
+    if (parts.length >= 3 && parts[0] === 'api' && parts[1] === 'gh') {
+      const ghPath = parts.slice(2).join('/');
+      const ghUrl = 'https://api.github.com/' + ghPath;
+      try {
+        const ghResp = await fetch(ghUrl, {
+          headers: {
+            'User-Agent': 'counter.hamradio.my Worker',
+            'Accept': 'application/vnd.github+json',
+          },
+        });
+        const ghBody = await ghResp.text();
+        const ghHeaders = {
+          'Content-Type': 'application/json; charset=utf-8',
+          'Access-Control-Allow-Origin': '*',
+          'Cache-Control': 'public, max-age=300',
+        };
+        return new Response(ghBody, { status: ghResp.status, headers: ghHeaders });
+      } catch (e) {
+        return new Response(JSON.stringify({ error: 'GitHub API fetch failed' }), {
+          status: 502,
+          headers: { ...corsHeaders, 'Cache-Control': 'public, max-age=60' },
+        });
+      }
+    }
+
     // GET /robots.txt → allow all crawlers, point to sitemap
     if (parts.length === 1 && parts[0] === 'robots.txt') {
       const body = 'User-agent: *\nAllow: /\n\nSitemap: https://counter.hamradio.my/sitemap.xml\n';
