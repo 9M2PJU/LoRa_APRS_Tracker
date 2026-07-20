@@ -1,0 +1,10 @@
+name = "install-counter"
+main = "counter.js"
+compatibility_date = "2024-09-01"
+
+# KV namespace binding — create it first with:
+#   wrangler kv namespace create INSTALL_COUNTER
+# then paste the returned id below.
+[[kv_namespaces]]
+binding = "COUNTER_KV"
+id = "e1f1bc527fce4761b9339862d435f342"

@@ -671,7 +671,13 @@
                 msg.style.display = 'block';
                 msg.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
+            // Only count REAL successful installs (state === 'finished').
+            // Clicks and cancels are NOT counted.
+            if (finished) {
+                registerInstallCount();
+            }
         });
+        // Show reboot message after a successful install (counter is independent).
 
         // Donation popup — shows on every visit, auto-closes after 10s, plus a floating button
         (function() {
@@ -694,31 +700,31 @@
             setTimeout(openModal, 2500);
         })();
 
-        // Download counter — shows total INSTALL clicks via counterapi.dev V1
+        // Install counter — shows total REAL successful installs via a
+        // Cloudflare Worker + KV (not blocked by ad blockers like counterapi.dev).
+        // Multi-project: each project has its own counter under counter.hamradio.my.
+        // This page uses the "lora-tracker" project. Other projects (esp32-fox-hunt,
+        // esp32-dx-cluster, etc.) use the same Worker with a different project name.
+        // Increment fires only when the install dialog reports state === 'finished'.
+        var registerInstallCount;
         (function() {
-            var API_BASE = 'https://api.counterapi.dev/v1/9m2pju-lora-tracker/install-clicks';
+            var API_BASE = 'https://counter.hamradio.my/lora-tracker';
             var counterLabel = document.getElementById('counterLabel');
             function renderCount(n) {
                 counterLabel.innerHTML = '<span class="counter-num">' + n + '</span> <span class="counter-suffix">installs via this page</span>';
             }
-            // Fetch current count on page load
+            // Show current count to every visitor on page load
             fetch(API_BASE + '/')
                 .then(function(r) { return r.json(); })
                 .then(function(data) { renderCount(data.count || 0); })
                 .catch(function() { counterLabel.textContent = ''; });
-            // Increment when INSTALL button is clicked
-            var counted = false;
-            function registerClick() {
-                if (counted) return;
-                counted = true;
+            // Increment on real successful install (called from closed handler)
+            registerInstallCount = function() {
                 fetch(API_BASE + '/up')
                     .then(function(r) { return r.json(); })
                     .then(function(data) { renderCount(data.count || 0); })
-                    .catch(function() { counted = false; });
-            }
-            // Use event delegation — the button is slotted inside esp-web-install-button
-            document.querySelector('.install-btn-wrapper')
-                .addEventListener('click', registerClick);
+                    .catch(function() {});
+            };
         })();
     </script>
 </body>
