@@ -872,7 +872,7 @@ function renderStatsPage(counts, analytics, trends, recentActivity, mapDots, fir
   ${barsByCategory}
 
   <footer>
-    Powered by <a href="https://counter.hamradio.my/">counter.hamradio.my</a>
+    Powered by <a href="https://hamradio.my">9M2PJU</a>
   </footer>
 
   <!-- Crawlable descriptive content for search engines (visually hidden but
