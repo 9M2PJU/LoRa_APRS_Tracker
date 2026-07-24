@@ -33,12 +33,12 @@ namespace WIFI_Utils {
     void startAutoAP() {
         WiFi.mode(WIFI_MODE_NULL);
         WiFi.mode(WIFI_AP);
-        WiFi.softAP("LoRaTracker-AP", Config.wifiAP.password);
+        WiFi.softAP("LoRaTracker9M2PJU-AP", Config.wifiAP.password);
     }
 
     void checkIfWiFiAP() {
         if (Config.wifiAP.active || Config.beacons[0].callsign == "NOCALL-7"){
-            displayShow(" LoRa APRS", "    ** WEB-CONF **","", "WiFiAP:LoRaTracker-AP", "IP    :   192.168.4.1","");
+            displayShow(" LoRa APRS", "    ** WEB-CONF **","", "WiFiAP:LoRaTracker9M2PJU-AP", "IP    :   192.168.4.1","");
             logger.log(logging::LoggerLevel::LOGGER_LEVEL_WARN, "Main", "WebConfiguration Started!");
             startAutoAP();
             WEB_Utils::setup();
