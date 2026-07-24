@@ -183,7 +183,7 @@ bool Configuration::readFile() {
             data["bluetooth"]["useBLE"].isNull() ||
             data["bluetooth"]["useKISS"].isNull()) needsRewrite = true;
         bluetooth.active                = data["bluetooth"]["active"] | false;
-        bluetooth.deviceName            = data["bluetooth"]["deviceName"] | "LoRaTracker";
+        bluetooth.deviceName            = data["bluetooth"]["deviceName"] | "LoRaTracker9M2PJU";
         #ifdef HAS_BT_CLASSIC
             bluetooth.useBLE            = data["bluetooth"]["useBLE"] | false;
             bluetooth.useKISS           = data["bluetooth"]["useKISS"] | true;    // true=KISS,  false=TNC2
@@ -330,7 +330,7 @@ void Configuration::setDefaultValues() {
     display.showSymbol              = true;
 
     bluetooth.active                = false;
-    bluetooth.deviceName            = "LoRaTracker";
+    bluetooth.deviceName            = "LoRaTracker9M2PJU";
     #ifdef HAS_BT_CLASSIC
         bluetooth.useBLE            = false;
         bluetooth.useKISS           = true;    // true=KISS,  false=TNC2

@@ -118,7 +118,7 @@
 	],
 	"bluetooth": {
 		"active": false,
-		"deviceName": "LoRaTracker",
+		"deviceName": "LoRaTracker9M2PJU",
 		"useBLE": false,
 		"useKISS": true
 	},
