@@ -120,7 +120,7 @@
 		"active": false,
 		"deviceName": "LoRaTracker",
 		"useBLE": false,
-		"useKISS": false
+		"useKISS": true
 	},
 	"bulletins": {
 		"active": false

@@ -186,7 +186,7 @@ bool Configuration::readFile() {
         bluetooth.deviceName            = data["bluetooth"]["deviceName"] | "LoRaTracker";
         #ifdef HAS_BT_CLASSIC
             bluetooth.useBLE            = data["bluetooth"]["useBLE"] | false;
-            bluetooth.useKISS           = data["bluetooth"]["useKISS"] | false;
+            bluetooth.useKISS           = data["bluetooth"]["useKISS"] | true;    // true=KISS,  false=TNC2
         #else
             bluetooth.useBLE            = true;    // fixed as BLE
             bluetooth.useKISS           = data["bluetooth"]["useKISS"] | true;    // true=KISS,  false=TNC2
@@ -333,10 +333,10 @@ void Configuration::setDefaultValues() {
     bluetooth.deviceName            = "LoRaTracker";
     #ifdef HAS_BT_CLASSIC
         bluetooth.useBLE            = false;
-        bluetooth.useKISS           = false;
+        bluetooth.useKISS           = true;    // true=KISS,  false=TNC2
     #else
         bluetooth.useBLE            = true;    // fixed as BLE
-        bluetooth.useKISS           = true;
+        bluetooth.useKISS           = true;    // true=KISS,  false=TNC2
     #endif
 
     bulletins.active                  = false;
